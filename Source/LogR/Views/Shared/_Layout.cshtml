@@ -1,0 +1,96 @@
+﻿@using Framework.Web.HtmlHelpers
+@inject Framework.Infrastructure.IBaseConfiguration config
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>LogViewer</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="/css/style.css" rel="stylesheet" type="text/css" />
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="/lib/ionicons/css/ionicons.css">
+
+    <link href="~/lib-custom/google-fonts/google-fonts.css" rel="stylesheet" type="text/css">
+
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/lib/admin-lte/dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="/lib/admin-lte/dist/css/skins/_all-skins.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="/lib/html5shiv/dist/html5shiv.js"></script>
+        <script src="/lib/respond/dest/respond.min.js"></script>
+    <![endif]-->
+</head>
+<!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+<body class="hold-transition skin-blue-light layout-top-nav">
+    <div class="wrapper">
+        <header class="main-header">
+            <nav class="navbar navbar-static-top">
+                <div class="container-fluid">
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="header">
+                        <div id="quick-search">
+                        </div>
+                        <h4 class="whitetxt_h1">@config.AppName</h4>
+                        <div id="main-menu">
+                            <ul>
+                                <li><a href="/" class="overview @(Model.ActiveTab == 1 ? " selected" : "")">Dashboard</a></li>
+                                <li><a href="/app-logs" class="issues @(Model.ActiveTab == 2 ? " selected" : "")">App Logs</a></li>
+                                <li><a href="/performance-logs" accesskey="7" class="new-issue @(Model.ActiveTab == 3 ? " selected" : "")">Performance Logs</a></li>
+                                <li><a href="/stats" accesskey="7" class="new-issue @(Model.ActiveTab == 4 ? " selected" : "")">Stats</a></li>
+                            </ul>
+                        </div>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        </header>
+
+        @RenderBody()
+
+        <footer class="main-footer">
+            <div class="container">
+                <div class="pull-right hidden-xs">
+                    <b>Version</b> 1.0
+                </div>
+                <strong>Copyright &copy; 2017 <a href="#">Guru Kathiresan</a>.</strong> All rights reserved.
+            </div><!-- /.container -->
+        </footer>
+    </div><!-- ./wrapper -->
+    <!-- jQuery 2.1.4 -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap 3.3.5 -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- SlimScroll -->
+    <script src="/lib/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="/lib/admin-lte/plugins/fastclick/fastclick.js"></script>
+
+    <script src="/lib/admin-lte/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="~/lib/admin-lte/plugins/select2/select2.full.min.js"></script>
+
+
+    <!-- AdminLTE App -->
+    <script src="~/js/app.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="/js/demo.js"></script>
+
+    <script>
+        $(function () {
+            //Initialize Select2 Elements
+            $(".select2").select2();
+        });
+    </script>
+
+</body>
+</html>
