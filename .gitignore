@@ -45,7 +45,7 @@ Logs/**
 Solution/packages/**
 **/bin/**
 **/obj/**
-Source/LogR/wwwroot/lib/**
+Source/LogR/App/Web/wwwroot/lib/**
 **/*.user
 **/.vs/**
 Data/Database/**

@@ -1,0 +1,49 @@
+﻿@using Framework.Web.Mvc.Routing
+@model Framework.Infrastructure.Models.Search.BaseSearchCriteria
+
+@*
+    <div class="pagination">
+    <ul>
+    <li class="disabled"><a href="#">Prev</a></li>
+    <li class="active"><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">Next</a></li>
+    </ul>
+    </div>
+*@
+
+
+@{
+    var razorWriter = ViewContext.Writer;
+
+    if ((bool)ViewData["Inactive"])
+    {
+
+        razorWriter.Write(string.Format("<li class=\"disabled\"><a href=\"#\">{0}</a></li>", ViewData["Text"]));
+    }
+    else
+    {
+        var routeData = new RouteValueDictionary { { "page", ViewData["PageIndex"].ToString() }, { "pageSize", Model.PageSize } };
+
+        // Add querystring parameters to the route collection
+        routeData.AddQueryStringParameters();
+
+        string classValue = "";
+        if ((bool)ViewData["Selected"])
+        {
+            classValue = " class=\"active\"";
+        }
+
+        var linkMarkup = Html.ActionLink(
+                ViewData["Text"].ToString(),                                    // Link Text
+                Html.ViewContext.RouteData.Values["action"].ToString(),         // Action
+                Html.ViewContext.RouteData.Values["controller"].ToString(),     // Controller
+                routeData,                                                      // Route data
+                null
+            ).ToHtmlString();
+
+        razorWriter.Write(string.Format("<li{0}>{1}</li>", classValue, linkMarkup));
+
+    }
+}
