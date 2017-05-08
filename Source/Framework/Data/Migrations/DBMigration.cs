@@ -34,13 +34,19 @@ namespace Framework.Data.Migrations
             public int Timeout { get; set; }
         }
 
-        
-
+        private Assembly GetMigrationAssembly(string migrationNamespace)
+        {
+            var qry = from a in AppDomain.CurrentDomain.GetAssemblies()
+                      from t in a.GetTypes()
+                      where (t.Namespace != null ? t.Namespace.ToLower().Equals(migrationNamespace.ToLower().Trim()) : false)
+                      select a;
+            return qry.FirstOrDefault();
+        }
 
         public bool IsMigrationUptoDate()
         {
             var announcer = new TextWriterAnnouncer(s => System.Diagnostics.Debug.WriteLine(s));
-            var assembly = Assembly.GetExecutingAssembly();
+            var assembly = GetMigrationAssembly(migrationNamespace);
 
             var migrationContext = new RunnerContext(announcer)
             {
@@ -64,7 +70,7 @@ namespace Framework.Data.Migrations
         public bool MigrateToLatestVersion()
         {
             var announcer = new TextWriterAnnouncer(s => log.Info(s));
-            var assembly = Assembly.GetExecutingAssembly();
+            var assembly = GetMigrationAssembly(migrationNamespace);
 
             var migrationContext = new RunnerContext(announcer)
             {

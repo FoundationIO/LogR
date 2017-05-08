@@ -20,7 +20,7 @@ namespace LogR.Service.Config
 
         public string GetConfigFileLocation()
         {
-            var fileName = Directory.GetCurrentDirectory() + "\\..\\..\\Configuration\\" + "LoggerServerConfig.config";
+            var fileName = Directory.GetCurrentDirectory() + "\\..\\..\\..\\..\\Configuration\\" + "LoggerServerConfig.config";
             return fileName;
         }
 

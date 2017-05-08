@@ -81,6 +81,11 @@ namespace LogR.Service.Config
 
             base.PopulateFromConfigFile(config, configLocation);
 
+            if (MigrationNamespace.IsTrimmedStringNullOrEmpty())
+            {
+                throw new Exception("MigrationNamespace is empty");
+            }
+
             IndexBaseFolder = config.AppSettings.Settings["IndexBaseFolder"] != null ? config.AppSettings.Settings["IndexBaseFolder"].Value : LogLocation;
             IndexBaseFolder = LogLocation.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
             IndexBaseFolder = Path.GetFullPath((new Uri(IndexBaseFolder)).LocalPath);

@@ -85,6 +85,8 @@ namespace Framework.Infrastructure.Config
             DatabasePassword = config.AppSettings.Settings["DatabasePassword"] != null ? config.AppSettings.Settings["DatabasePassword"].Value : DatabasePassword;
             DatabaseCommandTimeout = config.AppSettings.Settings["DatabaseCommandTimeout"] != null ? SafeUtils.Int(config.AppSettings.Settings["DatabaseCommandTimeout"].Value) : DatabaseCommandTimeout;
 
+            MigrationNamespace = config.AppSettings.Settings["MigrationNamespace"] != null ? config.AppSettings.Settings["MigrationNamespace"].Value : "";
+
             AppName = Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location);
         }
     }

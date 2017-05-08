@@ -21,10 +21,6 @@ namespace LogR.Web
 
         public static void Main(string[] args)
         {
-            IDBMigration migration = DISetup.ServiceProvider.GetService<IDBMigration>();
-            var log = DISetup.ServiceProvider.GetService<ILog>();
-            var config = DISetup.ServiceProvider.GetService<IAppConfiguration>();
-
             var servicename = args.GetParamValueAsString("/servicename", "LoggerService");
 
             if (args.IsParamValueAvailable("/?") || args.IsParamValueAvailable("/help"))
@@ -41,45 +37,52 @@ namespace LogR.Web
                 gen.Generate();
                 System.Console.Out.WriteLine($"Config file is created.");
             }
-            else if (args.IsParamValueAvailable("/migrate"))
-            {
-                Console.WriteLine("Starting the Migration process");
-                if (migration.IsMigrationUptoDate())
-                {                    
-                    Console.WriteLine("Migration is already upto date. Please press any key to exit");
-                    Console.ReadKey();
-                }
-                else
-                {
-                    migration.MigrateToLatestVersion();
-                    Console.WriteLine("Migration completed. Please press any key to exit");
-                    Console.ReadKey();
-                }
-            }
             else
             {
-                if (migration.IsMigrationUptoDate() == false)
-                {
-                    throw new Exception("Database version is not upto date.Please run the application with the / migration option and make the database version upto date");
-                }
+                IDBMigration migration = DISetup.ServiceProvider.GetService<IDBMigration>();
+                var log = DISetup.ServiceProvider.GetService<ILog>();
+                var config = DISetup.ServiceProvider.GetService<IAppConfiguration>();
 
-                var host = new WebHostBuilder()
-                    .UseKestrel()
-                    .UseUrls($"http://0.0.0.0:{config.ServerPort}")
-                    .UseContentRoot(Directory.GetCurrentDirectory())
-                    .UseIISIntegration()
-                    .UseStartup<Startup>()
-                    .Build();
-                
-                if (args.IsParamValueAvailable("/C") || Environment.UserInteractive)
+                if (args.IsParamValueAvailable("/migrate"))
                 {
-                    host.Run();
-                    //Console.WriteLine("Please press any key to exit");
-                    //Console.ReadKey();
+                    Console.WriteLine("Starting the Migration process");
+                    if (migration.IsMigrationUptoDate())
+                    {
+                        Console.WriteLine("Migration is already upto date. Please press any key to exit");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        migration.MigrateToLatestVersion();
+                        Console.WriteLine("Migration completed. Please press any key to exit");
+                        Console.ReadKey();
+                    }
                 }
                 else
                 {
-                    host.RunAsService();
+                    if (migration.IsMigrationUptoDate() == false)
+                    {
+                        throw new Exception("Database version is not upto date.Please run the application with the / migration option and make the database version upto date");
+                    }
+
+                    var host = new WebHostBuilder()
+                        .UseKestrel()
+                        .UseUrls($"http://0.0.0.0:{config.ServerPort}")
+                        .UseContentRoot(Directory.GetCurrentDirectory())
+                        .UseIISIntegration()
+                        .UseStartup<Startup>()
+                        .Build();
+
+                    if (args.IsParamValueAvailable("/C") || Environment.UserInteractive)
+                    {
+                        host.Run();
+                        //Console.WriteLine("Please press any key to exit");
+                        //Console.ReadKey();
+                    }
+                    else
+                    {
+                        host.RunAsService();
+                    }
                 }
             }
         }
