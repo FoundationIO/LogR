@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,6 +33,9 @@ namespace LogR.Service.Config
             sb.AppendLine("<add key=\"LogInfoEnable\" value=\"true\" />");
             sb.AppendLine("<add key=\"LogSqlEnable\" value=\"true\" />");
             sb.AppendLine("<add key=\"LogWarnEnable\" value=\"true\" />");
+            sb.AppendLine("<add key=\"LogToFile\" value=\"true\" />");
+            sb.AppendLine("<add key=\"LogToDebugger\" value=\"true\" />");
+            sb.AppendLine("<add key=\"LogToConsole\" value=\"true\" />");
             sb.AppendLine("<add key=\"LogLocation\" value=\"|ConfigPath|\\..\\Data\\Logs\\\" />");
             sb.AppendLine("<add key=\"ServerPort\" value=\"8080\" /> ");
             sb.AppendLine("<add key=\"DatabaseType\" value=\"SQLITE3\" /> <!-- SQLITE3, MYSQL, MSSQL2008 -->");

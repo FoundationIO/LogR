@@ -122,8 +122,7 @@ namespace Framework.Data.DbAccess
             commonTransaction.Dispose();
         }
 
-
-        public LinqToDB.Data.DataConnection NewConnection
+        public LinqToDB.Data.DataConnection Connection
         {
             get { EnsureOpenConnection(); return connection; }
         }

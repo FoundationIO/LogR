@@ -1,8 +1,8 @@
 ﻿using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Utils;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -24,6 +24,11 @@ namespace Framework.Infrastructure.Config
         public bool LogInfoEnable { get; private set; }
         public bool LogSqlEnable { get; private set; }
         public bool LogWarnEnable { get; private set; }
+
+        public bool LogToFile { get; private set; }
+        public bool LogToDebugger { get; private set; }
+        public bool LogToConsole { get; private set; }
+
         public String LogLocation { get; private set; }
 
         //database related
@@ -63,31 +68,37 @@ namespace Framework.Infrastructure.Config
             return "";
         }
 
-        protected void PopulateFromConfigFile(Configuration config, string configLocation)
+        protected void PopulateFromConfigFile(IConfigurationRoot config, string configLocation)
         {
-            LogTraceEnable = config.AppSettings.Settings["LogTraceEnable"] != null ? SafeUtils.Bool(config.AppSettings.Settings["LogTraceEnable"].Value) : LogTraceEnable;
-            LogDebugEnable = config.AppSettings.Settings["LogDebugEnable"] != null ? SafeUtils.Bool(config.AppSettings.Settings["LogDebugEnable"].Value) : LogDebugEnable;
-            LogInfoEnable = config.AppSettings.Settings["LogInfoEnable"] != null ? SafeUtils.Bool(config.AppSettings.Settings["LogInfoEnable"].Value) : LogInfoEnable;
-            LogSqlEnable = config.AppSettings.Settings["LogSqlEnable"] != null ? SafeUtils.Bool(config.AppSettings.Settings["LogSqlEnable"].Value) : LogSqlEnable;
-            LogWarnEnable = config.AppSettings.Settings["LogWarnEnable"] != null ? SafeUtils.Bool(config.AppSettings.Settings["LogWarnEnable"].Value) : LogWarnEnable;
+            var appSettings = config.GetSection("AppSettings");
 
-            LogLocation = config.AppSettings.Settings["LogLocation"] != null ? config.AppSettings.Settings["LogLocation"].Value : LogLocation;
+            LogTraceEnable = appSettings["LogTraceEnable"] != null ? SafeUtils.Bool(appSettings["LogTraceEnable"]) : LogTraceEnable;
+            LogDebugEnable = appSettings["LogDebugEnable"] != null ? SafeUtils.Bool(appSettings["LogDebugEnable"]) : LogDebugEnable;
+            LogInfoEnable = appSettings["LogInfoEnable"] != null ? SafeUtils.Bool(appSettings["LogInfoEnable"]) : LogInfoEnable;
+            LogSqlEnable = appSettings["LogSqlEnable"] != null ? SafeUtils.Bool(appSettings["LogSqlEnable"]) : LogSqlEnable;
+            LogWarnEnable = appSettings["LogWarnEnable"] != null ? SafeUtils.Bool(appSettings["LogWarnEnable"]) : LogWarnEnable;
+
+            this.LogToFile = appSettings["LogToFile"] != null ? SafeUtils.Bool(appSettings["LogToFile"]) : this.LogToFile;
+            this.LogToDebugger = appSettings["LogToDebugger"] != null ? SafeUtils.Bool(appSettings["LogToDebugger"]) : this.LogToDebugger;
+            this.LogToConsole = appSettings["LogToConsole"] != null ? SafeUtils.Bool(appSettings["LogToConsole"]) : this.LogToConsole;
+
+            LogLocation = appSettings["LogLocation"] != null ? appSettings["LogLocation"] : LogLocation;
             LogLocation = LogLocation.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
             LogLocation = Path.GetFullPath((new Uri(LogLocation)).LocalPath);
 
-            DatabaseName = config.AppSettings.Settings["DatabaseName"] != null ? config.AppSettings.Settings["DatabaseName"].Value : DatabaseName;
+            DatabaseName = appSettings["DatabaseName"] != null ? appSettings["DatabaseName"] : DatabaseName;
             DatabaseName = DatabaseName.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
             DatabaseName = Path.GetFullPath((new Uri(DatabaseName)).LocalPath);
 
-            DatabaseType = config.AppSettings.Settings["DatabaseType"] != null ? config.AppSettings.Settings["DatabaseType"].Value : DatabaseType;
-            DatabaseServer = config.AppSettings.Settings["DatabaseServer"] != null ? config.AppSettings.Settings["DatabaseServer"].Value : DatabaseServer; ;
-            DatabaseUserName = config.AppSettings.Settings["DatabaseUserName"] != null ? config.AppSettings.Settings["DatabaseUserName"].Value : DatabaseUserName; ;
-            DatabasePassword = config.AppSettings.Settings["DatabasePassword"] != null ? config.AppSettings.Settings["DatabasePassword"].Value : DatabasePassword;
-            DatabaseCommandTimeout = config.AppSettings.Settings["DatabaseCommandTimeout"] != null ? SafeUtils.Int(config.AppSettings.Settings["DatabaseCommandTimeout"].Value) : DatabaseCommandTimeout;
+            DatabaseType = appSettings["DatabaseType"] != null ? appSettings["DatabaseType"] : DatabaseType;
+            DatabaseServer = appSettings["DatabaseServer"] != null ? appSettings["DatabaseServer"] : DatabaseServer; ;
+            DatabaseUserName = appSettings["DatabaseUserName"] != null ? appSettings["DatabaseUserName"] : DatabaseUserName; ;
+            DatabasePassword = appSettings["DatabasePassword"] != null ? appSettings["DatabasePassword"] : DatabasePassword;
+            DatabaseCommandTimeout = appSettings["DatabaseCommandTimeout"] != null ? SafeUtils.Int(appSettings["DatabaseCommandTimeout"]) : DatabaseCommandTimeout;
 
-            MigrationNamespace = config.AppSettings.Settings["MigrationNamespace"] != null ? config.AppSettings.Settings["MigrationNamespace"].Value : "";
+            MigrationNamespace = appSettings["MigrationNamespace"] != null ? appSettings["MigrationNamespace"] : "";
 
-            AppName = Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location);
+            AppName = Path.GetFileNameWithoutExtension(this.GetType().GetTypeInfo().Assembly.Location);
         }
     }
 }

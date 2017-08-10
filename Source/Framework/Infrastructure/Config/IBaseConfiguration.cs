@@ -1,7 +1,6 @@
 ﻿using Framework.Infrastructure.Constants;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +16,9 @@ namespace Framework.Infrastructure.Config
         bool LogInfoEnable { get; }
         bool LogSqlEnable { get; }
         bool LogWarnEnable { get; }
+        bool LogToFile { get; }
+        bool LogToDebugger { get; }
+        bool LogToConsole { get; }
         String LogLocation { get; }
         string DatabaseType { get; }
         string DatabaseName { get; }

@@ -5,7 +5,7 @@ namespace Framework.Data.DbAccess
     public interface IDBManager
     {
         string ConnectionString { get; set; }
-        DataConnection NewConnection { get; }
+        DataConnection Connection { get; }
 
         void BeginTransaction();
         void CommitTransaction();

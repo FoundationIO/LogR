@@ -3,13 +3,13 @@ using Framework.Infrastructure.Config;
 using Framework.Infrastructure.Utils;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using LogR.Common.Interfaces.Service.Config;
+using Microsoft.Extensions.Configuration;
 
 namespace LogR.Service.Config
 {
@@ -76,8 +76,11 @@ namespace LogR.Service.Config
                 throw new Exception("Unable to find the Config location");
             }
 
-            var configFileMap = new ExeConfigurationFileMap { ExeConfigFilename = configLocation };
-            var config = ConfigurationManager.OpenMappedExeConfiguration(configFileMap, ConfigurationUserLevel.None);
+            var builder = new ConfigurationBuilder()
+                                .SetBasePath(Path.GetDirectoryName(configLocation))
+                                .AddXmlFile(Path.GetFileName(configLocation));
+
+            var config = builder.Build();
 
             base.PopulateFromConfigFile(config, configLocation);
 
@@ -86,12 +89,14 @@ namespace LogR.Service.Config
                 throw new Exception("MigrationNamespace is empty");
             }
 
-            IndexBaseFolder = config.AppSettings.Settings["IndexBaseFolder"] != null ? config.AppSettings.Settings["IndexBaseFolder"].Value : LogLocation;
+            var appSettings = config.GetSection("AppSettings");
+
+            IndexBaseFolder = appSettings["IndexBaseFolder"] != null ? appSettings["IndexBaseFolder"] : LogLocation;
             IndexBaseFolder = LogLocation.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
             IndexBaseFolder = Path.GetFullPath((new Uri(IndexBaseFolder)).LocalPath);
 
-            ServerPort = config.AppSettings.Settings["ServerPort"] != null ? SafeUtils.Int(config.AppSettings.Settings["ServerPort"].Value) : ServerPort;
-            AppName = Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location);
+            ServerPort = appSettings["ServerPort"] != null ? SafeUtils.Int(appSettings["ServerPort"]) : ServerPort;
+            AppName = Path.GetFileNameWithoutExtension(this.GetType().GetTypeInfo().Assembly.Location);
         }
     }
 }

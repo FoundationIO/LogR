@@ -35,7 +35,7 @@
     <PackageReference Include="MySql.Data" Version="7.0.7-m61" />
     <PackageReference Include="NetMQ" Version="4.0.0.1" />
     <PackageReference Include="NLog" Version="5.0.0-beta06" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.105" />    
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.105.2" />    
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
