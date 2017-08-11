@@ -4,6 +4,7 @@ using Framework.Infrastructure.Models;
 using LogR.Common.Models.Search;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Stats;
+using Framework.Infrastructure.Models.Result;
 
 namespace LogR.Common.Interfaces.Repository
 {

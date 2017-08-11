@@ -26,16 +26,6 @@ namespace Framework.Data.DbAccess
 
         private static bool loggingToggled = false;
 
-        /*
-        public DBManager(string connectionString, IBaseConfiguration config, IAppLog log)
-        {
-            this.config = config;
-            this.log = log;
-            ConnectionString = connectionString;
-            EnsureOpenConnection();
-        }
-        */
-
         public DBManager(IBaseConfiguration config, ILog log , IDBInfo dbInfo, IDataProvider dbProvider)
         {
             this.config = config;

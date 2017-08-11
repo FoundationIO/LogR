@@ -3,6 +3,7 @@ using Framework.Infrastructure.Models;
 using LogR.Common.Models.Stats;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;
+using Framework.Infrastructure.Models.Result;
 
 namespace LogR.Common.Interfaces.Service
 {

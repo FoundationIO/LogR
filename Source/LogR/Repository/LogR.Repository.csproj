@@ -30,9 +30,13 @@
 
   <ItemGroup>
     <Compile Remove="Code\**" />
+    <Compile Remove="Vendor\**" />
     <Content Remove="Code\**" />
+    <Content Remove="Vendor\**" />
     <EmbeddedResource Remove="Code\**" />
+    <EmbeddedResource Remove="Vendor\**" />
     <None Remove="Code\**" />
+    <None Remove="Vendor\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -77,25 +77,25 @@ namespace LogR.Service.Config
             }
 
             var builder = new ConfigurationBuilder()
-                                .SetBasePath(Path.GetDirectoryName(configLocation))
-                                .AddXmlFile(Path.GetFileName(configLocation));
+                .SetBasePath(Path.GetDirectoryName(configLocation))
+                .AddJsonFile(Path.GetFileName(configLocation), optional: false, reloadOnChange: true);
 
             var config = builder.Build();
 
-            base.PopulateFromConfigFile(config, configLocation);
+            var appSettings = config.GetSection("configuration:appSettings");
+            
+            base.PopulateFromConfigFile(appSettings, configLocation);
 
             if (MigrationNamespace.IsTrimmedStringNullOrEmpty())
             {
                 throw new Exception("MigrationNamespace is empty");
             }
 
-            var appSettings = config.GetSection("AppSettings");
-
-            IndexBaseFolder = appSettings["IndexBaseFolder"] != null ? appSettings["IndexBaseFolder"] : LogLocation;
+            IndexBaseFolder = appSettings["indexBaseFolder"] != null ? appSettings["indexBaseFolder"] : LogLocation;
             IndexBaseFolder = LogLocation.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
             IndexBaseFolder = Path.GetFullPath((new Uri(IndexBaseFolder)).LocalPath);
 
-            ServerPort = appSettings["ServerPort"] != null ? SafeUtils.Int(appSettings["ServerPort"]) : ServerPort;
+            ServerPort = appSettings["serverPort"] != null ? SafeUtils.Int(appSettings["serverPort"]) : ServerPort;
             AppName = Path.GetFileNameWithoutExtension(this.GetType().GetTypeInfo().Assembly.Location);
         }
     }

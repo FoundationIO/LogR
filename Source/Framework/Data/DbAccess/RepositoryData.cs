@@ -29,14 +29,6 @@ namespace Framework.Data.DbAccess
             return Table.Delete(where);
         }
 
-        public void Insert(params T[] objs)
-        {
-            foreach (var obj in objs)
-            {
-                Insert(obj);
-            }
-        }
-
         public void Insert(T obj)
         {
             var identityValue = dbMgr.Connection.InsertWithIdentity<T>(obj);
@@ -47,14 +39,6 @@ namespace Framework.Data.DbAccess
             foreach (var obj in objs)
             {
                 Insert(obj);
-            }
-        }
-
-        public void Update(params T[] objs)
-        {
-            foreach (var obj in objs)
-            {
-                Update(obj);
             }
         }
 

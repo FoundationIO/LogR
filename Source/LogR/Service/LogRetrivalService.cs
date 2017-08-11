@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Framework.Infrastructure.Models.Result;
 
 namespace LogR.Service
 {
@@ -21,7 +22,7 @@ namespace LogR.Service
 
         public ReturnModel<DashboardSummary> GetDashboardSummary()
         {
-            var result = new ReturnModel<DashboardSummary>() { Model = new DashboardSummary() } ;
+            var result = new ReturnModel<DashboardSummary>(new DashboardSummary());
             return result;
         }
 
@@ -32,14 +33,14 @@ namespace LogR.Service
                 var resultList = new List<AppLog>();
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<AppLog, AppLogSearchCriteria> { Model = resultList, Search = search, Error = ((resultList.Count == 0) ? "No App Logs found" : null) };
+                return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, resultList);
             }
             catch (Exception ex)
             {
                 log.Error(ex, "Error when getting App Log  List ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<AppLog, AppLogSearchCriteria> { Model = null, Search = search, Error = ex.Message };
+                return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, ex);
             }
         }
 
@@ -50,14 +51,14 @@ namespace LogR.Service
                 var resultList = new List<PerformanceLog>();
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria> { Model = resultList, Search = search, Error = ((resultList.Count == 0) ? "No Performance Logs found" : null) };
+                return new ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria>(search, resultList);
             }
             catch (Exception ex)
             {
                 log.Error(ex, "Error when getting Performance Log  List ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria> { Model = null, Search = search, Error = ex.Message };
+                return new ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria>(search, ex);
             }
         }
 
@@ -66,12 +67,12 @@ namespace LogR.Service
         {
             try
             {
-                return new ReturnModel<bool> { Model = true };
+                return new ReturnModel<bool>(true);
             }
             catch (Exception ex)
             {
                 log.Error(ex, "Error when getting Deleting App Log  - id = " + id);
-                return new ReturnModel<bool> { Model = false, Error = ex.Message };
+                return new ReturnModel<bool>(ex);
             }
         }
 
