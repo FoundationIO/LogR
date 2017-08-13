@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <AssemblyName>LogR.App</AssemblyName>
-    <RootNamespace>LogR.App</RootNamespace>
+    <AssemblyName>LogR.Web</AssemblyName>
+    <RootNamespace>LogR.Web</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -34,19 +34,17 @@
   </ItemGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|$(TargetFramework)|AnyCPU'">
-    <DocumentationFile>bin\Debug\netcoreapp1.1\logR.Web.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\$(TargetFramework)\logR.Web.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp1.1|AnyCPU'">
-    <DocumentationFile>bin\Release\netcoreapp1.1\logR.Web.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|$(TargetFramework)|AnyCPU'">
+    <DocumentationFile>bin\Release\$(TargetFramework)\logR.Web.xml</DocumentationFile>
   </PropertyGroup>
   
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.ServiceProcess" />
-  </ItemGroup>
+
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
   </ItemGroup>

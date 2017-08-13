@@ -1,16 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>Framework.Infrastructure</AssemblyName>
-    <RootNamespace>Framework.Infrastructure</RootNamespace>
-    <ApplicationIcon />
     <OutputTypeEx>library</OutputTypeEx>
-    <StartupObject />
+    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -29,26 +23,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Code\**" />
-    <Compile Remove="Loggging\**" />
-    <Content Remove="Code\**" />
-    <Content Remove="Loggging\**" />
-    <EmbeddedResource Remove="Code\**" />
-    <EmbeddedResource Remove="Loggging\**" />
-    <None Remove="Code\**" />
-    <None Remove="Loggging\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1" />
-    <PackageReference Include="NLog" Version="5.0.0-beta06" />
-  </ItemGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.ServiceProcess" />
+    <PackageReference Include="NLog" Version="5.0.0-beta09" />
+    <PackageReference Include="System.Runtime" Version="4.3.0" />    
   </ItemGroup>
 </Project>

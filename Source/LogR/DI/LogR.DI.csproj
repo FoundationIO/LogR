@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputType>Library</OutputType>
@@ -49,8 +49,5 @@
     <ProjectReference Include="..\Common\LogR.Common.csproj" />
     <ProjectReference Include="..\Repository\LogR.Repository.csproj" />
     <ProjectReference Include="..\Service\LogR.Service.csproj" />    
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.ServiceProcess" />
   </ItemGroup>
 </Project>
