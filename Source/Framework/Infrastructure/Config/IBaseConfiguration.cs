@@ -26,6 +26,7 @@ namespace Framework.Infrastructure.Config
         string DatabaseServer { get; }
         string DatabaseUserName { get; }
         string DatabasePassword { get;}
+        bool DatabaseUseIntegratedLogin { get; }
         int DatabaseCommandTimeout { get; }
         string AppName { get; set; }
         string MigrationNamespace { get; set; }

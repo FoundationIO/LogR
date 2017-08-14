@@ -38,13 +38,19 @@ namespace Framework.Data.DbAccess
             switch (dbType)
             {
                 case DBType.MYSQL:
-                    {
-                        connectionStr = $"Server={config.DatabaseServer};Database={config.DatabaseName};Uid={config.DatabaseUserName};Pwd={config.DatabasePassword};";
+                    {                        
+                        if (config.DatabaseUseIntegratedLogin)
+                            connectionStr = $"IntegratedSecurity=yes;Server={config.DatabaseServer};Database={config.DatabaseName};";
+                        else
+                            connectionStr = $"Server={config.DatabaseServer};Database={config.DatabaseName};Uid={config.DatabaseUserName};Pwd={config.DatabasePassword};";
                         break;
                     }
                 case DBType.SQLSERVER:
                     {
-                        connectionStr = $"Server={config.DatabaseServer};Initial Catalog={config.DatabaseName};Persist Security Info=True;User ID={config.DatabaseUserName};Password={config.DatabasePassword};MultipleActiveResultSets=False;Application Name={config.AppName};Max Pool Size={workerThreads};";
+                        if (config.DatabaseUseIntegratedLogin)
+                            connectionStr = $"Integrated Security=true;Server={config.DatabaseServer};Initial Catalog={config.DatabaseName};Persist Security Info=True;MultipleActiveResultSets =False;Application Name={config.AppName};Max Pool Size={workerThreads};";
+                        else
+                            connectionStr = $"Server={config.DatabaseServer};Initial Catalog={config.DatabaseName};Persist Security Info=True;User ID={config.DatabaseUserName};Password={config.DatabasePassword};MultipleActiveResultSets=False;Application Name={config.AppName};Max Pool Size={workerThreads};";
                         break;
                     }
                 case DBType.SQLITE3:

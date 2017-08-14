@@ -10,7 +10,7 @@ namespace Framework.Infrastructure.Logging
 {
     public static class FrameworkLoggerFactoryExtensions
     {
-        public static ILoggerFactory AddAppLogger(this ILoggerFactory loggerFactory, IBaseConfiguration config, ILog log)
+        public static ILoggerFactory AddFrameworkLogger(this ILoggerFactory loggerFactory, IBaseConfiguration config, ILog log)
         {
             if (loggerFactory == null)
             {

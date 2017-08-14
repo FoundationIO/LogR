@@ -38,6 +38,7 @@ namespace Framework.Infrastructure.Config
         public string DatabaseServer { get; private set; }
         public string DatabaseUserName { get; private set; }
         public string DatabasePassword { get; private set; }
+        public bool DatabaseUseIntegratedLogin { get; private set; }
         public int DatabaseCommandTimeout { get; private set; }
         public int MaxPoolSize { get; private set; }
 

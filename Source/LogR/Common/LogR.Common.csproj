@@ -40,4 +40,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Infrastructure\Framework.Infrastructure.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\DB\WarpTMS\" />
+  </ItemGroup>
 </Project>

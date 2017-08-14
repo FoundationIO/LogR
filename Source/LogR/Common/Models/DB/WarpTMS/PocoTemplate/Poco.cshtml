@@ -1,0 +1,291 @@
+﻿@model Framework.Utilities.PocoGenerator.TemplateData
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.ComponentModel.DataAnnotations;
+using LinqToDB;
+using LinqToDB.Mapping;
+using System.Linq.Expressions;
+using System.Net;
+using System.Runtime.Serialization;
+using Framework.Common.Models.Error;
+using Framework.Common.Models.BaseClasses;
+
+@functions 
+{
+    public static string GetNullableValueAsString(bool value)
+    {
+        if (value == true)
+            return "true";
+        return "false";
+    }
+
+    public static string AsString(string value)
+    {
+        return value;
+    }
+}
+
+namespace @Model.Config.Namespace
+{
+
+@foreach (var tbl in Model.DatabaseSchema.Tables)
+{
+<text>
+    [Table("@tbl.Name")]
+    public partial class @tbl.NetName : ModelBase<@tbl.NetName>
+    {
+        public @tbl.NetName@AsString("()")
+        {
+        }
+        public const string TABLE_NAME = "@tbl.Name";
+        
+        public const string ALL_COLUMNS_FOR_SELECT = "*";
+
+        #region Columns
+        @foreach(var col in tbl.Columns)
+        {
+         @:public const string COLUMN_@col.NetName = "@col.Name";
+         @:public const string FULL_COLUMN_@col.NetName = "@col.TableName.@col.Name";
+        }
+        #endregion
+
+		#region ColumnSize
+        @foreach (var col in tbl.Columns)
+        {
+        if (col.Precision == null)
+        {
+            continue;
+        }
+        @:public const int COLUMN_SIZE_@col.NetName = @col.Precision;
+        @:public const string FULL_COLUMN_@col.NetName = "@col.TableName.@col.NetName";
+        }
+        #endregion
+
+		#region ColumnNull
+        @foreach (var col in tbl.Columns)
+        {
+         @:public const bool COLUMN_NULLABLE_@col.NetName = @GetNullableValueAsString(col.Nullable);
+        }
+        #endregion
+
+        @foreach (var col in tbl.Columns)
+        {
+        if (col.DataType == null)
+        {
+            continue;
+        }
+        @:[Column("@col.Name")]
+        @if (col.IsPrimaryKey)
+        {
+        @:[LinqToDB.Mapping.PrimaryKey][Identity]
+        }
+        @if (col.Nullable == false)
+        {
+        @:[Required][NotNull]
+        }
+        @if (col.DataType.IsString && col.Precision > 0)
+        {
+        @:[StringLength(@col.Precision)]
+        }
+        @:public @col.DataType.NetDataTypeCSharpName  @col.NetName { get; set;}
+        }
+
+
+        public override object GetPrimaryKeyValue()
+        {
+            @if(tbl.Columns.Any(x=> x.IsPrimaryKey))
+            {
+            @:return @tbl.Columns.FirstOrDefault(x => x.IsPrimaryKey).NetName;
+            }
+            else
+            {
+            @:return null;
+            }
+
+        }
+       
+        public override string GetPrimaryKeyName()
+        {
+        @if (tbl.Columns.Any(x => x.IsPrimaryKey))
+        {
+            @:return "@tbl.Columns.FirstOrDefault(x => x.IsPrimaryKey).NetName";
+        }
+        else
+        {
+            @:return null;
+        }
+        }
+
+        public override void SetPrimaryKeyValue(object pkValue)
+        {
+        @if(tbl.Columns.Any(x=> x.IsPrimaryKey))
+        {
+            @:@tbl.Columns.FirstOrDefault(x => x.IsPrimaryKey).NetName = (@tbl.Columns.FirstOrDefault(x => x.IsPrimaryKey).DataType.NetDataTypeCSharpName)pkValue;
+        }
+        else
+        {
+            @:throw new Exception("");
+        }           
+        }
+
+        public override string GetTableName()
+        {
+            return "@tbl.Name";
+        }
+        
+        public override IQueryable<@tbl.NetName> OrderByPrimaryKey(IQueryable<@tbl.NetName> source, bool isAsc = true)
+        {            
+            @if(tbl.Columns.Any(x=> x.IsPrimaryKey))
+            {
+                @:return isAsc ? source.OrderBy(x => x.@tbl.Columns.FirstOrDefault(x=>x.IsPrimaryKey).NetName) : source.OrderByDescending(x => x.@tbl.Columns.FirstOrDefault(x=>x.IsPrimaryKey).NetName); 
+             }
+            else
+            {
+                @:return source;
+             }
+        }
+
+        public override IQueryable<@tbl.NetName> OrderByKey(IQueryable<@tbl.NetName> source, string key, bool isAsc = true)
+        {
+            if ((key == null) || (key == ""))
+            {
+                return OrderByPrimaryKey(source, isAsc);
+            }
+            @foreach (var col in tbl.Columns)
+            {
+                if (col.DataType == null)
+                {
+                    continue;
+                }
+            @:if ("@col.Name" == key || "@col.NetName" == key )
+            @:   return isAsc ? source.OrderBy(x => x.@col.NetName) : source.OrderByDescending(x => x.@col.NetName);
+            }
+            return source;
+        }
+
+        public override Expression<Func<@tbl.NetName, bool>> PrimaryKeySelectExpression(object value)
+        {
+            throw new Exception("Not Implemented");
+        }
+
+        public override Expression<Func<@tbl.NetName, bool>> KeySelectExpression(string key, object value)
+        {
+            if ((value == null) || (key == null) || (key == ""))
+                return null;
+        @foreach (var col in tbl.Columns)
+        {
+            if (col.DataType == null)
+            {
+                continue;
+            }
+            @:if ("@col.Name" == key || "@col.NetName" == key )
+            @:    return x=>x.@col.NetName== (@col.DataType.NetDataTypeCSharpName)value;
+        }
+            return null;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            @foreach (var col in tbl.Columns)
+            {
+                if (col.DataType == null)
+                {
+                    continue;
+                }
+            @:sb.AppendFormat($"@col.NetName = {@col.NetName} , ");sb.AppendLine();
+            }
+            return sb.ToString();
+        }
+
+        public void AssignValues(@tbl.NetName value)
+        {
+        @foreach (var col in tbl.Columns)
+        {
+            if (col.DataType == null)
+            {
+                continue;
+            }
+            @:this.@col.NetName = value.@col.NetName;
+        }
+        }
+    }
+    
+    public partial class @AsString(tbl.NetName + "ResultModel") : BoolResultModel
+    {
+        @foreach (var col in tbl.Columns)
+        {
+            if (col.DataType == null)
+            {
+                continue;
+            }
+        @:public @col.DataType.NetDataTypeCSharpName @col.NetName {get;set;}
+        }
+
+        public @tbl.NetName @AsString("To"+@tbl.NetName+ "()")
+        {
+            var result = new @AsString(tbl.NetName+"();")
+            @foreach(var col in tbl.Columns)
+            {
+                if (col.DataType == null)
+                {
+                    continue;
+                }
+            @:result.@col.NetName = this.@col.NetName;
+            }
+            return result;
+        }
+
+        public static @AsString(tbl.NetName+ "ResultModel ToResultModel(" + @tbl.NetName  +  " obj)")
+        {
+            var result = new @tbl.NetName@AsString("ResultModel();")
+            @foreach (var col in tbl.Columns)
+            {
+                if (col.DataType == null)
+                {
+                    continue;
+                }
+            @:result.@col.NetName = obj.@col.NetName;
+            }
+            result.Result.Result = true;
+            result.Result.ErrorInfo = null;
+            return result;
+        }
+
+        public static @AsString(tbl.NetName+ "ResultModel") ToErrorObject(string errorMsg, HttpStatusCode code)
+        {
+            var result = new @AsString(tbl.NetName+"ResultModel();")
+            result.Result.Result = false;
+            result.Result.ErrorInfo = new ErrorInfo(errorMsg, (int)code);
+            return result;
+        }
+
+    }
+
+
+    public class @AsString(tbl.NetName+"ResultModel")List : BaseListModel<@tbl.NetName>
+    {
+        [DataMember]
+        public  List<@tbl.NetName>@AsString(tbl.NetName+"List") { get { return base.ItemList;} set { base.ItemList = value; } }
+
+        public @AsString(tbl.NetName + "ResultModelList()")
+        {
+            }
+
+        public @AsString(tbl.NetName+"ResultModel")List(List <@tbl.NetName> list)
+        {
+            @tbl.NetName@AsString("List") = list;
+        }
+
+        public @AsString(tbl.NetName+"ResultModel")List(List <@tbl.NetName> list, int totalRows, int pageSize)
+        {
+            @AsString(tbl.NetName+"List") = list;
+            this.TotalRows = totalRows;
+            this.PageSize = pageSize;
+        }
+    }
+</text>
+}
+}

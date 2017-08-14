@@ -1,0 +1,15 @@
+﻿{
+  "classPrefix": "",
+  "classSuffix": "",
+  "connectionString": "Filename={ConfigFolder}/../DBFile/db.sqlite3",
+  "includeViews": "true",
+  "namespace": "LogR.Common.Models.DB",
+  "schemaName": "",
+  "dbType": "sqlite3",
+  "generate": [
+    {
+      "templateFileName": "{ConfigFolder}/Poco.cshtml",
+      "codeFileName": "{ConfigFolder}/../Poco.cs"
+    }
+  ]
+}
