@@ -12,6 +12,9 @@ using LogR.Web.Controllers;
 using LogR.DI;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.PlatformAbstractions;
+using Framework.Infrastructure.Logging;
+using Framework.Infrastructure.Config;
+
 namespace LogR.Web
 {
     public class Startup
@@ -60,8 +63,9 @@ namespace LogR.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IBaseConfiguration config, ILog log)
         {
+            loggerFactory.AddAppLogger(config, log);
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 

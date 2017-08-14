@@ -91,9 +91,12 @@ namespace LogR.Service.Config
                 throw new Exception("MigrationNamespace is empty");
             }
 
-            IndexBaseFolder = appSettings["indexBaseFolder"] != null ? appSettings["indexBaseFolder"] : LogLocation;
-            IndexBaseFolder = LogLocation.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
-            IndexBaseFolder = Path.GetFullPath((new Uri(IndexBaseFolder)).LocalPath);
+            IndexBaseFolder = appSettings["indexBaseFolder"] != null ? appSettings["indexBaseFolder"] : IndexBaseFolder;
+            if (IndexBaseFolder != null && IndexBaseFolder.Contains("|ConfigPath|"))
+            {
+                IndexBaseFolder = LogLocation.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
+                IndexBaseFolder = Path.GetFullPath((new Uri(IndexBaseFolder)).LocalPath);
+            }
 
             ServerPort = appSettings["serverPort"] != null ? SafeUtils.Int(appSettings["serverPort"]) : ServerPort;
             AppName = Path.GetFileNameWithoutExtension(this.GetType().GetTypeInfo().Assembly.Location);

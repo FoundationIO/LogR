@@ -13,7 +13,7 @@ namespace LogR.Service.Config
         public delegate string OnGetConfigFileName();
         public static OnGetConfigFileName GetFileName = OnConfigurationGetFilename;
 
-        private const string LOGFILENAME = "LoggerServerConfig.config";
+        private const string LOGFILENAME = "LoggerServerConfig.json";
 
         public static string OnConfigurationGetFilename()
         {
@@ -56,6 +56,57 @@ namespace LogR.Service.Config
                 return path;
             }
             path = FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "..", "..", "..", "..", "..", "..", "..", "..","Configuration", LOGFILENAME);
+            if (File.Exists(path))
+            {
+                return path;
+            }
+
+            ///////
+            path = FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), LOGFILENAME);
+            if (File.Exists(path))
+            {
+                return path;
+            }
+
+            path = FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "..", LOGFILENAME);
+            if (File.Exists(path))
+            {
+                return path;
+            }
+
+            path = FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "..", "..", LOGFILENAME);
+            if (File.Exists(path))
+            {
+                return path;
+            }
+
+            path = FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "..", "..", "..", LOGFILENAME);
+            if (File.Exists(path))
+            {
+                return path;
+            }
+
+            path = FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "..", "..", "..", "..", LOGFILENAME);
+            if (File.Exists(path))
+            {
+                return path;
+            }
+            path = FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "..", "..", "..", "..", "..", LOGFILENAME);
+            if (File.Exists(path))
+            {
+                return path;
+            }
+            path = FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "..", "..", "..", "..", "..", "..", LOGFILENAME);
+            if (File.Exists(path))
+            {
+                return path;
+            }
+            path = FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "..", "..", "..", "..", "..", "..", "..", LOGFILENAME);
+            if (File.Exists(path))
+            {
+                return path;
+            }
+            path = FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "..", "..", "..", "..", "..", "..", "..", "..", LOGFILENAME);
             if (File.Exists(path))
             {
                 return path;

@@ -1,4 +1,10 @@
 ﻿{
+  "configuration": {
+    "appSettings": {
+
+    }
+  },
+
   "Logging": {
     "IncludeScopes": false,
     "LogLevel": {

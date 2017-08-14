@@ -41,7 +41,7 @@ namespace Framework.Data.DbAccess
             if (loggingToggled != true)
             LinqToDB.Common.Configuration.AvoidSpecificDataProviderAPI = true;
 
-            if (config.LogSqlEnable)
+            if (config.LogSql)
             {
                 DataConnection.TurnTraceSwitchOn(System.Diagnostics.TraceLevel.Verbose);
                 DataConnection.OnTrace = delegate (TraceInfo info)

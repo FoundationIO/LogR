@@ -19,11 +19,12 @@ namespace Framework.Infrastructure.Config
 
 
         //log related
-        public bool LogTraceEnable { get; private set; }
-        public bool LogDebugEnable { get; private set; }
-        public bool LogInfoEnable { get; private set; }
-        public bool LogSqlEnable { get; private set; }
-        public bool LogWarnEnable { get; private set; }
+        public bool LogTrace { get; private set; }
+        public bool LogDebug { get; private set; }
+        public bool LogInfo { get; private set; }
+        public bool LogSql { get; private set; }
+        public bool LogWarn { get; private set; }
+        public bool LogError { get; private set; }
 
         public bool LogToFile { get; private set; }
         public bool LogToDebugger { get; private set; }
@@ -42,11 +43,11 @@ namespace Framework.Infrastructure.Config
 
         public BaseConfiguration()
         {
-            LogTraceEnable = true;
-            LogDebugEnable = true;
-            LogInfoEnable = true;
-            LogSqlEnable = true;
-            LogWarnEnable = true;
+            LogTrace = true;
+            LogDebug = true;
+            LogInfo = true;
+            LogSql = true;
+            LogWarn = true;
             LogLocation = System.IO.Directory.GetCurrentDirectory() + "\\" + "Logs";
             MaxPoolSize = 100;
         }
@@ -72,11 +73,12 @@ namespace Framework.Infrastructure.Config
 
         protected void PopulateFromConfigFile(IConfigurationSection appSettings, string configLocation)
         {
-            LogTraceEnable = SafeUtils.Bool(appSettings["logTraceEnable"], LogTraceEnable);
-            LogDebugEnable = SafeUtils.Bool(appSettings["logDebugEnable"], LogDebugEnable);
-            LogInfoEnable = SafeUtils.Bool(appSettings["logInfoEnable"], LogInfoEnable);
-            LogSqlEnable = SafeUtils.Bool(appSettings["logSqlEnable"], LogSqlEnable);
-            LogWarnEnable = SafeUtils.Bool(appSettings["logWarnEnable"], LogWarnEnable);
+            LogTrace = SafeUtils.Bool(appSettings["logTrace"], LogTrace);
+            LogDebug = SafeUtils.Bool(appSettings["logDebug"], LogDebug);
+            LogInfo = SafeUtils.Bool(appSettings["logInfo"], LogInfo);
+            LogSql = SafeUtils.Bool(appSettings["logSql"], LogSql);
+            LogWarn = SafeUtils.Bool(appSettings["logWarn"], LogWarn);
+            LogError = SafeUtils.Bool(appSettings["logWarn"], LogError);
 
             LogToFile = SafeUtils.Bool(appSettings["logToFile"], LogToFile);
             LogToDebugger = SafeUtils.Bool(appSettings["logToDebugger"], LogToDebugger);

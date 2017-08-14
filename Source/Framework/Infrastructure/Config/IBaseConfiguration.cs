@@ -11,11 +11,12 @@ namespace Framework.Infrastructure.Config
 {
     public interface IBaseConfiguration
     {
-        bool LogTraceEnable { get; }
-        bool LogDebugEnable { get; }
-        bool LogInfoEnable { get; }
-        bool LogSqlEnable { get; }
-        bool LogWarnEnable { get; }
+        bool LogTrace { get; }
+        bool LogDebug { get; }
+        bool LogInfo { get; }
+        bool LogSql { get; }
+        bool LogWarn { get; }
+        bool LogError { get; }
         bool LogToFile { get; }
         bool LogToDebugger { get; }
         bool LogToConsole { get; }
