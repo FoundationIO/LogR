@@ -46,7 +46,7 @@ namespace Framework.Infrastructure.Utils
         {
             try
             {
-                var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
+                var fi = new FileInfo(Assembly.GetEntryAssembly().Location);
                 return fi.DirectoryName;
             }
             catch

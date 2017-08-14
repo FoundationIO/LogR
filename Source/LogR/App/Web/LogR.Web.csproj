@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <AssemblyName>LogR.Web</AssemblyName>
     <RootNamespace>LogR.Web</RootNamespace>
     <OutputType>Exe</OutputType>
@@ -13,6 +13,7 @@
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -21,6 +22,7 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
     <WarningLevel>4</WarningLevel>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

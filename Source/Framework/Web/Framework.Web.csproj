@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <AssemblyName>Framework.Web</AssemblyName>
     <RootNamespace>Framework.Web</RootNamespace>
     <ApplicationIcon />

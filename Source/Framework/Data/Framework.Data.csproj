@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <AssemblyName>Framework.Data</AssemblyName>
     <RootNamespace>Framework.Data</RootNamespace>
     <ApplicationIcon />
@@ -37,9 +37,9 @@
 
   <ItemGroup>
     <PackageReference Include="FluentMigrator.Runner" Version="1.6.2" />
-    <PackageReference Include="linq2db" Version="1.7.6" />
-    <PackageReference Include="MySql.Data" Version="7.0.7-m61" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.105" />    
+    <PackageReference Include="linq2db" Version="1.8.3" />
+    <PackageReference Include="MySql.Data" Version="8.0.8-dmr" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.105.2" />    
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />

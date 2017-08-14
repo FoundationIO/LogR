@@ -46,7 +46,7 @@ namespace Framework.Data.DbAccess
                 DataConnection.TurnTraceSwitchOn(System.Diagnostics.TraceLevel.Verbose);
                 DataConnection.OnTrace = delegate (TraceInfo info)
                 {
-                    if (info.BeforeExecute)
+                    if (info.TraceInfoStep == TraceInfoStep.BeforeExecute)
                         return;
 
                     var profiledDbCommand = info.Command;
