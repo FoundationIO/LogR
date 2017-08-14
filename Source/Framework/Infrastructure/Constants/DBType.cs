@@ -7,8 +7,8 @@ namespace Framework.Infrastructure.Constants
 {
     public class DBType
     {
-        public const string MYSQL = "MYSQL";
-        public const string SQLSERVER = "SQLSERVER2008ABOVE";
-        public const string SQLITE3 = "SQLITE3";
+        public const string MYSQL = "mysql";
+        public const string SQLSERVER = "sqlserver";
+        public const string SQLITE3 = "sqlite3";
     }
 }

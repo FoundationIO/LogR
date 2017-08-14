@@ -92,7 +92,7 @@ namespace Framework.Infrastructure.Config
             }
 
             DatabaseName = appSettings["databaseName"] ?? DatabaseName;
-            if (DatabaseName.IsTrimmedStringNotNullOrEmpty() && LogLocation.Contains("|ConfigPath|"))
+            if (DatabaseName.IsTrimmedStringNotNullOrEmpty() && DatabaseName.Contains("|ConfigPath|"))
             {
                 DatabaseName = DatabaseName.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
                 DatabaseName = Path.GetFullPath(new Uri(DatabaseName).LocalPath);
@@ -103,7 +103,7 @@ namespace Framework.Infrastructure.Config
             DatabasePassword = appSettings["databasePassword"] ?? DatabasePassword;
             DatabaseCommandTimeout = SafeUtils.Int(appSettings["databaseCommandTimeout"], DatabaseCommandTimeout);
             MaxPoolSize = SafeUtils.Int(appSettings["maxPoolSize"], MaxPoolSize);            
-            MigrationNamespace = appSettings["MigrationNamespace"] ?? "";
+            MigrationNamespace = appSettings["migrationNamespace"] ?? "";
             
             AppName = Path.GetFileNameWithoutExtension(GetType().GetTypeInfo().Assembly.Location);            
         }

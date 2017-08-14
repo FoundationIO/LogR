@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.Logging
 {
-    public class AppLogger : ILogger
+    public class FrameworkLogger : ILogger
     {
         IBaseConfiguration config;
         ILog log;
-        public AppLogger(IBaseConfiguration config, ILog log)
+        public FrameworkLogger(IBaseConfiguration config, ILog log)
         {
             this.config = config;
             this.log = log;

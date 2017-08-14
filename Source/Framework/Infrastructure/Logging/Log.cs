@@ -47,7 +47,7 @@ namespace Framework.Infrastructure.Logging
             if (this.config.LogToConsole)
             {
                 var consoleTarget = new ColoredConsoleTarget();
-                consoleTarget.Layout = "${longdate}\t${event-context:item=severity}\t${message}";
+                consoleTarget.Layout = "${time} [${event-context:item=severity}] ${message}";
                 consoleTarget.UseDefaultRowHighlightingRules = true;
 
                 var rule3 = new LoggingRule("*", LogLevel.Trace, consoleTarget);
@@ -81,7 +81,7 @@ namespace Framework.Infrastructure.Logging
         public void Trace(Exception ex, string str, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
         {
             if (config.LogTrace)
-                this.LogEvent("TRACE", LogLevel.Trace, $"{str} Exception - {ex.RecursivelyGetExceptionMessage()}", "", "", sourceLineNumber, memberName, sourceFilePath);
+                this.LogEvent("TRACE", LogLevel.Trace, $"{str} " + (ex != null ? $"Exception - { ex.RecursivelyGetExceptionMessage()}" : ""), "", "", sourceLineNumber, memberName, sourceFilePath);
         }
 
         public void Debug(string str, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
@@ -93,7 +93,7 @@ namespace Framework.Infrastructure.Logging
         public void Debug(Exception ex, string str, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
         {
             if (config.LogDebug)
-                this.LogEvent("DEBUG", LogLevel.Debug, $"{str} Exception - {ex.RecursivelyGetExceptionMessage()}", "", "", sourceLineNumber, memberName, sourceFilePath);
+                this.LogEvent("DEBUG", LogLevel.Debug, $"{str} " + (ex != null ? $"Exception - { ex.RecursivelyGetExceptionMessage()}" : ""), "", "", sourceLineNumber, memberName, sourceFilePath);
         }
 
         public void Info(string str, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
@@ -105,7 +105,7 @@ namespace Framework.Infrastructure.Logging
         public void Info(Exception ex, string str, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
         {
             if (config.LogInfo)
-                this.LogEvent("INFO", LogLevel.Info, $"{str} Exception - {ex.RecursivelyGetExceptionMessage()}", "", "", sourceLineNumber, memberName, sourceFilePath);
+                this.LogEvent("INFO", LogLevel.Info, $"{str} " + (ex != null ? $"Exception - { ex.RecursivelyGetExceptionMessage()}" : ""), "", "", sourceLineNumber, memberName, sourceFilePath);
         }
 
         public void Warn(string str, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
@@ -117,7 +117,7 @@ namespace Framework.Infrastructure.Logging
         public void Warn(Exception ex, string str, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
         {
             if (config.LogWarn)
-                this.LogEvent("WARNING", LogLevel.Warn, $"{str} Exception - {ex.RecursivelyGetExceptionMessage()}", "", "", sourceLineNumber, memberName, sourceFilePath);
+                this.LogEvent("WARNING", LogLevel.Warn, $"{str} " + (ex != null ? $"Exception - { ex.RecursivelyGetExceptionMessage()}" : ""), "", "", sourceLineNumber, memberName, sourceFilePath);
         }
 
         public void Error(string str, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
@@ -129,7 +129,7 @@ namespace Framework.Infrastructure.Logging
         public void Error(Exception ex, string str, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
         {
             if (config.LogError)
-                this.LogEvent("ERROR", LogLevel.Error, $"{str} Exception - {ex.RecursivelyGetExceptionMessage()}", "", "", sourceLineNumber, memberName, sourceFilePath);
+                this.LogEvent("ERROR", LogLevel.Error, $"{str} " + (ex != null ? $"Exception - { ex.RecursivelyGetExceptionMessage()}" : ""), "", "", sourceLineNumber, memberName, sourceFilePath);
         }
 
         public void Error(Exception ex, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
@@ -144,7 +144,7 @@ namespace Framework.Infrastructure.Logging
         }
         public void Fatal(Exception ex, string str, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
         {
-            this.LogEvent("FATAL", LogLevel.Error, $"{str} Exception - {ex.RecursivelyGetExceptionMessage()}", "", "", sourceLineNumber, memberName, sourceFilePath);
+            this.LogEvent("FATAL", LogLevel.Error, $"{str} " + (ex != null ? $"Exception - { ex.RecursivelyGetExceptionMessage()}" : ""), "", "", sourceLineNumber, memberName, sourceFilePath);
         }
 
         public void Fatal(Exception ex, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")

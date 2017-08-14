@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.Logging
 {
-    public class AppLoggerProvider : ILoggerProvider
+    public class FrameworkLoggerProvider : ILoggerProvider
     {
-        AppLogger appLogger;
+        FrameworkLogger appLogger;
 
-        public AppLoggerProvider(IBaseConfiguration config, ILog log)
+        public FrameworkLoggerProvider(IBaseConfiguration config, ILog log)
         {
-            appLogger = new AppLogger(config, log);
+            appLogger = new FrameworkLogger(config, log);
         }
 
         public ILogger CreateLogger(string categoryName)

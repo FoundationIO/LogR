@@ -1,7 +1,31 @@
 ﻿{
   "configuration": {
     "appSettings": {
+      "indexBaseFolder": "|ConfigPath|\\..\\Indexes",
 
+      "logTrace": true,
+      "logDebug": true,
+      "logInfo": true,
+      "logSql": true,
+      "logWarn": true,
+      "logError": true,
+
+      "logToFile": true,
+      "logLocation": "|ConfigPath|\\..\\Logs",
+
+      "logToDebugger": true,
+      "logToConsole": true,
+
+      "databaseType": "sqlite3",
+      "databaseName": "|ConfigPath|\\..\\Data\\Database\\LoggerInfo.sqlite3",
+      "databaseServer": "",
+      "databaseUserName": "",
+      "databasePassword": "",
+      "databaseCommandTimeout": 99,
+      "maxPoolSize": 99,
+      "migrationNamespace": "LogR.Repository.Migration",
+
+      "serverPort": 9090
     }
   },
 

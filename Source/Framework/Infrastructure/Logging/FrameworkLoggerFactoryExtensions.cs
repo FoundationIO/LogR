@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.Logging
 {
-    public static class AppLoggerFactoryExtensions
+    public static class FrameworkLoggerFactoryExtensions
     {
         public static ILoggerFactory AddAppLogger(this ILoggerFactory loggerFactory, IBaseConfiguration config, ILog log)
         {
@@ -17,7 +17,7 @@ namespace Framework.Infrastructure.Logging
                 throw new ArgumentNullException(nameof(loggerFactory));
             }
 
-            loggerFactory.AddProvider(new AppLoggerProvider(config, log));
+            loggerFactory.AddProvider(new FrameworkLoggerProvider(config, log));
             return loggerFactory;
         }
 

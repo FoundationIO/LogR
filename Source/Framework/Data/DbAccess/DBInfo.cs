@@ -33,7 +33,9 @@ namespace Framework.Data.DbAccess
             ThreadPool.GetMaxThreads(out workerThreads, out completionPortThreads);
 
             var connectionStr = "";
-            switch (config.DatabaseType)
+
+            var dbType = (config.DatabaseType ?? "").Trim().ToLower();
+            switch (dbType)
             {
                 case DBType.MYSQL:
                     {
@@ -60,7 +62,8 @@ namespace Framework.Data.DbAccess
 
         public MigrationProcessorFactory GetMigrationProcessorFactory()
         {
-            switch (config.DatabaseType)
+            var dbType = (config.DatabaseType ?? "").Trim().ToLower();
+            switch (dbType)
             {
                 case DBType.MYSQL:
                     {
@@ -83,7 +86,8 @@ namespace Framework.Data.DbAccess
 
         public IDataProvider GetDBProvider()
         {
-            switch (config.DatabaseType)
+            var dbType = (config.DatabaseType ?? "").Trim().ToLower();
+            switch (dbType)
             {
                 case DBType.MYSQL:
                     {

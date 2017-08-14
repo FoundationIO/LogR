@@ -50,3 +50,4 @@ Source/LogR/App/Web/wwwroot/lib/**
 **/.vs/**
 Data/Database/**
 **/PublishProfiles/**
+*.sqlite3

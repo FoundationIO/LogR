@@ -94,11 +94,11 @@ namespace LogR.Service.Config
             IndexBaseFolder = appSettings["indexBaseFolder"] != null ? appSettings["indexBaseFolder"] : IndexBaseFolder;
             if (IndexBaseFolder != null && IndexBaseFolder.Contains("|ConfigPath|"))
             {
-                IndexBaseFolder = LogLocation.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
+                IndexBaseFolder = IndexBaseFolder.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
                 IndexBaseFolder = Path.GetFullPath((new Uri(IndexBaseFolder)).LocalPath);
             }
 
-            ServerPort = appSettings["serverPort"] != null ? SafeUtils.Int(appSettings["serverPort"]) : ServerPort;
+            ServerPort = SafeUtils.Int(appSettings["serverPort"], ServerPort);
             AppName = Path.GetFileNameWithoutExtension(this.GetType().GetTypeInfo().Assembly.Location);
         }
     }
