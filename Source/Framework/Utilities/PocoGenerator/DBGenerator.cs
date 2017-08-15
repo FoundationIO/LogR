@@ -25,7 +25,12 @@ namespace Framework.Utilities.PocoGenerator
 
         public DatabaseSchema GetSchema()
         {
+
+#if NET461
+            var dbReader = new DatabaseReader(config.ConnectionString, config.ServerType);
+#else
             var dbReader = new DatabaseReader(config.GetConnection());
+#endif
             var schema = dbReader.ReadAll();
 
             //Fix all the names of the Views and Tables then proceed to check for duplicates

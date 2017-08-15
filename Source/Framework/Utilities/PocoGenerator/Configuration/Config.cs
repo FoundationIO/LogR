@@ -173,8 +173,6 @@ namespace Framework.Utilities.PocoGenerator
                     {
                         throw new NotImplementedException();
                     }
-                    break;
-
                 default:
                     throw new Exception($"DbType {DbType} is not valid.");
             }

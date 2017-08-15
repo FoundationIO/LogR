@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>PocoGenerator</AssemblyName>
     <OutputType>Exe</OutputType>
@@ -16,8 +16,8 @@
 
   <ItemGroup>
     <PackageReference Include="DatabaseSchemaReader" Version="2.3.3" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
     <PackageReference Include="RazorLight" Version="1.1.0" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.3.0" />
