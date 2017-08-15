@@ -1,4 +1,5 @@
 ﻿using Framework.Infrastructure.Constants;
+using Framework.Infrastructure.Models.Config;
 using Framework.Infrastructure.Utils;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -19,18 +20,8 @@ namespace Framework.Infrastructure.Config
 
 
         //log related
-        public bool LogTrace { get; private set; }
-        public bool LogDebug { get; private set; }
-        public bool LogInfo { get; private set; }
-        public bool LogSql { get; private set; }
-        public bool LogWarn { get; private set; }
-        public bool LogError { get; private set; }
-
-        public bool LogToFile { get; private set; }
-        public bool LogToDebugger { get; private set; }
-        public bool LogToConsole { get; private set; }
-
-        public String LogLocation { get; private set; }
+        
+        public LogSettings LogSettings { get; private set; }
 
         //database related
         public string DatabaseType { get; private set; }
@@ -44,20 +35,14 @@ namespace Framework.Infrastructure.Config
 
         public BaseConfiguration()
         {
-            LogTrace = true;
-            LogDebug = true;
-            LogInfo = true;
-            LogSql = true;
-            LogWarn = true;
-            LogLocation = System.IO.Directory.GetCurrentDirectory() + "\\" + "Logs";
             MaxPoolSize = 100;
         }
 
         protected void PrepareFolders()
         {
-            if (Directory.Exists(LogLocation) == false)
+            if (Directory.Exists(LogSettings.LogLocation) == false)
             {
-                Directory.CreateDirectory(LogLocation);
+                Directory.CreateDirectory(LogSettings.LogLocation);
             }
 
             if (DatabaseType == DBType.SQLITE3)
@@ -72,25 +57,35 @@ namespace Framework.Infrastructure.Config
             return "";
         }
 
-        protected void PopulateFromConfigFile(IConfigurationSection appSettings, string configLocation)
+        protected void PopulateFromConfigFile(IConfigurationSection appSettings, IConfigurationSection frameworkLogSetting, string configLocation)
         {
-            LogTrace = SafeUtils.Bool(appSettings["logTrace"], LogTrace);
-            LogDebug = SafeUtils.Bool(appSettings["logDebug"], LogDebug);
-            LogInfo = SafeUtils.Bool(appSettings["logInfo"], LogInfo);
-            LogSql = SafeUtils.Bool(appSettings["logSql"], LogSql);
-            LogWarn = SafeUtils.Bool(appSettings["logWarn"], LogWarn);
-            LogError = SafeUtils.Bool(appSettings["logWarn"], LogError);
+            var logTrace = SafeUtils.Bool(appSettings["logTrace"], true);
+            var logDebug = SafeUtils.Bool(appSettings["logDebug"], true);
+            var logInfo = SafeUtils.Bool(appSettings["logInfo"], true);
+            var logSql = SafeUtils.Bool(appSettings["logSql"], true);
+            var logWarn = SafeUtils.Bool(appSettings["logWarn"], true);
+            var logError = SafeUtils.Bool(appSettings["logError"], true);
 
-            LogToFile = SafeUtils.Bool(appSettings["logToFile"], LogToFile);
-            LogToDebugger = SafeUtils.Bool(appSettings["logToDebugger"], LogToDebugger);
-            LogToConsole = SafeUtils.Bool(appSettings["logToConsole"], LogToConsole);
+            var logToFile = SafeUtils.Bool(appSettings["logToFile"], true);
+            var logToDebugger = SafeUtils.Bool(appSettings["logToDebugger"], true);
+            var logToConsole = SafeUtils.Bool(appSettings["logToConsole"], true);
 
-            LogLocation = appSettings["logLocation"] ?? LogLocation;
-            if (LogLocation.IsTrimmedStringNotNullOrEmpty() && LogLocation.Contains("|ConfigPath|") )
+            var logLocation = appSettings["logLocation"] ?? FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "Logs");
+            if (logLocation.IsTrimmedStringNotNullOrEmpty() && logLocation.Contains("|ConfigPath|"))
             {
-                LogLocation = LogLocation.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
-                LogLocation = Path.GetFullPath(new Uri(LogLocation).LocalPath);
+                logLocation = logLocation.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
+                logLocation = Path.GetFullPath(new Uri(logLocation).LocalPath);
             }
+            //Load .Net core's Logging configuration
+            var otherLogSettings = new List<KeyValuePair<string, Microsoft.Extensions.Logging.LogLevel>>();
+            var logLevelSettings = frameworkLogSetting.GetSection("LogLevel");
+            foreach (var setting in logLevelSettings.GetChildren())
+            {
+                var logLevel = SafeUtils.Enum<Microsoft.Extensions.Logging.LogLevel>(setting.Value, Microsoft.Extensions.Logging.LogLevel.None);
+                otherLogSettings.Add(new KeyValuePair<string, Microsoft.Extensions.Logging.LogLevel>(setting.Key, logLevel));
+            }
+
+            LogSettings = new LogSettings(logTrace, logDebug, logInfo, logSql, logWarn, logError, logLocation, logToFile, logToConsole, logToDebugger, otherLogSettings);
 
             DatabaseName = appSettings["databaseName"] ?? DatabaseName;
             if (DatabaseName.IsTrimmedStringNotNullOrEmpty() && DatabaseName.Contains("|ConfigPath|"))

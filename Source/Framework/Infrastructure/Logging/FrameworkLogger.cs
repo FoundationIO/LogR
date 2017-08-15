@@ -1,5 +1,6 @@
 ﻿
 using Framework.Infrastructure.Config;
+using Framework.Infrastructure.Models.Config;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ namespace Framework.Infrastructure.Logging
 {
     public class FrameworkLogger : ILogger
     {
-        IBaseConfiguration config;
+        LogSettings logConfig;
         ILog log;
-        public FrameworkLogger(IBaseConfiguration config, ILog log)
+        public FrameworkLogger(LogSettings logConfig, ILog log)
         {
-            this.config = config;
+            this.logConfig = logConfig;
             this.log = log;
         }
 
@@ -67,13 +68,13 @@ namespace Framework.Infrastructure.Logging
             {
                 case LogLevel.Trace:
                 case LogLevel.Debug:
-                    return config.LogDebug;
+                    return logConfig.LogDebug;
                 case LogLevel.Information:
-                    return config.LogInfo;
+                    return logConfig.LogInfo;
                 case LogLevel.Warning:
-                    return config.LogWarn;
+                    return logConfig.LogWarn;
                 case LogLevel.Error:
-                    return config.LogError;
+                    return logConfig.LogError;
                 case LogLevel.Critical:
                     return true;
                 case LogLevel.None:

@@ -516,12 +516,12 @@ namespace LogR.Repository
 
         private ulong GetLogFolderSize()
         {
-            return FileUtils.GetDirectorySize(config.LogLocation);
+            return FileUtils.GetDirectorySize(config.LogSettings.LogLocation);
         }
 
         private long GetLogFileCount()
         {
-            var filenameList = System.IO.Directory.GetFiles(config.LogLocation, "*.*");
+            var filenameList = System.IO.Directory.GetFiles(config.LogSettings.LogLocation, "*.*");
             return filenameList.LongCount();
         }
 

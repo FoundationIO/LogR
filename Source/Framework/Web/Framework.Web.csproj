@@ -48,4 +48,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure\Framework.Infrastructure.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Filters\" />
+  </ItemGroup>
 </Project>

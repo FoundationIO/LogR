@@ -9,11 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Framework.Infrastructure.Config;
 using Framework.Infrastructure.Logging;
+using Framework.Infrastructure.Models.Config;
 
 namespace Framework.Data.DbAccess
 {
     public class DBManager : IDisposable, IDBManager
     {
+        LogSettings logConfig;
         IBaseConfiguration config;
         ILog log;
         IDBInfo dbInfo;
@@ -29,6 +31,7 @@ namespace Framework.Data.DbAccess
         public DBManager(IBaseConfiguration config, ILog log , IDBInfo dbInfo, IDataProvider dbProvider)
         {
             this.config = config;
+            this.logConfig = config.LogSettings;
             this.log = log;
             this.dbInfo = dbInfo;
             ConnectionString = dbInfo.GetConnectionString();
@@ -41,7 +44,7 @@ namespace Framework.Data.DbAccess
             if (loggingToggled != true)
             LinqToDB.Common.Configuration.AvoidSpecificDataProviderAPI = true;
 
-            if (config.LogSql)
+            if (logConfig.LogSql)
             {
                 DataConnection.TurnTraceSwitchOn(System.Diagnostics.TraceLevel.Verbose);
                 DataConnection.OnTrace = delegate (TraceInfo info)

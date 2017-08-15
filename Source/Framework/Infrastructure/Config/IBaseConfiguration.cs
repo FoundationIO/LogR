@@ -1,4 +1,5 @@
 ﻿using Framework.Infrastructure.Constants;
+using Framework.Infrastructure.Models.Config;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,16 +12,7 @@ namespace Framework.Infrastructure.Config
 {
     public interface IBaseConfiguration
     {
-        bool LogTrace { get; }
-        bool LogDebug { get; }
-        bool LogInfo { get; }
-        bool LogSql { get; }
-        bool LogWarn { get; }
-        bool LogError { get; }
-        bool LogToFile { get; }
-        bool LogToDebugger { get; }
-        bool LogToConsole { get; }
-        String LogLocation { get; }
+        LogSettings LogSettings { get; }
         string DatabaseType { get; }
         string DatabaseName { get; }
         string DatabaseServer { get; }

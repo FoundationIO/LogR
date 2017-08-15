@@ -14,6 +14,8 @@ using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.PlatformAbstractions;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Config;
+using Framework.Web.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LogR.Web
 {
@@ -37,7 +39,15 @@ namespace LogR.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                //set global format to json
+                options.Filters.Add(new ProducesAttribute("application/json"));
+                options.Filters.Add(new GlobalExceptionFilter());
+            });
+
+            services.AddRouting(options => options.LowercaseUrls = true);
+
             services.AddApplicationDI();
 
             services.AddSwaggerGen();

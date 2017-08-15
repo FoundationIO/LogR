@@ -1,4 +1,5 @@
 ﻿using Framework.Infrastructure.Config;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Framework.Infrastructure.Logging
             if (loggerFactory == null)
             {
                 throw new ArgumentNullException(nameof(loggerFactory));
-            }
+            }            
 
             loggerFactory.AddProvider(new FrameworkLoggerProvider(config, log));
             return loggerFactory;

@@ -45,9 +45,9 @@ namespace LogR.Service.Config
         {
             base.PrepareFolders();
 
-            if (Directory.Exists(LogLocation) == false)
+            if (Directory.Exists(LogSettings.LogLocation) == false)
             {
-                Directory.CreateDirectory(LogLocation);
+                Directory.CreateDirectory(LogSettings.LogLocation);
             }
 
             if (Directory.Exists(IndexBaseFolder) == false)
@@ -83,8 +83,9 @@ namespace LogR.Service.Config
             var config = builder.Build();
 
             var appSettings = config.GetSection("configuration:appSettings");
-            
-            base.PopulateFromConfigFile(appSettings, configLocation);
+            var frameworkLogSettings = config.GetSection("Logging");
+
+            base.PopulateFromConfigFile(appSettings, frameworkLogSettings, configLocation);
 
             if (MigrationNamespace.IsTrimmedStringNullOrEmpty())
             {
