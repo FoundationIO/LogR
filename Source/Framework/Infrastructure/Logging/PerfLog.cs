@@ -40,6 +40,7 @@ namespace Framework.Infrastructure.Logging
         {
             started = false;
             endTime = DateTime.Now;
+            log.Performance(module, function,startTime, endTime, new List<KeyValuePair<string, object>>(), 1, status, additionalMsg);
         }
 
         public void StopAndWriteCompleteLog(string additionalMsg = "")

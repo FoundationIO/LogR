@@ -104,6 +104,7 @@ namespace Framework.Infrastructure.Logging
             perfLogger = LogManager.GetLogger(PerfLoggerName);
         }
 
+        private void LogPerfEvent(string appModule, string appFunction, DateTime startTime, DateTime endTime, List<KeyValuePair<string,object>> parameters, int statusCode, string status, string additionalMsg, int sourceLineNumber, string memberName, string sourceFilePath)
         {
             var theEvent = new LogEventInfo { Level = LogLevel.Debug };
             theEvent.Properties.Add("app-name", this.baseConfig.AppName);
@@ -252,6 +253,7 @@ namespace Framework.Infrastructure.Logging
                 this.LogEvent("SQL-ERROR", LogLevel.Info, sqlStr, "", "", sourceLineNumber, memberName, sourceFilePath);
         }
 
+        public void Performance(string appModule, string appFunction, DateTime startTime, DateTime endTime, List<KeyValuePair<string,object>> parameters, int statusCode , string status, string additionalMsg, [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
         {
             if (logConfig.LogPerformance)
                 this.LogPerfEvent(appModule, appFunction, startTime, endTime, parameters, statusCode, status, additionalMsg, sourceLineNumber, memberName, sourceFilePath);
