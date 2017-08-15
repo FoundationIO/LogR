@@ -1,6 +1,9 @@
 ﻿using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
+using Framework.Infrastructure.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -9,7 +12,7 @@ using System.Text;
 
 namespace Framework.Web.Filters
 {
-    public class PerformanceFilter : ActionFilterAttribute
+    public class PerformanceFilter : ActionFilterAttribute, IExceptionFilter
     {
 
         private DateTime startTime;
@@ -28,19 +31,29 @@ namespace Framework.Web.Filters
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
-            var endTime = DateTime.Now;
-            var controllerActionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
-            if (controllerActionDescriptor != null)
-            {
-                var parametersForLog = new List<KeyValuePair<string, object>>();
-                foreach(var param in controllerActionDescriptor.Parameters)
-                {
-                    parametersForLog.Add(new KeyValuePair<string, object>(param.Name, new object()));
-                }
-                log.Performance(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName, startTime, endTime, parametersForLog, context.HttpContext.Response.StatusCode, "", "");
-            }
+            HandlePerfLog(context.ActionDescriptor, context.HttpContext, context.Exception);
             base.OnActionExecuted(context);
         }
 
+        public void OnException(ExceptionContext context)
+        {
+            HandlePerfLog(context.ActionDescriptor, context.HttpContext, context.Exception);
+        }
+
+        private void HandlePerfLog(ActionDescriptor descriptor, HttpContext httpContext, Exception ex)
+        {
+            var endTime = DateTime.Now;
+            var controllerActionDescriptor = descriptor as ControllerActionDescriptor;
+            if (controllerActionDescriptor != null)
+            {
+                var parametersForLog = new List<KeyValuePair<string, object>>();
+                foreach (var param in controllerActionDescriptor.Parameters)
+                {
+                    parametersForLog.Add(new KeyValuePair<string, object>(param.Name, new object()));
+                }
+
+                log.Performance(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName, startTime, endTime, parametersForLog, httpContext.Response.StatusCode, ex == null ? "Completed" : "Error", ex == null ? "" : "Exception - " + ExceptionUtils.RecursivelyGetExceptionMessage(exception));
+            }
+        }
     }
 }
