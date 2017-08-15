@@ -4,6 +4,7 @@ using NLog.Config;
 using NLog.Targets;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace Framework.Infrastructure.Logging
 {

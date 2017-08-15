@@ -173,7 +173,7 @@ namespace LogR.Repository
         {
             try
             {
-                var item = JsonConvert.DeserializeObject<PerformanceLog>(message);
+                var item = JsonUtils.Deserialize<PerformanceLog>(message);
                 if (item == null)
                 {
                     log.Error("Unable to deserialize the performance log message -  " + message);
@@ -262,7 +262,7 @@ namespace LogR.Repository
         {
             try
             {
-                var item = JsonConvert.DeserializeObject<AppLog>(message);
+                var item = JsonUtils.Deserialize<AppLog>(message);
                 if (item == null)
                 {
                     log.Error("Unable to deserialize the app log message -  " + message);

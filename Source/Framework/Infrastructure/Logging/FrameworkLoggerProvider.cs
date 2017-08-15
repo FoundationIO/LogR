@@ -60,16 +60,16 @@ namespace Framework.Infrastructure.Logging
             {
                 case LogLevel.Trace:
                 case LogLevel.Debug:
-                    return new LogSettings(true, true, true, true, true, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.OtherFrameworkLogSettings);
+                    return new LogSettings(true, true, true, true, true, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.LogPerformance, config.LogSettings.OtherFrameworkLogSettings);
                 case LogLevel.Information:
-                    return new LogSettings(false, false, true, true, true, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.OtherFrameworkLogSettings);
+                    return new LogSettings(false, false, true, true, true, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.LogPerformance, config.LogSettings.OtherFrameworkLogSettings);
 
                 case LogLevel.Warning:
-                    return new LogSettings(false, false, false, true, true, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.OtherFrameworkLogSettings);
+                    return new LogSettings(false, false, false, true, true, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.LogPerformance, config.LogSettings.OtherFrameworkLogSettings);
 
                 case LogLevel.Critical:
                 case LogLevel.Error:
-                    return new LogSettings(false, false, false, false, false, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.OtherFrameworkLogSettings);
+                    return new LogSettings(false, false, false, false, false, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.LogPerformance, config.LogSettings.OtherFrameworkLogSettings);
 
                 default:
                 case LogLevel.None:

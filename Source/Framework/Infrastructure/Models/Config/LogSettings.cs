@@ -13,6 +13,7 @@ namespace Framework.Infrastructure.Models.Config
         public bool LogSql { get; private set; }
         public bool LogWarn { get; private set; }
         public bool LogError { get; private set; }
+        public bool LogPerformance { get; private set; }
         public String LogLocation { get; private set; }
 
         public bool LogToFile { get; private set; }
@@ -21,16 +22,17 @@ namespace Framework.Infrastructure.Models.Config
 
         public List<KeyValuePair<string, Microsoft.Extensions.Logging.LogLevel>> OtherFrameworkLogSettings { get; private set; }
 
-        public LogSettings( bool logTrace, 
-                            bool logDebug, 
+        public LogSettings(bool logTrace,
+                            bool logDebug,
                             bool logInfo,
-                            bool logSql, 
-                            bool logWarn, 
+                            bool logSql,
+                            bool logWarn,
                             bool logError,
                             String logLocation,
-                            bool logToFile, 
-                            bool logToConsole, 
+                            bool logToFile,
+                            bool logToConsole,
                             bool logToDebugger,
+                            bool logPerformance,
                             List<KeyValuePair<string, Microsoft.Extensions.Logging.LogLevel>> otherFrameworkLogSettings)
         {
             LogTrace = logTrace;
@@ -42,12 +44,13 @@ namespace Framework.Infrastructure.Models.Config
             LogToFile = logToFile;
             LogToConsole = logToConsole;
             LogToDebugger = logToDebugger;
+            LogPerformance = logPerformance;
             OtherFrameworkLogSettings = otherFrameworkLogSettings;
         }
 
         public static LogSettings NoOpLogSettings()
         {
-            return new LogSettings(false, false, false, false, false, false, "", false, false, false, null);        
+            return new LogSettings(false, false, false, false, false, false, "", false, false, false, false, null);
         }
     }
 }

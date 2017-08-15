@@ -65,6 +65,7 @@ namespace Framework.Infrastructure.Config
             var logSql = SafeUtils.Bool(appSettings["logSql"], true);
             var logWarn = SafeUtils.Bool(appSettings["logWarn"], true);
             var logError = SafeUtils.Bool(appSettings["logError"], true);
+            var logPerformance = SafeUtils.Bool(appSettings["logPerformance"], true);
 
             var logToFile = SafeUtils.Bool(appSettings["logToFile"], true);
             var logToDebugger = SafeUtils.Bool(appSettings["logToDebugger"], true);
@@ -85,7 +86,7 @@ namespace Framework.Infrastructure.Config
                 otherLogSettings.Add(new KeyValuePair<string, Microsoft.Extensions.Logging.LogLevel>(setting.Key, logLevel));
             }
 
-            LogSettings = new LogSettings(logTrace, logDebug, logInfo, logSql, logWarn, logError, logLocation, logToFile, logToConsole, logToDebugger, otherLogSettings);
+            LogSettings = new LogSettings(logTrace, logDebug, logInfo, logSql, logWarn, logError, logLocation, logToFile, logToConsole, logToDebugger, logPerformance, otherLogSettings);
 
             DatabaseName = appSettings["databaseName"] ?? DatabaseName;
             if (DatabaseName.IsTrimmedStringNotNullOrEmpty() && DatabaseName.Contains("|ConfigPath|"))
