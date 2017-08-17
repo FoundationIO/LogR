@@ -1,10 +1,10 @@
 ﻿@using Framework.Web.Routing
 @using Microsoft.AspNetCore.Routing
-@model Framework.Infrastructure.Models.BaseSearchCriteria
+@model Framework.Infrastructure.Models.Search.BaseSearchCriteria
 
 @{
     var isDescending = string.CompareOrdinal(Model.SortBy, ViewData["ColumnName"].ToString()) == 0 && Model.SortAscending;
-    var routeData = new RouteValueDictionary { { "sortBy", ViewData["ColumnName"].ToString() }, { "SortAscending", !isDescending } };
+    var routeData = new RouteValueDictionary(ViewData) { { "sortBy", ViewData["ColumnName"].ToString() }, { "SortAscending", !isDescending } };
 
     // Add in the querystring parameters *except* for the paging ones (as sorting should send us back to the first page of data)
     routeData.AddQueryStringParameters(this.Context).ExceptFor("page");

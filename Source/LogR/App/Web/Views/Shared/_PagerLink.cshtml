@@ -1,4 +1,7 @@
-﻿@using Framework.Web.Mvc.Routing
+﻿@using Framework.Web.Routing
+@using Microsoft.AspNetCore.Routing
+@using Framework.Web.HtmlHelpers;
+
 @model Framework.Infrastructure.Models.Search.BaseSearchCriteria
 
 @*
@@ -27,7 +30,7 @@
         var routeData = new RouteValueDictionary { { "page", ViewData["PageIndex"].ToString() }, { "pageSize", Model.PageSize } };
 
         // Add querystring parameters to the route collection
-        routeData.AddQueryStringParameters();
+        routeData.AddQueryStringParameters(this.Context);
 
         string classValue = "";
         if ((bool)ViewData["Selected"])

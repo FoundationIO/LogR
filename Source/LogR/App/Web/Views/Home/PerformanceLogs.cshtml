@@ -1,6 +1,6 @@
 ﻿@using Framework.Web.HtmlHelpers
 
-@model Framework.Models.ReturnListModel<LogR.Common.Models.Logs.PerformanceLog, LogR.Common.Models.Search.PerformanceLogSearchCriteria>
+@model Framework.Infrastructure.Models.Result.ReturnListModel<LogR.Common.Models.Logs.PerformanceLog, LogR.Common.Models.Search.PerformanceLogSearchCriteria>
 
 <!-- Full Width Column -->
 <div class="content-wrapper">
@@ -21,7 +21,7 @@
         <section class="bg row">
             <div class="col-md-12">
                 <div class="row">
-                    @Html.Partial("_Message", @Model)
+                    @Html.Partial("_NewMessage", @Model)
                     <div class="well clearfix">
                         <form id="frmFilter" action="/app-logs" method="get" onkeypress="return submitForm(event)">
                             <div class="col-md-2 form-group">
@@ -91,7 +91,7 @@
                                 </thead>
                                 <tbody>
                           
-                                     @foreach (var Current in Model.Model)
+                                     @foreach (var Current in Model.Result)
                                     {
 
                                             <tr>
@@ -117,10 +117,7 @@
                         </div>
                         <!-- /.box-body -->
                         <div class="box-footer clearfix">
-                            <label class="pull-left">@(Model.Search.CurrentPageStartRow()) - @(Model.Search.CurrentPageEndRow()) of @Model.Search.TotalRowCount items | </label>
-                            @Html.PageDropDownList("PageSize_Combo", @Model.Search.PageSize.ToString(), "select2 pull-left ", "width: 6%;")
-                            <label class="pull-left">Per Page</label>
-                            @Html.BootstrapPager(Model.Search.Page, "/performance-logs?PageSize=" + Model.Search.PageSize + "&amp;Keyword=" + Model.Search.Keyword + "&amp;SortBy=" + Model.Search.SortBy + "&amp;SortAscending=" + Model.Search.SortAscending, Model.Search.TotalRowCount, numberOfLinks: 10)
+                            @Html.Partial("_Pager", Model.Search)
                         </div>
                     </div>
                     <!-- /.box -->

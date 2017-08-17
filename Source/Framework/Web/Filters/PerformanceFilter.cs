@@ -52,7 +52,7 @@ namespace Framework.Web.Filters
                     parametersForLog.Add(new KeyValuePair<string, object>(param.Name, new object()));
                 }
 
-                log.Performance(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName, startTime, endTime, parametersForLog, httpContext.Response.StatusCode, ex == null ? "Completed" : "Error", ex == null ? "" : "Exception - " + ExceptionUtils.RecursivelyGetExceptionMessage(exception));
+                log.Performance(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName, startTime, endTime, parametersForLog, httpContext.Response.StatusCode, ex == null ? "Completed" : "Error", ex == null ? "" : "Exception - " + ExceptionUtils.RecursivelyGetExceptionMessage(ex));
             }
         }
     }

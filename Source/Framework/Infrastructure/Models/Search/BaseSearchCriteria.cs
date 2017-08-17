@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Framework.Infrastructure.Models
+namespace Framework.Infrastructure.Models.Search
 {
     public class BaseSearchCriteria
     {

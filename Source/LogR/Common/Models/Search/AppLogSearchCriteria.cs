@@ -1,4 +1,4 @@
-﻿using Framework.Infrastructure.Models;
+﻿using Framework.Infrastructure.Models.Search;
 using System;
 using System.Collections.Generic;
 using System.Linq;

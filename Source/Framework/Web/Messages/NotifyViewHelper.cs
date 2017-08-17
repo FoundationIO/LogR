@@ -56,27 +56,27 @@ namespace Framework.Web.Messages
             return false;
         }
 
-        public static bool IsErrorMsgSet(this HtmlHelper helper)
+        public static bool IsErrorMsgSet(this IHtmlHelper helper)
         {
             return helper.ViewContext.IsErrorMsgSet();
         }
 
-        public static bool IsInfoMsgSet(this HtmlHelper helper)
+        public static bool IsInfoMsgSet(this IHtmlHelper helper)
         {
             return helper.ViewContext.IsInfoMsgSet();
         }
 
-        public static bool IsWarningMsgSet(this HtmlHelper helper)
+        public static bool IsWarningMsgSet(this IHtmlHelper helper)
         {
             return helper.ViewContext.IsWarningMsgSet();
         }
 
-        public static bool IsSuccessMsgSet(this HtmlHelper helper)
+        public static bool IsSuccessMsgSet(this IHtmlHelper helper)
         {
             return helper.ViewContext.IsSuccessMsgSet();
         }
 
-        public static bool IsShowCaptionSet(this HtmlHelper helper)
+        public static bool IsShowCaptionSet(this IHtmlHelper helper)
         {
             return helper.ViewContext.IsShowCaptionSet();
         }

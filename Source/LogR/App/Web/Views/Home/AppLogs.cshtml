@@ -1,5 +1,5 @@
 ﻿@using Framework.Web.HtmlHelpers
-@model Framework.Models.ReturnListModel<LogR.Common.Models.Logs.AppLog, LogR.Common.Models.Search.AppLogSearchCriteria>
+@model Framework.Infrastructure.Models.Result.ReturnListModel<LogR.Common.Models.Logs.AppLog, LogR.Common.Models.Search.AppLogSearchCriteria>
 
 <!-- Full Width Column -->
 <div class="content-wrapper">
@@ -20,7 +20,7 @@
         <section class="bg row">
             <div class="col-md-12">
                 <div class="row">
-                    @Html.Partial("_Message", @Model)
+                    @Html.Partial("_NewMessage", @Model)
                     <div class="well clearfix">
                         <form id="frmFilter" action="/app-logs" method="get" onkeypress="return submitForm(event)">
                             <div class="col-md-2 form-group">
@@ -88,12 +88,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var Current in Model.Model)
+                                    @foreach (var Current in Model.Result)
                                     {
                                     <tr>
                                             <td><input type="checkbox"></td>
                                             <td>@Current.Longdate.ToLocalTime()</td>
-                                            <td><span class="label @Html.Partial("_logtypeclass",current.severity)>@Current.Severity</span></td>
+                                            <td><span class="label @Html.Partial("_logtypeclass",Current.Severity)">@Current.Severity</span></td>
                                             <td>@Current.MachineName</td>
                                             <td>@Current.App</td>
                                             <td>@Current.ProcessId</td>

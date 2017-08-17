@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 //using Lucene.Net.Store;
-using Framework.Infrastructure.Models;
+using Framework.Infrastructure.Models.Search;
 using Framework.Infrastructure.Utils;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;

@@ -51,3 +51,4 @@ Source/LogR/App/Web/wwwroot/lib/**
 Data/Database/**
 **/PublishProfiles/**
 *.sqlite3
+AppLogs

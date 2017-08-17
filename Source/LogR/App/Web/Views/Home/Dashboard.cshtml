@@ -1,4 +1,4 @@
-﻿@model Framework.Infrastructure.Models.ReturnModel<LogR.Common.Models.Stats.DashboardSummary>
+﻿@model Framework.Infrastructure.Models.Result.ReturnModel<LogR.Common.Models.Stats.DashboardSummary>
 
 
 <!-- Content Wrapper. Contains page content -->
@@ -25,7 +25,7 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">App Total Logs</span>
-                        <span class="info-box-number"><a href="/app-logs">@Model.Model.TotalAppLogCount</a></span>
+                        <span class="info-box-number"><a href="/app-logs">@Model.Result.TotalAppLogCount</a></span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -39,7 +39,7 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">App Errors</span>
-                        <span class="info-box-number"><a href="/app-logs?logtype=@Framework.Infrastructure.Constants.LogLevel.Error">@Model.Model.ErrorAppLogCount</a> </span>
+                        <span class="info-box-number"><a href="/app-logs?logtype=@Framework.Infrastructure.Constants.LogLevel.Error">@Model.Result.ErrorAppLogCount</a> </span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -52,7 +52,7 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">App SQL Errors</span>
-                        <span class="info-box-number"><a href="/app-logs?logtype=@Framework.Infrastructure.Constants.LogLevel.SqlError">@Model.Model.ErrorSqlAppLogCount</a></span>
+                        <span class="info-box-number"><a href="/app-logs?logtype=@Framework.Infrastructure.Constants.LogLevel.SqlError">@Model.Result.ErrorSqlAppLogCount</a></span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -66,7 +66,7 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">App Warnings</span>
-                        <span class="info-box-number"><a href="/app-logs?logtype=@Framework.Infrastructure.Constants.LogLevel.Warning">@Model.Model.WarningAppLogCount</a></span>
+                        <span class="info-box-number"><a href="/app-logs?logtype=@Framework.Infrastructure.Constants.LogLevel.Warning">@Model.Result.WarningAppLogCount</a></span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -81,7 +81,7 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Perf Total Logs</span>
-                        <span class="info-box-number"><a href="/performance-logs">@Model.Model.TotalPerformanceLogCount</a></span>
+                        <span class="info-box-number"><a href="/performance-logs">@Model.Result.TotalPerformanceLogCount</a></span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -95,7 +95,7 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Perf Error Logs</span>
-                        <span class="info-box-number"><a href="/performance-logs?status=@Framework.Infrastructure.Constants.LogLevel.Error">@Model.Model.ErrorPerformanceLogCount</a></span>
+                        <span class="info-box-number"><a href="/performance-logs?status=@Framework.Infrastructure.Constants.LogLevel.Error">@Model.Result.ErrorPerformanceLogCount</a></span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -131,7 +131,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var current in Model.Model.LastestErrorAppLogs)
+                                    @foreach (var current in Model.Result.LastestErrorAppLogs)
                                     {
                                         <tr>
                                             <td>@current.Longdate</td>
@@ -182,7 +182,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var current in Model.Model.LastestErrorPerformanceLogs)
+                                    @foreach (var current in Model.Result.LastestErrorPerformanceLogs)
                                     {
                                     <tr>
                                             <td>@current.Longdate</td>

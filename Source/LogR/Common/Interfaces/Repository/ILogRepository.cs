@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Framework.Infrastructure.Models;
+using Framework.Infrastructure.Models.Search;
 using LogR.Common.Models.Search;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Stats;
