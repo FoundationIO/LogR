@@ -364,7 +364,7 @@ namespace Lucene.Net.Linq
                 return default(T);
             }
 
-            ScoreDoc[] scoreDocs = collector.TopDocs().ScoreDocs;
+            ScoreDoc[] scoreDocs = collector.GetTopDocs().ScoreDocs;
             Document doc = searcher.Doc(scoreDocs[0].Doc);
 
             return doc.ToObject<T>();
@@ -423,7 +423,7 @@ namespace Lucene.Net.Linq
                 return default(T);
             }
 
-            ScoreDoc[] scoreDocs = collector.TopDocs().ScoreDocs;
+            ScoreDoc[] scoreDocs = collector.GetTopDocs().ScoreDocs;
             Document doc = searcher.Doc(scoreDocs[0].Doc);
 
             return doc.ToObject<T>();

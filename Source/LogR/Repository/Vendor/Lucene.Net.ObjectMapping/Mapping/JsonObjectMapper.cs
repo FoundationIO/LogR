@@ -23,7 +23,7 @@ namespace Lucene.Net.Mapping
         /// </summary>
         private static readonly JsonSerializer serializer = new JsonSerializer()
         {
-            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
+            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
             TypeNameHandling = TypeNameHandling.Auto,
         };
 
@@ -108,45 +108,45 @@ namespace Lucene.Net.Mapping
                 switch (value.Type)
                 {
                     case JTokenType.Boolean:
-                        doc.Add(new NumericField(prefix, Field.Store.NO, true).SetIntValue((bool)value.Value ? 1 : 0));
+                        doc.Add(new Int32Field(prefix, (bool)value.Value ? 1 : 0, Field.Store.NO));
                         break;
 
                     case JTokenType.Date:
-                        doc.Add(new NumericField(prefix, Field.Store.NO, true).SetLongValue(((DateTime)value.Value).Ticks));
+                        doc.Add(new Int64Field(prefix, ((DateTime)value.Value).Ticks, Field.Store.NO));
                         break;
 
                     case JTokenType.Float:
                         if (value.Value is float)
                         {
-                            doc.Add(new NumericField(prefix, Field.Store.NO, true).SetFloatValue((float)value.Value));
+                            doc.Add(new DoubleField(prefix, (float)value.Value, Field.Store.NO));
                         }
                         else
                         {
-                            doc.Add(new NumericField(prefix, Field.Store.NO, true).SetDoubleValue(Convert.ToDouble(value.Value)));
+                            doc.Add(new DoubleField(prefix, Convert.ToDouble(value.Value), Field.Store.NO));
                         }
                         break;
 
                     case JTokenType.Guid:
-                        doc.Add(new Field(prefix, value.Value.ToString(), Field.Store.NO, Field.Index.NOT_ANALYZED));
+                        doc.Add(new StringField(prefix, value.Value.ToString(), Field.Store.NO)); //fixme: Add Field.Index.NOT_ANALYZED
                         break;
 
                     case JTokenType.Integer:
-                        doc.Add(new NumericField(prefix, Field.Store.NO, true).SetLongValue(Convert.ToInt64(value.Value)));
+                        doc.Add(new Int32Field(prefix, Convert.ToInt32(value.Value), Field.Store.NO));
                         break;
 
                     case JTokenType.Null:
                         break;
 
                     case JTokenType.String:
-                        doc.Add(new Field(prefix, value.Value.ToString(), Field.Store.NO, Field.Index.ANALYZED));
+                        doc.Add(new StringField(prefix, value.Value.ToString(), Field.Store.NO)); //fixme: Add Field.Index.ANALYZED
                         break;
 
                     case JTokenType.TimeSpan:
-                        doc.Add(new NumericField(prefix, Field.Store.NO, true).SetLongValue(((TimeSpan)value.Value).Ticks));
+                        doc.Add(new Int64Field(prefix, ((TimeSpan)value.Value).Ticks, Field.Store.NO)); //fixme: last value is true and not sure how to handle it
                         break;
 
                     case JTokenType.Uri:
-                        doc.Add(new StringField(prefix, value.Value.ToString(), Field.Store.NO, Field.Index.ANALYZED));
+                        doc.Add(new StringField(prefix, value.Value.ToString(), Field.Store.NO)); //fixme: Add Field.Index.ANALYZED
                         break;
 
                     default:

@@ -41,7 +41,7 @@ namespace Lucene.Net.Documents
         /// </summary>
         private static readonly JsonSerializerSettings settings = new JsonSerializerSettings()
         {
-            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
+            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
             TypeNameHandling = TypeNameHandling.Auto,
         };
 
@@ -99,15 +99,15 @@ namespace Lucene.Net.Documents
             Document doc = new Document();
             string json = JsonConvert.SerializeObject(source, typeof(TSource), settings);
 
-            doc.Add(new Field(FieldActualType, Utils.GetTypeName(source.GetType()), Field.Store.YES, Field.Index.NOT_ANALYZED));
-            doc.Add(new Field(FieldStaticType, Utils.GetTypeName(typeof(TSource)), Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new StringField(FieldActualType, Utils.GetTypeName(source.GetType()), Field.Store.YES)); //fixme: add Field.Index.NOT_ANALYZED
+            doc.Add(new StringField(FieldStaticType, Utils.GetTypeName(typeof(TSource)), Field.Store.YES));//fixme: add Field.Index.NOT_ANALYZED
 
             if (mappingSettings.StoreSettings.StoreSource)
             {
-                doc.Add(new Field(FieldSource, json, Field.Store.YES, Field.Index.NO));
+                doc.Add(new StringField(FieldSource, json, Field.Store.YES)); //fixme: Add Field.Index.NO
             }
 
-            doc.Add(new NumericField(FieldTimestamp, Field.Store.YES, true).SetLongValue(DateTime.UtcNow.Ticks));
+            doc.Add(new Int64Field(FieldTimestamp, DateTime.UtcNow.Ticks, Field.Store.YES)); //fixme: add last true parameter
 
             mappingSettings.ObjectMapper.AddToDocument<TSource>(source, doc);
 
