@@ -99,15 +99,25 @@ namespace Lucene.Net.Documents
             Document doc = new Document();
             string json = JsonConvert.SerializeObject(source, typeof(TSource), settings);
 
-            doc.Add(new StringField(FieldActualType, Utils.GetTypeName(source.GetType()), Field.Store.YES)); //fixme: add Field.Index.NOT_ANALYZED
-            doc.Add(new StringField(FieldStaticType, Utils.GetTypeName(typeof(TSource)), Field.Store.YES));//fixme: add Field.Index.NOT_ANALYZED
+            FieldType ft = new FieldType(StringField.TYPE_STORED);
+            ft.OmitNorms = false;
+
+            doc.Add(new Field(FieldActualType, Utils.GetTypeName(source.GetType()), ft)); 
+            doc.Add(new Field(FieldStaticType, Utils.GetTypeName(typeof(TSource)), ft));
+
+            FieldType storedAndNotIndexFT = new FieldType(StringField.TYPE_STORED);
+            storedAndNotIndexFT.IsIndexed = false;
+
 
             if (mappingSettings.StoreSettings.StoreSource)
             {
-                doc.Add(new StringField(FieldSource, json, Field.Store.YES)); //fixme: Add Field.Index.NO
+                doc.Add(new Field(FieldSource, json, storedAndNotIndexFT));
             }
 
-            doc.Add(new Int64Field(FieldTimestamp, DateTime.UtcNow.Ticks, Field.Store.YES)); //fixme: add last true parameter
+            var longStoredAndNotIndexFT = new FieldType(Int64Field.TYPE_STORED);
+            longStoredAndNotIndexFT.IsIndexed = false;
+
+            doc.Add(new Int64Field(FieldTimestamp, DateTime.UtcNow.Ticks, longStoredAndNotIndexFT));
 
             mappingSettings.ObjectMapper.AddToDocument<TSource>(source, doc);
 

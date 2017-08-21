@@ -108,45 +108,56 @@ namespace Lucene.Net.Mapping
                 switch (value.Type)
                 {
                     case JTokenType.Boolean:
-                        doc.Add(new Int32Field(prefix, (bool)value.Value ? 1 : 0, Field.Store.NO));
+                        var boolFieldType = new FieldType(Int32Field.TYPE_NOT_STORED);
+                        boolFieldType.IsIndexed = true;
+                        doc.Add(new Int32Field(prefix, (bool)value.Value ? 1 : 0, boolFieldType));
                         break;
 
                     case JTokenType.Date:
-                        doc.Add(new Int64Field(prefix, ((DateTime)value.Value).Ticks, Field.Store.NO));
+                        var dateFieldType = new FieldType(Int64Field.TYPE_NOT_STORED);
+                        dateFieldType.IsIndexed = true;
+                        doc.Add(new Int64Field(prefix, ((DateTime)value.Value).Ticks, dateFieldType));
                         break;
 
                     case JTokenType.Float:
+                        var floatFieldType = new FieldType(DoubleField.TYPE_NOT_STORED);
+                        floatFieldType.IsIndexed = true;
+
                         if (value.Value is float)
                         {
-                            doc.Add(new DoubleField(prefix, (float)value.Value, Field.Store.NO));
+                            doc.Add(new DoubleField(prefix, (float)value.Value, floatFieldType));
                         }
                         else
                         {
-                            doc.Add(new DoubleField(prefix, Convert.ToDouble(value.Value), Field.Store.NO));
+                            doc.Add(new DoubleField(prefix, Convert.ToDouble(value.Value), floatFieldType)); 
                         }
                         break;
 
                     case JTokenType.Guid:
-                        doc.Add(new StringField(prefix, value.Value.ToString(), Field.Store.NO)); //fixme: Add Field.Index.NOT_ANALYZED
+                        doc.Add(new StringField(prefix, value.Value.ToString(), Field.Store.NO));
                         break;
 
                     case JTokenType.Integer:
-                        doc.Add(new Int32Field(prefix, Convert.ToInt32(value.Value), Field.Store.NO));
+                        var intFieldType = new FieldType(Int64Field.TYPE_NOT_STORED);
+                        intFieldType.IsIndexed = true;
+                        doc.Add(new Int64Field(prefix, Convert.ToInt64(value.Value), intFieldType));
                         break;
 
                     case JTokenType.Null:
                         break;
 
                     case JTokenType.String:
-                        doc.Add(new StringField(prefix, value.Value.ToString(), Field.Store.NO)); //fixme: Add Field.Index.ANALYZED
+                        doc.Add(new TextField(prefix, value.Value.ToString(),Field.Store.NO));
                         break;
 
                     case JTokenType.TimeSpan:
-                        doc.Add(new Int64Field(prefix, ((TimeSpan)value.Value).Ticks, Field.Store.NO)); //fixme: last value is true and not sure how to handle it
+                        var tsFieldType = new FieldType(Int64Field.TYPE_NOT_STORED);
+                        tsFieldType.IsIndexed = true;
+                        doc.Add(new Int64Field(prefix, ((TimeSpan)value.Value).Ticks, tsFieldType));
                         break;
 
                     case JTokenType.Uri:
-                        doc.Add(new StringField(prefix, value.Value.ToString(), Field.Store.NO)); //fixme: Add Field.Index.ANALYZED
+                        doc.Add(new TextField(prefix, value.Value.ToString(), Field.Store.NO));
                         break;
 
                     default:

@@ -385,7 +385,7 @@ namespace Lucene.Net.Mapping
                     case MappedField.FieldType.Float:
                         {
                             var bytes = new BytesRef(NumericUtils.BUF_SIZE_INT64);
-                            long l = NumericUtils.DoubleToSortableInt64(field.GetValueFromExpression<double>(term));
+                            long l = NumericUtils.DoubleToSortableInt64(field.GetValueFromExpression<float>(term));
                             NumericUtils.Int64ToPrefixCoded(l, 0, bytes);
                             tm = new Term(field.Name, bytes);
                             //queryTerm = NumericUtils.FloatToPrefixCoded(field.GetValueFromExpression<float>(term));
