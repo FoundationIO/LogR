@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.Utils
 {
@@ -11,31 +9,32 @@ namespace Framework.Infrastructure.Utils
         public static string ToString(this List<string> obj, string sep = " ", bool useNewLine = true)
         {
             if (obj == null)
-                return "";
+                return string.Empty;
             return ToString((IList<string>)obj.ToArray(), sep, useNewLine);
         }
 
         public static string ToString(this IList<string> obj, string sep = " ", bool useNewLine = true)
         {
             if (obj == null)
-                return "";
+                return string.Empty;
             return ToString(obj.ToArray(), sep, useNewLine);
         }
 
         public static string ToString(this string[] obj, string sep = " ", bool useNewLine = true)
         {
             if (obj == null)
-                return "";
+                return string.Empty;
             var sb = new StringBuilder();
             var pos = 0;
             foreach (var item in obj)
             {
                 if (useNewLine)
-                    sb.AppendLine(item + ((pos != obj.Length - 1) ? sep : ""));
+                    sb.AppendLine(item + ((pos != obj.Length - 1) ? sep : string.Empty));
                 else
-                    sb.Append(item + ((pos != obj.Length - 1) ? sep : ""));
+                    sb.Append(item + ((pos != obj.Length - 1) ? sep : string.Empty));
                 pos++;
             }
+
             return sb.ToString();
         }
 
@@ -75,49 +74,46 @@ namespace Framework.Infrastructure.Utils
             return str;
         }
 
-        public static string FlattenString(this string Str)
+        public static string FlattenString(this string str)
         {
-            if (String.IsNullOrEmpty(Str))
-                return String.Empty;
-            else
-            {
-                Str = Str.Replace('\n', ' ');
-                Str = Str.Replace('\t', ' ');
-                Str = Str.Replace('\r', ' ');
-                return Str;
-            }
+            if (string.IsNullOrEmpty(str))
+                return string.Empty;
+
+            str = str.Replace('\n', ' ');
+            str = str.Replace('\t', ' ');
+            str = str.Replace('\r', ' ');
+            return str;
         }
 
         public static string FirstChar(this string str)
         {
             if (str.Length > 0)
                 return str[0].ToString();
-            return "";
+            return string.Empty;
         }
-
 
         public static bool IsNullOrEmpty(this string str)
         {
-            return String.IsNullOrEmpty(str);
+            return string.IsNullOrEmpty(str);
         }
 
         public static string FormatString(this string fmt, params object[] args)
         {
-            return String.Format(fmt, args);
+            return string.Format(fmt, args);
         }
 
         public static string LastChar(this string str)
         {
             if (str.Length > 0)
                 return str[str.Length - 1].ToString();
-            return "";
+            return string.Empty;
         }
 
         public static bool IsTrimmedStringNullOrEmpty(this string str)
         {
-            if (String.IsNullOrEmpty(str))
+            if (string.IsNullOrEmpty(str))
                 return true;
-            return (String.IsNullOrEmpty(str.Trim()));
+            return string.IsNullOrEmpty(str.Trim());
         }
 
         public static bool IsTrimmedStringNotNullOrEmpty(this string str)
@@ -132,7 +128,7 @@ namespace Framework.Infrastructure.Utils
 
             if ((str == null) || (anotherStr == null))
                 return false;
-            return (str.Trim().ToLower() == anotherStr.Trim().ToLower());
+            return str.Trim().ToLower() == anotherStr.Trim().ToLower();
         }
     }
 }

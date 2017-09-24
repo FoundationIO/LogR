@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.Utils
 {
@@ -24,6 +20,7 @@ namespace Framework.Infrastructure.Utils
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -37,7 +34,7 @@ namespace Framework.Infrastructure.Utils
                 var argItem = args[i].ToLower().Trim();
                 paramName = paramName.ToLower().Trim();
 
-                if (argItem == paramName || argItem == "/"+paramName || argItem == "\\" + paramName 
+                if (argItem == paramName || argItem == "/" + paramName || argItem == "\\" + paramName
                     || argItem == "--" + paramName || argItem == "-" + paramName)
                 {
                     if (i + 1 <= args.Length)
@@ -46,6 +43,7 @@ namespace Framework.Infrastructure.Utils
                     }
                 }
             }
+
             return false;
         }
 
@@ -69,6 +67,7 @@ namespace Framework.Infrastructure.Utils
                     }
                 }
             }
+
             return defaultValue;
         }
 

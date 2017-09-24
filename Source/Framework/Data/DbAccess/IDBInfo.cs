@@ -6,7 +6,9 @@ namespace Framework.Data.DbAccess
     public interface IDBInfo
     {
         string GetConnectionString();
+
         IDataProvider GetDBProvider();
+
         MigrationProcessorFactory GetMigrationProcessorFactory();
     }
 }

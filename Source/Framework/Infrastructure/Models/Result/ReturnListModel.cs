@@ -1,24 +1,13 @@
-﻿using Framework.Infrastructure.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Framework.Infrastructure.Exceptions;
 
 namespace Framework.Infrastructure.Models.Result
 {
-    public class ReturnListModel<T,S> where S : class
+    public class ReturnListModel<TModel,TSearch>
+        where TSearch : class
     {
-        public List<T> Result { get; private set; }
-
-        public S Search { get; private set; }
-
-        public int ActiveTab { get; set; }
-
-        public long TotalRecords { get; private set; }
-
-        public bool IsSuccess { get; set; }
-        public ErrorHolder ErrorHolder { get; set; }
-
-        public ReturnListModel(S search, List<T> items, long totalItems)
+        public ReturnListModel(TSearch search, List<TModel> items, long totalItems)
         {
             Result = items;
             TotalRecords = totalItems;
@@ -26,50 +15,67 @@ namespace Framework.Infrastructure.Models.Result
             Search = search;
         }
 
-        public ReturnListModel(S search, List<T> items)
+        public ReturnListModel(TSearch search, List<TModel> items)
         {
             Result = items;
             TotalRecords = items.Count;
             IsSuccess = true;
-            Search = search; 
+            Search = search;
         }
 
-        public ReturnListModel(List<T> items, long totalItems):this((S)null,items, totalItems)
+        public ReturnListModel(List<TModel> items, long totalItems)
+            : this((TSearch)null, items, totalItems)
         {
         }
 
-        public ReturnListModel(List<T> items) : this((S)null, items)
+        public ReturnListModel(List<TModel> items)
+            : this((TSearch)null, items)
         {
         }
 
-        public ReturnListModel(S search, Exception ex)
-        {
-            IsSuccess = false;
-            ErrorHolder = ErrorHolder.Create(ex);
-        }
-
-        public ReturnListModel(S search, string errorMsg, Exception ex = null)
+        public ReturnListModel(TSearch search, Exception ex)
         {
             IsSuccess = false;
-            ErrorHolder = ErrorHolder.Create(errorMsg, ex);
+            ErrorHolder = new Error(ex);
         }
 
-        public ReturnListModel(S search, string errorMsg, List<ErrorItem> errorList)
+        public ReturnListModel(TSearch search, string errorMsg, Exception ex = null)
         {
             IsSuccess = false;
-            ErrorHolder = ErrorHolder.Create(errorMsg, errorList);
+            ErrorHolder = new Error(errorMsg, ex);
         }
-        public ReturnListModel(Exception ex): this((S)null, ex)
+
+        public ReturnListModel(TSearch search, string errorMsg, List<ErrorItem> errorList)
+        {
+            IsSuccess = false;
+            ErrorHolder = new Error(errorMsg, errorList);
+        }
+
+        public ReturnListModel(Exception ex)
+            : this((TSearch)null, ex)
         {
         }
 
-        public ReturnListModel(string errorMsg, Exception ex = null): this((S)null, errorMsg, ex)
+        public ReturnListModel(string errorMsg, Exception ex = null)
+            : this((TSearch)null, errorMsg, ex)
         {
         }
 
-        public ReturnListModel(string errorMsg, List<ErrorItem> errorList) : this((S)null, errorMsg, errorList)
+        public ReturnListModel(string errorMsg, List<ErrorItem> errorList)
+            : this((TSearch)null, errorMsg, errorList)
         {
         }
 
+        public List<TModel> Result { get; private set; }
+
+        public TSearch Search { get; private set; }
+
+        public int ActiveTab { get; set; }
+
+        public long TotalRecords { get; private set; }
+
+        public bool IsSuccess { get; set; }
+
+        public Error ErrorHolder { get; set; }
     }
 }

@@ -1,12 +1,10 @@
-﻿using Framework.Infrastructure.Models;
-using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Framework.Infrastructure.Models;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Framework.Web.HtmlHelpers
 {
@@ -24,7 +22,6 @@ namespace Framework.Web.HtmlHelpers
             return DropDownListEx(html, id, items, selectedItem, className, style, callbackFunction, isPositionRelative);
         }
 
-
         public static HtmlString DropDownListEx(this IHtmlHelper html, string id, List<TextWithValue> items, string selectedItem, string className, string style, string callbackFunction = null, bool isPositionRelative = false)
         {
             StringBuilder sb = new StringBuilder();
@@ -34,13 +31,15 @@ namespace Framework.Web.HtmlHelpers
             sb.AppendLine($"<select id =\"{id}\" name=\"{id}\" class=\"{className}\" style =\"{style}\">");
             foreach (var listItem in items)
             {
-                var selected = "";
+                var selected = string.Empty;
                 if (selectedItem != null && listItem.Value == selectedItem.ToString())
                 {
                     selected = " selected ";
                 }
+
                 sb.AppendLine($"<option value=\"{listItem.Value}\"{selected} >{listItem.Text}</option>");
             }
+
             sb.AppendLine("</select>");
             return new HtmlString(sb.ToString());
         }
@@ -49,8 +48,9 @@ namespace Framework.Web.HtmlHelpers
         {
             if (totalItems <= 0)
             {
-                return new HtmlString("");
+                return new HtmlString(string.Empty);
             }
+
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
             var lastPageNumber = (int)Math.Ceiling((double)currentPageIndex / numberOfLinks) * numberOfLinks;
             var firstPageNumber = lastPageNumber - (numberOfLinks - 1);
@@ -60,6 +60,7 @@ namespace Framework.Web.HtmlHelpers
             {
                 lastPageNumber = totalPages;
             }
+
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("<ul class = 'pagination pagination-sm no-margin pull-right'> ");
 
@@ -69,6 +70,7 @@ namespace Framework.Web.HtmlHelpers
             {
                 sb.AppendLine(" " + AddLink(i, url, i == currentPageIndex, "active", i.ToString(), i.ToString()));
             }
+
             sb.AppendLine(" " + AddLink(currentPageIndex + 1, url, !hasNextPage, "disabled", "&gt;", "Next Page"));
             sb.AppendLine(" " + AddLink(totalPages, url, currentPageIndex == totalPages, "disabled", "&gt;&gt;", "Last Page"));
 
@@ -76,7 +78,7 @@ namespace Framework.Web.HtmlHelpers
             return new HtmlString(sb.ToString());
         }
 
-        private static String AddLink(int index, String url, bool condition, string classToAdd, string linkText, string tooltip)
+        private static string AddLink(int index, string url, bool condition, string classToAdd, string linkText, string tooltip)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("<li title='{0}'", tooltip);
@@ -85,9 +87,10 @@ namespace Framework.Web.HtmlHelpers
             {
                 sb.AppendFormat(" class = '{0}'", classToAdd);
             }
+
             sb.AppendFormat("> ");
 
-            var pageNumString = "";
+            var pageNumString = string.Empty;
             if (!condition)
             {
                 if (url.Contains('?') == false)
@@ -95,7 +98,8 @@ namespace Framework.Web.HtmlHelpers
                 else
                     pageNumString += "&Page=" + index;
             }
-            sb.AppendFormat("<a href='{0}{1}'>{2}</a> ", (!condition ? url : "javascript:"), pageNumString, linkText);
+
+            sb.AppendFormat("<a href='{0}{1}'>{2}</a> ", !condition ? url : "javascript:", pageNumString, linkText);
 
             sb.AppendFormat("</li> ");
             return sb.ToString();

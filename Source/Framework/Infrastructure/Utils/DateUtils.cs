@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.Utils
 {
     public static class DateUtils
     {
-        public readonly static DateTime InvalidDate = new DateTime(1900, 1, 1);
+        public static readonly DateTime InvalidDate = new DateTime(1900, 1, 1);
 
         public static bool IsInvalidDate(this DateTime? dt)
         {
-            return ((dt == null) || (dt == InvalidDate) || (dt == DateTime.MinValue) || (dt == DateTime.MaxValue));
+            return (dt == null) || (dt == InvalidDate) || (dt == DateTime.MinValue) || (dt == DateTime.MaxValue);
         }
 
         public static bool IsInvalidDate(this DateTime dt)
         {
-            return ((dt == null) || (dt == InvalidDate) || (dt == DateTime.MinValue) || (dt == DateTime.MaxValue));
+            return (dt == null) || (dt == InvalidDate) || (dt == DateTime.MinValue) || (dt == DateTime.MaxValue);
         }
 
         public static bool IsValidDate(this DateTime? dt)
@@ -38,6 +35,5 @@ namespace Framework.Infrastructure.Utils
         {
             return new DateTime(date.Year, date.Month, date.Day, 0, 0, 0, 0);
         }
-
     }
 }

@@ -1,13 +1,9 @@
-﻿using Framework.Infrastructure.Constants;
-using Framework.Infrastructure.Config;
-using Framework.Infrastructure.Utils;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Framework.Infrastructure.Config;
+using Framework.Infrastructure.Constants;
+using Framework.Infrastructure.Utils;
 using LogR.Common.Interfaces.Service.Config;
 using Microsoft.Extensions.Configuration;
 
@@ -23,9 +19,9 @@ namespace LogR.Service.Config
 
         public int ServerPort { get; private set; }
 
-        public String IndexBaseFolder { get; private set; }
+        public string IndexBaseFolder { get; private set; }
 
-        public String AppLogIndexFolder
+        public string AppLogIndexFolder
         {
             get
             {
@@ -33,7 +29,7 @@ namespace LogR.Service.Config
             }
         }
 
-        public String PerformanceLogIndexFolder
+        public string PerformanceLogIndexFolder
         {
             get
             {
@@ -54,7 +50,6 @@ namespace LogR.Service.Config
             {
                 Directory.CreateDirectory(IndexBaseFolder);
             }
-            
 
             if (DatabaseType == DBType.SQLITE3)
             {
@@ -63,7 +58,7 @@ namespace LogR.Service.Config
             }
         }
 
-        protected override String GetConfigFileLocation()
+        protected override string GetConfigFileLocation()
         {
             return AppConfigurationCallback.GetFileName();
         }
@@ -71,7 +66,7 @@ namespace LogR.Service.Config
         protected void PopulateFromConfigFile()
         {
             var configLocation = GetConfigFileLocation();
-            if (configLocation == null || configLocation.Trim() == "")
+            if (configLocation == null || configLocation.Trim() == string.Empty)
             {
                 throw new Exception("Unable to find the Config location");
             }
@@ -85,7 +80,7 @@ namespace LogR.Service.Config
             var appSettings = config.GetSection("configuration:appSettings");
             var frameworkLogSettings = config.GetSection("Logging");
 
-            base.PopulateFromConfigFile(appSettings, frameworkLogSettings, configLocation);
+            PopulateFromConfigFile(appSettings, frameworkLogSettings, configLocation);
 
             if (MigrationNamespace.IsTrimmedStringNullOrEmpty())
             {
@@ -96,7 +91,17 @@ namespace LogR.Service.Config
             if (IndexBaseFolder != null && IndexBaseFolder.Contains("|ConfigPath|"))
             {
                 IndexBaseFolder = IndexBaseFolder.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
-                IndexBaseFolder = Path.GetFullPath((new Uri(IndexBaseFolder)).LocalPath);
+                IndexBaseFolder = Path.GetFullPath(new Uri(IndexBaseFolder).LocalPath);
+            }
+
+            if (Directory.Exists(AppLogIndexFolder) == false)
+            {
+                Directory.CreateDirectory(AppLogIndexFolder);
+            }
+
+            if (Directory.Exists(PerformanceLogIndexFolder) == false)
+            {
+                Directory.CreateDirectory(PerformanceLogIndexFolder);
             }
 
             ServerPort = SafeUtils.Int(appSettings["serverPort"], ServerPort);

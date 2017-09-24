@@ -1,7 +1,7 @@
 ﻿{
   "configuration": {
     "appSettings": {
-      "indexBaseFolder": "|ConfigPath|\\..\\Indexes",
+      "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes",
 
       "logTrace": true,
       "logDebug": true,
@@ -11,7 +11,7 @@
       "logError": true,
 
       "logToFile": true,
-      "logLocation": "|ConfigPath|\\..\\Logs",
+      "logLocation": "|ConfigPath|\\..\\Data\\Logs",
 
       "logToDebugger": true,
       "logToConsole": true,

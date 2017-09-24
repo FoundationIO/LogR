@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using NLog;
-using NLog.Config;
 using NLog.Targets;
-using System.Diagnostics;
 
 namespace Framework.Infrastructure.Logging
 {
@@ -22,6 +16,5 @@ namespace Framework.Infrastructure.Logging
             string logMessage = this.Layout.Render(logEvent);
             Debug.WriteLine(logMessage);
         }
-
     }
 }

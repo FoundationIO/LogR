@@ -1,8 +1,4 @@
 ﻿using FluentMigrator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LogR.Repository.Migration
 {
@@ -17,6 +13,7 @@ namespace LogR.Repository.Migration
                 .WithColumn("Password").AsString().NotNullable()
                 .WithColumn("FirstName").AsString(100).NotNullable()
                 .WithColumn("LastName").AsString(100).NotNullable()
+                .WithColumn("Email").AsString(200).NotNullable()
                 .WithColumn("AllowAdminOperations").AsBoolean().NotNullable();
 
             Create.Table("FirstTimeConfiguration")
@@ -24,15 +21,12 @@ namespace LogR.Repository.Migration
                 .WithColumn("DoneDate").AsDateTime().Nullable()
                 .WithColumn("Done").AsBoolean().WithDefaultValue(false);
 
-
             Insert.IntoTable("User")
-                .Row(new { UserName = "root" , Password = "root" , FirstName = "Root" , LastName = "Rooter" , AllowAdminOperations = true });
-
+                .Row(new { UserName = "root" , Password = "root" , FirstName = "Root" , LastName = "Rooter" , Email = "root@localhost", AllowAdminOperations = true });
         }
 
         public override void Down()
         {
-
         }
     }
 }

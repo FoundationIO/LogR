@@ -1,95 +1,94 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Framework.Infrastructure.Constants;
+using Framework.Infrastructure.Logging;
+using Framework.Infrastructure.Models.Result;
 //using Lucene.Net.Store;
 using Framework.Infrastructure.Models.Search;
 using Framework.Infrastructure.Utils;
+using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;
 using LogR.Common.Models.Stats;
-using LogR.Common.Interfaces.Service;
-using LogR.Common.Interfaces.Repository;
-using Framework.Infrastructure.Logging;
-using Framework.Infrastructure.Config;
-using LogR.Common.Interfaces;
-using LogR.Common.Interfaces.Service.Config;
-using Framework.Infrastructure.Constants;
-using Framework.Data.DbAccess;
-using Lucene.Net.Store;
+using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
-using Framework.Infrastructure.Models.Result;
+using Lucene.Net.Search;
+using Lucene.Net.Store;
+using Lucene.Net.Util;
 
 namespace LogR.Repository
 {
     public class LogRepository : ILogRepository
     {
-        //Directory appLogDirectory;
-        //IndexWriter appLogWriter;
-        //IndexReader appLogReader;
-        //LuceneDataProvider appLogProvider;
+        private static bool isAppIndexExists = false;
 
-        //Directory prefLogDirectory;
-        //IndexWriter prefLogWriter;
-        //IndexReader prefLogReader;
-        //LuceneDataProvider prefLogProvider;
+        private static bool isPerfIndexExists = false;
 
-        ILog log;
-        IAppConfiguration config;
+        private Directory appLogDirectory;
+
+        private Directory prefLogDirectory;
+
+        private ILog log;
+
+        private IAppConfiguration config;
+
         public LogRepository(ILog log, IAppConfiguration config)
         {
             this.log = log;
             this.config = config;
 
-            //appLogDirectory = FSDirectory.Open(config.AppLogIndexFolder);
-            //appLogWriter = new IndexWriter(appLogDirectory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), IndexWriter.MaxFieldLength.UNLIMITED);
-            //appLogReader = 
+            appLogDirectory = FSDirectory.Open(config.AppLogIndexFolder);
+            prefLogDirectory = FSDirectory.Open(config.PerformanceLogIndexFolder);
 
-            //appLogProvider = new LuceneDataProvider(appLogDirectory, Lucene.Net.Util.Version.LUCENE_30);
+            if (isPerfIndexExists == false)
+            {
+                using (var writer = GetNewPerfWriter())
+                    writer.Commit();
 
-            //prefLogDirectory = FSDirectory.Open(config.PerformanceLogIndexFolder);
-            //prefLogWriter = new IndexWriter(prefLogDirectory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), IndexWriter.MaxFieldLength.UNLIMITED);
-            //prefLogReader = new IndexReader();
+                isAppIndexExists = true;
+            }
 
-            //prefLogProvider = new LuceneDataProvider(prefLogDirectory, Lucene.Net.Util.Version.LUCENE_30);
-
+            if (isAppIndexExists == false)
+            {
+                using (var writer = GetNewAppWriter())
+                    writer.Commit();
+            }
         }
 
         public ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
         {
             try
             {
-                //using (var session = prefLogProvider.OpenSession<PerformanceLog>())
+                using (var reader = GetNewPerfReader())
                 {
-                    //var lst = session.Query();
+                    var searcher = new IndexSearcher(reader);
+                    var lst = searcher.AsQueryable<PerformanceLog>();
 
-                    throw new NotImplementedException();
+                    if (search.FromDate.IsValidDate() && search.ToDate.IsValidDate())
+                    {
+                        if (search.FromDate.Value <= search.ToDate.Value)
+                        {
+                            lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay() && x.Longdate <= search.ToDate.Value.EndOfDay());
+                        }
+                    }
+                    else if (search.FromDate.IsValidDate())
+                    {
+                        lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay());
+                    }
+                    else if (search.ToDate.IsValidDate())
+                    {
+                        lst = lst.Where(x => x.Longdate <= search.ToDate.Value.EndOfDay());
+                    }
 
-                    //if (search.FromDate.IsValidDate() && search.ToDate.IsValidDate())
-                    //{
-                    //    if (search.FromDate.Value <= search.ToDate.Value)
-                    //    {
-                    //        lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay() && x.Longdate <= search.ToDate.Value.EndOfDay());
-                    //    }
-                    //}
-                    //else if (search.FromDate.IsValidDate())
-                    //{
-                    //    lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay());
-                    //}
-                    //else if (search.ToDate.IsValidDate())
-                    //{
-                    //    lst = lst.Where(x => x.Longdate <= search.ToDate.Value.EndOfDay());
-                    //}
+                    lst = lst.OrderByDescending(x => x.Longdate);
 
-                    //lst = lst.OrderByDescending(x => x.Longdate);
-
-                    //var totalRows = lst.AsQueryable().Count();
-                    //search.TotalRowCount = totalRows;
-                    //var resultList = lst.ApplyPaging(search.Page, search.PageSize).ToList();
-                    //search.CurrentRows = resultList.Count;
-                    //return new ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria> { Model = resultList, Search = search, Error = ((resultList.Count == 0) ? "No Performance Logs found" : null) };
+                    var totalRows = lst.AsQueryable().Count();
+                    search.TotalRowCount = totalRows;
+                    var resultList = lst.ApplyPaging(search.Page, search.PageSize).ToList();
+                    search.CurrentRows = resultList.Count;
+                    return new ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria>(search, resultList, totalRows);
                 }
             }
             catch (Exception ex)
@@ -97,7 +96,7 @@ namespace LogR.Repository
                 log.Error(ex, "Error when getting Performance Log list ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria>(search, null, ex);
+                return new ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria>(search, "Error when getting Performance Log list ", ex);
             }
         }
 
@@ -108,13 +107,10 @@ namespace LogR.Repository
             {
                 log.Info("Deleting Performance Log  for days less than " + pastDate);
 
-                //using (var session = prefLogProvider.OpenSession<PerformanceLog>())
+                using (var writer = GetNewPerfWriter())
                 {
-                    throw new NotImplementedException();
-
-                    //var qry = session.Query().Where(x => x.Longdate < pastDate);
-                    //perfLogCount = qry.AsQueryable().LongCount();
-                    //session.Delete(qry.ToArray());
+                    writer.Delete<PerformanceLog>(x => x.Longdate < pastDate);
+                    writer.Commit();
                 }
             }
             catch (Exception ex)
@@ -126,13 +122,10 @@ namespace LogR.Repository
             {
                 log.Info("Deleting App Log  for days less than " + pastDate);
 
-                //using (var session = appLogProvider.OpenSession<AppLog>())
+                using (var writer = GetNewAppWriter())
                 {
-                    throw new NotImplementedException();
-
-                    //var qry = session.Query().Where(x => x.Longdate < pastDate);
-                    //appLogCount = qry.AsQueryable().LongCount();
-                    //session.Delete(qry.ToArray());
+                    writer.Delete<AppLog>(x => x.Longdate < pastDate);
+                    writer.Commit();
                 }
             }
             catch (Exception ex)
@@ -148,14 +141,13 @@ namespace LogR.Repository
         {
             try
             {
-                //using (var session = prefLogProvider.OpenSession<PerformanceLog>())
+                using (var writer = GetNewPerfWriter())
                 {
-                    throw new NotImplementedException();
-
-                    //var qry = session.Query().Single(x => x.Id == id);
-                    //session.Delete(qry);
-                    //return new ReturnModel<bool> { Model = true };
+                    writer.Delete<PerformanceLog>(x => x.Id == id);
+                    writer.Commit();
                 }
+
+                return new ReturnModel<bool>(true);
             }
             catch (Exception ex)
             {
@@ -171,6 +163,7 @@ namespace LogR.Repository
                 log.Error("Error ");
                 return;
             }
+
             try
             {
                 if (data.Type == LogType.PerformanceLog)
@@ -180,7 +173,7 @@ namespace LogR.Repository
                 else
                 {
                     SaveAppLogX(data.Data);
-                }                    
+                }
             }
             catch (Exception ex)
             {
@@ -188,69 +181,43 @@ namespace LogR.Repository
             }
         }
 
-
-        private void SavePerformanceLogX(string message)
-        {
-            try
-            {
-                var item = JsonUtils.Deserialize<PerformanceLog>(message);
-                if (item == null)
-                {
-                    log.Error("Unable to deserialize the performance log message -  " + message);
-                    return;
-                }
-
-                item.Id = Guid.NewGuid().ToString();
-                //using (var session = prefLogProvider.OpenSession<PerformanceLog>())
-                {
-                    //session.Add(item);
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when saving Performance Log - Message = " + message);
-            }
-        }
-
-
         public ReturnListModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search)
         {
             try
             {
-                //using (var session = appLogProvider.OpenSession<AppLog>())
+                using (var reader = GetNewPerfReader())
                 {
-                    //var lst = session.Query();
+                    var searcher = new IndexSearcher(reader);
+                    var lst = searcher.AsQueryable<AppLog>();
 
-                    throw new NotImplementedException();
+                    if (search.FromDate.IsValidDate() && search.ToDate.IsValidDate())
+                    {
+                        if (search.FromDate.Value <= search.ToDate.Value)
+                        {
+                            lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay() && x.Longdate <= search.ToDate.Value.EndOfDay());
+                        }
+                    }
+                    else if (search.FromDate.IsValidDate())
+                    {
+                        lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay());
+                    }
+                    else if (search.ToDate.IsValidDate())
+                    {
+                        lst = lst.Where(x => x.Longdate <= search.ToDate.Value.EndOfDay());
+                    }
 
-                    //if (search.FromDate.IsValidDate() && search.ToDate.IsValidDate())
-                    //{
-                    //    if (search.FromDate.Value <= search.ToDate.Value)
-                    //    {
-                    //        lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay() && x.Longdate <= search.ToDate.Value.EndOfDay());
-                    //    }
-                    //}
-                    //else if (search.FromDate.IsValidDate())
-                    //{
-                    //    lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay());
-                    //}
-                    //else if (search.ToDate.IsValidDate())
-                    //{
-                    //    lst = lst.Where(x => x.Longdate <= search.ToDate.Value.EndOfDay());
-                    //}
+                    if (search.LogType != null)
+                    {
+                        lst = lst.Where(x => x.Severity == search.LogType);
+                    }
 
-                    //if (search.LogType != null)
-                    //{
-                    //    lst = lst.Where(x => x.Severity == search.LogType);
-                    //}
+                    lst = lst.OrderByDescending(x => x.Longdate);
 
-                    //lst = lst.OrderByDescending(x => x.Longdate);
-
-                    //var totalRows = lst.AsQueryable().Count();
-                    //search.TotalRowCount = totalRows;
-                    //var resultList = lst.ApplyPaging(search.Page, search.PageSize).ToList();
-                    //search.CurrentRows = resultList.Count;
-                    //return new ReturnListModel<AppLog, AppLogSearchCriteria> { Model = resultList, Search = search, Error = ((resultList.Count == 0) ? "No App Logs found" : null) };
+                    var totalRows = lst.AsQueryable().Count();
+                    search.TotalRowCount = totalRows;
+                    var resultList = lst.ApplyPaging(search.Page, search.PageSize).ToList();
+                    search.CurrentRows = resultList.Count;
+                    return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, resultList, totalRows);
                 }
             }
             catch (Exception ex)
@@ -258,23 +225,20 @@ namespace LogR.Repository
                 log.Error(ex, "Error when getting App Log  List ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<AppLog, AppLogSearchCriteria>(search,ex);
+                return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, ex);
             }
         }
-
 
         public ReturnModel<bool> DeleteAppLog(string id)
         {
             try
             {
-                //using (var session = appLogProvider.OpenSession<AppLog>())
+                using (var writer = GetNewAppWriter())
                 {
-                    throw new NotImplementedException();
-
-                    //var qry = session.Query().Single(x => x.Id == id);
-                    //session.Delete(qry);
-                    //return new ReturnModel<bool> { Model = true };
+                    writer.Delete<AppLog>(x => x.Id == id);
                 }
+
+                return new ReturnModel<bool>(true);
             }
             catch (Exception ex)
             {
@@ -283,71 +247,37 @@ namespace LogR.Repository
             }
         }
 
-        private void SaveAppLogX(string message)
-        {
-            try
-            {
-                var item = JsonUtils.Deserialize<AppLog>(message);
-                if (item == null)
-                {
-                    log.Error("Unable to deserialize the app log message -  " + message);
-                    return;
-                }
-                item.Id = Guid.NewGuid().ToString();
-                //using (var session = appLogProvider.OpenSession<AppLog>())
-                {
-                    //session.Add(item);
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when saving App Log - Message = " + message);
-            }
-        }
-
-
         public ReturnModel<DashboardSummary> GetDashboardSummary()
         {
             try
             {
                 var result = new DashboardSummary();
 
-                //using (var session = appLogProvider.OpenSession<AppLog>())
+                using (var reader = GetNewAppReader())
                 {
-                    //throw new NotImplementedException();
-
-                    //var errorLst = session.Query().Where(x => x.Severity == "ERROR");
-                    //var errorSqlLst = session.Query().Where(x => x.Severity == "SqlError");
-                    //var warnLst = session.Query().Where(x => x.Severity == "WARN");
-                    //var allLst = session.Query();
-
-                    //result.ErrorAppLogCount = errorLst.AsQueryable().LongCount();
-                    //result.ErrorSqlAppLogCount = errorSqlLst.AsQueryable().LongCount();
-                    //result.WarningAppLogCount = warnLst.AsQueryable().LongCount();
-                    //result.TotalAppLogCount = allLst.AsQueryable().LongCount();
-
-                    //result.LastestAppLogs = allLst.AsQueryable().OrderByDescending(x => x.Longdate).Take(20).ToList();
-                    //result.LastestErrorAppLogs = errorLst.AsQueryable().OrderByDescending(x => x.Longdate).Take(20).ToList();
+                    var searcher = new IndexSearcher(reader);
+                    result.ErrorAppLogCount = searcher.AsQueryable<AppLog>().Where(x => x.Severity == "ERROR").Count();
+                    result.ErrorSqlAppLogCount = searcher.AsQueryable<AppLog>().Where(x => x.Severity == "SqlError").Count();
+                    result.WarningAppLogCount = searcher.AsQueryable<AppLog>().Where(x => x.Severity == "WARN").Count();
+                    result.TotalAppLogCount = searcher.AsQueryable<AppLog>().Count();
+                    result.LastestAppLogs = searcher.AsQueryable<AppLog>().OrderByDescending(x => x.Longdate).Take(20).ToList();
+                    result.LastestErrorAppLogs = searcher.AsQueryable<AppLog>().Where(x => x.Severity == "ERROR").OrderByDescending(x => x.Longdate).Take(20).ToList();
                 }
 
-                //using (var session = prefLogProvider.OpenSession<PerformanceLog>())
+                using (var reader = GetNewPerfReader())
                 {
-                    throw new NotImplementedException();
+                    var searcher = new IndexSearcher(reader);
+                    var errorLst = searcher.AsQueryable<PerformanceLog>().Where(x => x.Status == "ERROR");
+                    var allLst = searcher.AsQueryable<PerformanceLog>();
 
-                    //var errorLst = session.Query().Where(x => x.Status == "ERROR");
-                    //var allLst = session.Query();
+                    result.ErrorPerformanceLogCount = errorLst.AsQueryable().Count();
+                    result.TotalPerformanceLogCount = allLst.AsQueryable().Count();
 
-                    //result.ErrorPerformanceLogCount = errorLst.AsQueryable().LongCount();
-                    //result.TotalPerformanceLogCount = allLst.AsQueryable().LongCount();
-
-                    //result.LastestPerformanceLogs = allLst.AsQueryable().OrderByDescending(x => x.Longdate).Take(20).ToList();
-                    //result.LastestErrorPerformanceLogs = errorLst.AsQueryable().OrderByDescending(x => x.Longdate).Take(20).ToList();
+                    result.LastestPerformanceLogs = allLst.AsQueryable().OrderByDescending(x => x.Longdate).Take(20).ToList();
+                    result.LastestErrorPerformanceLogs = errorLst.AsQueryable().OrderByDescending(x => x.Longdate).Take(20).ToList();
                 }
 
-                //GetAppLogsStatsByDay();
-                //GetPerformanceLogsStatsByDay();
-
-                //return new ReturnModel<DashboardSummary> { Model = result };
+                return new ReturnModel<DashboardSummary>(result);
             }
             catch (Exception ex)
             {
@@ -356,18 +286,15 @@ namespace LogR.Repository
             }
         }
 
-        public ReturnListModel<String, BaseSearchCriteria> GetMachineNames(BaseSearchCriteria search)
+        public ReturnListModel<string, BaseSearchCriteria> GetMachineNames(BaseSearchCriteria search)
         {
             try
             {
-                //using (var session = appLogProvider.OpenSession<AppLog>())
+                using (var reader = GetNewAppReader())
                 {
-                    throw new NotImplementedException();
-
-                    //var lst = session.Query().Select(x => x.MachineName).Distinct().ToList();
-                    //search.TotalRowCount = lst.Count;
-                    //search.CurrentRows = lst.Count;
-                    //return new ReturnListModel<string, BaseSearchCriteria> { Model = lst, Search = search, Error = null };
+                    var searcher = new IndexSearcher(reader);
+                    var lst = searcher.AsQueryable<AppLog>().Select(x => x.MachineName).ToList();
+                    return new ReturnListModel<string, BaseSearchCriteria>(search, lst);
                 }
             }
             catch (Exception ex)
@@ -375,22 +302,19 @@ namespace LogR.Repository
                 log.Error(ex, "Error when getting Machine Name  List ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<String, BaseSearchCriteria>(search, ex);
+                return new ReturnListModel<string, BaseSearchCriteria>(search, ex);
             }
         }
 
-        public ReturnListModel<String, BaseSearchCriteria> GetAppNames(BaseSearchCriteria search)
+        public ReturnListModel<string, BaseSearchCriteria> GetAppNames(BaseSearchCriteria search)
         {
             try
             {
-                //using (var session = appLogProvider.OpenSession<AppLog>())
+                using (var reader = GetNewAppReader())
                 {
-                    throw new NotImplementedException();
-
-                    //var lst = session.Query().Select(x => x.App).Distinct().ToList();
-                    //search.TotalRowCount = lst.Count;
-                    //search.CurrentRows = lst.Count;
-                    //return new ReturnListModel<string, BaseSearchCriteria> { Model = lst, Search = search, Error = null };
+                    var searcher = new IndexSearcher(reader);
+                    var lst = searcher.AsQueryable<AppLog>().Select(x => x.App).ToList();
+                    return new ReturnListModel<string, BaseSearchCriteria>(search, lst);
                 }
             }
             catch (Exception ex)
@@ -398,22 +322,19 @@ namespace LogR.Repository
                 log.Error(ex, "Error when getting App List ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<String, BaseSearchCriteria>(search, ex);
+                return new ReturnListModel<string, BaseSearchCriteria>(search, ex);
             }
         }
 
-        public ReturnListModel<String, BaseSearchCriteria> GetSeverityNames(BaseSearchCriteria search)
+        public ReturnListModel<string, BaseSearchCriteria> GetSeverityNames(BaseSearchCriteria search)
         {
             try
             {
-                //using (var session = appLogProvider.OpenSession<AppLog>())
+                using (var reader = GetNewAppReader())
                 {
-                    throw new NotImplementedException();
-
-                    //var lst = session.Query().Select(x => x.Severity).Distinct().ToList();
-                    //search.TotalRowCount = lst.Count;
-                    //search.CurrentRows = lst.Count;
-                    //return new ReturnListModel<string, BaseSearchCriteria> { Model = lst, Search = search, Error = null };
+                    var searcher = new IndexSearcher(reader);
+                    var lst = searcher.AsQueryable<AppLog>().Select(x => x.Severity).ToList();
+                    return new ReturnListModel<string, BaseSearchCriteria>(search, lst);
                 }
             }
             catch (Exception ex)
@@ -421,33 +342,29 @@ namespace LogR.Repository
                 log.Error(ex, "Error when getting Severity List ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<String, BaseSearchCriteria>(search, ex);
+                return new ReturnListModel<string, BaseSearchCriteria>(search, ex);
             }
         }
 
-        public ReturnListModel<String, BaseSearchCriteria> GetUserNames(BaseSearchCriteria search)
+        public ReturnListModel<string, BaseSearchCriteria> GetUserNames(BaseSearchCriteria search)
         {
             try
             {
-                //using (var session = appLogProvider.OpenSession<AppLog>())
+                using (var reader = GetNewAppReader())
                 {
-                    throw new NotImplementedException();
-
-                    //var lst = session.Query().Select(x => x.AspnetUserIdentity).Distinct().ToList();
-                    //search.TotalRowCount = lst.Count;
-                    //search.CurrentRows = lst.Count;
-                    //return new ReturnListModel<string, BaseSearchCriteria> { Model = lst, Search = search, Error = null };
+                    var searcher = new IndexSearcher(reader);
+                    var lst = searcher.AsQueryable<AppLog>().Select(x => x.UserIdentity).ToList();
+                    return new ReturnListModel<string, BaseSearchCriteria>(search, lst);
                 }
             }
             catch (Exception ex)
             {
-                log.Error(ex, "Error when getting Severity List ");
+                log.Error(ex, "Error when getting User name List ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<String, BaseSearchCriteria>(search, ex);
+                return new ReturnListModel<string, BaseSearchCriteria>(search, ex);
             }
         }
-
 
         public Dictionary<DateTime, long> GetAppLogsStatsByDay()
         {
@@ -473,6 +390,7 @@ namespace LogR.Repository
                 log.Error(ex, "Error when getting GetStatsByDay");
                 return null;
             }
+
             //return result;
         }
 
@@ -493,16 +411,63 @@ namespace LogR.Repository
             }
         }
 
-        public SystemStats GetStats()
+        public ReturnModel<SystemStats> GetStats()
         {
             SystemStats stat = new SystemStats();
             stat.AppDataFolderSize = GetAppDataFolderSize();
             stat.PerformanceDataFolderSize = GetPerformanceDataFolderSize();
             stat.LogFolderSize = GetLogFolderSize();
             stat.LogFileCount = GetLogFileCount();
-            return stat;
+            return new ReturnModel<SystemStats>(stat);
         }
 
+        private void SavePerformanceLogX(string message)
+        {
+            try
+            {
+                var item = JsonUtils.Deserialize<PerformanceLog>(message);
+                if (item == null)
+                {
+                    log.Error("Unable to deserialize the performance log message -  " + message);
+                    return;
+                }
+
+                item.Id = Guid.NewGuid().ToString();
+                item.LongdateAsTicks = item.Longdate.Ticks;
+                using (var writer = GetNewPerfWriter())
+                    writer.Add<PerformanceLog>(item);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when saving Performance Log - Message = " + message);
+            }
+        }
+
+        private void SaveAppLogX(string message)
+        {
+            try
+            {
+                var item = JsonUtils.Deserialize<AppLog>(message);
+                if (item == null)
+                {
+                    log.Error("Unable to deserialize the app log message -  " + message);
+                    return;
+                }
+
+                item.Id = Guid.NewGuid().ToString();
+                item.LongdateAsTicks = item.Longdate.Ticks;
+
+                using (var writer = GetNewAppWriter())
+                {
+                    writer.Add(item);
+                    writer.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when saving App Log - Message = " + message);
+            }
+        }
 
         private ulong GetAppDataFolderSize()
         {
@@ -525,5 +490,39 @@ namespace LogR.Repository
             return filenameList.LongCount();
         }
 
+        private IndexWriter GetNewPerfWriter()
+        {
+            return new IndexWriter(prefLogDirectory, new IndexWriterConfig(LuceneVersion.LUCENE_48, new StandardAnalyzer(LuceneVersion.LUCENE_48)));
+        }
+
+        private IndexWriter GetNewAppWriter()
+        {
+            return new IndexWriter(appLogDirectory, new IndexWriterConfig(LuceneVersion.LUCENE_48, new StandardAnalyzer(LuceneVersion.LUCENE_48)));
+        }
+
+        private bool IsPerfLogIndexAvailable()
+        {
+            return DirectoryReader.IndexExists(prefLogDirectory);
+        }
+
+        private bool IsAppLogIndexAvailable()
+        {
+            return DirectoryReader.IndexExists(appLogDirectory);
+        }
+
+        private IndexReader GetNewPerfReader()
+        {
+            return DirectoryReader.Open(prefLogDirectory);
+        }
+
+        private IndexReader GetNewAppReader()
+        {
+            return DirectoryReader.Open(appLogDirectory);
+        }
+
+        private IndexReader GetNewReader(IndexWriter writer)
+        {
+            return DirectoryReader.Open(writer, false);
+        }
     }
 }

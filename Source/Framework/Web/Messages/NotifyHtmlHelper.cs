@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.Html;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Framework.Web.Messages
 {
@@ -15,7 +11,7 @@ namespace Framework.Web.Messages
 
         public static HtmlString DisplayMsg(string msgType, string caption, string msg, bool canHide)
         {
-            return new HtmlString(String.Format("<p class=\"flash {0}\"> {1} </p>", msgType, msg));
+            return new HtmlString(string.Format("<p class=\"flash {0}\"> {1} </p>", msgType, msg));
         }
 
         public static HtmlString DisplayInfoMsg(string caption, string infoMsg, bool canHide)
@@ -57,7 +53,6 @@ namespace Framework.Web.Messages
         {
             return DisplayErrorMsg(infoMsg, true);
         }
-
 
         public static HtmlString DisplayWarningMsg(string caption, string infoMsg, bool canHide)
         {

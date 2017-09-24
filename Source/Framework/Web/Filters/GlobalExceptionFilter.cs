@@ -2,13 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Framework.Web.Filters
 {
-    public class GlobalExceptionFilter: IExceptionFilter
+    public class GlobalExceptionFilter : IExceptionFilter
     {
         public void OnException(ExceptionContext context)
         {
@@ -22,10 +19,9 @@ namespace Framework.Web.Filters
                     || typeof(ReturnListModel<,>) == controllerActionDescriptor.MethodInfo.ReturnType.GetGenericTypeDefinition())
                 {
                     context.HttpContext.Response.StatusCode = errorStatus;
-                    context.Result = new JsonResult(new ReturnModel<Object>(exception));
+                    context.Result = new JsonResult(new ReturnModel<object>(exception));
                 }
             }
         }
-
     }
 }

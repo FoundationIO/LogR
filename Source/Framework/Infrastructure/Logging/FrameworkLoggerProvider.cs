@@ -1,20 +1,17 @@
-﻿using Framework.Infrastructure.Config;
+﻿using System.Collections.Concurrent;
+using System.Linq;
+using Framework.Infrastructure.Config;
 using Framework.Infrastructure.Models.Config;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.Logging
 {
     public class FrameworkLoggerProvider : ILoggerProvider
     {
         private readonly ConcurrentDictionary<string, FrameworkLogger> loggers = new ConcurrentDictionary<string, FrameworkLogger>();
-        IBaseConfiguration config;
-        ILog log;
+        private IBaseConfiguration config;
+        private ILog log;
+
         public FrameworkLoggerProvider(IBaseConfiguration config, ILog log)
         {
             this.config = config;
@@ -24,6 +21,10 @@ namespace Framework.Infrastructure.Logging
         public ILogger CreateLogger(string categoryName)
         {
             return loggers.GetOrAdd(categoryName, CreateLoggerImplementation);
+        }
+
+        public void Dispose()
+        {
         }
 
         private FrameworkLogger CreateLoggerImplementation(string name)
@@ -38,20 +39,19 @@ namespace Framework.Infrastructure.Logging
                 || config.LogSettings.OtherFrameworkLogSettings.Count == 0
                 || config.LogSettings.OtherFrameworkLogSettings.Count(x => name.ToLower().Trim().StartsWith(x.Key.ToLower().Trim())) == 0)
             {
-                if(config.LogSettings.OtherFrameworkLogSettings.Exists(x => x.Key.ToLower().Trim() == "Default".ToLower()))
+                if (config.LogSettings.OtherFrameworkLogSettings.Exists(x => x.Key.ToLower().Trim() == "Default".ToLower()))
                 {
                     var defaultItem = config.LogSettings.OtherFrameworkLogSettings.FirstOrDefault(x => x.Key.ToLower().Trim() == "Default".ToLower());
-                    return GetSettingsForLogLevel(defaultItem.Value); 
+                    return GetSettingsForLogLevel(defaultItem.Value);
                 }
                 else
                 {
                     return LogSettings.NoOpLogSettings();
                 }
-            }                
+            }
 
-            var entry = config.LogSettings.OtherFrameworkLogSettings.FirstOrDefault(x => name.ToLower().Trim().StartsWith(x.Key.ToLower().Trim())); 
+            var entry = config.LogSettings.OtherFrameworkLogSettings.FirstOrDefault(x => name.ToLower().Trim().StartsWith(x.Key.ToLower().Trim()));
             return GetSettingsForLogLevel(entry.Value);
-
         }
 
         private LogSettings GetSettingsForLogLevel(LogLevel logLevel)
@@ -73,20 +73,14 @@ namespace Framework.Infrastructure.Logging
 
                 default:
                 case LogLevel.None:
-                    return LogSettings.NoOpLogSettings();                
+                    return LogSettings.NoOpLogSettings();
             }
         }
 
         private LogSettings GetDefaultOrNoOpSettings()
         {
-            //fixme: need to change this this 
+            // fixme: need to change this this
             return config.LogSettings;
-        }        
-
-        public void Dispose()
-        {
-
         }
-
     }
 }

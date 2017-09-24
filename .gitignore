@@ -48,7 +48,6 @@ Solution/packages/**
 Source/LogR/App/Web/wwwroot/lib/**
 **/*.user
 **/.vs/**
-Data/Database/**
+Data/**
 **/PublishProfiles/**
 *.sqlite3
-AppLogs

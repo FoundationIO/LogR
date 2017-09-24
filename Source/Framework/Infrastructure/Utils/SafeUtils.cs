@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.Utils
 {
@@ -14,6 +10,7 @@ namespace Framework.Infrastructure.Utils
             {
                 return defaultValue;
             }
+
             try
             {
                 int result;
@@ -29,10 +26,11 @@ namespace Framework.Infrastructure.Utils
 
         public static bool Bool(string obj, bool defaultValue = false)
         {
-            if (String.IsNullOrEmpty(obj))
+            if (string.IsNullOrEmpty(obj))
             {
                 return defaultValue;
             }
+
             var bstr = obj.Trim().ToUpper();
             if ((bstr == "ON") || (bstr == "T") || (bstr == "TRUE") || (bstr == "Y") || (bstr == "YES") || (bstr == "1") || (Int(bstr) > 0))
                 return true;
@@ -45,6 +43,7 @@ namespace Framework.Infrastructure.Utils
             {
                 return defaultValue;
             }
+
             try
             {
                 var s = obj as string;
@@ -64,6 +63,7 @@ namespace Framework.Infrastructure.Utils
             {
                 return defaultValue;
             }
+
             try
             {
                 ushort result;
@@ -83,6 +83,7 @@ namespace Framework.Infrastructure.Utils
             {
                 return defaultValue;
             }
+
             try
             {
                 return Convert.ToInt16(obj);
@@ -93,13 +94,13 @@ namespace Framework.Infrastructure.Utils
             }
         }
 
-
         public static long Long(object obj, long defaultValue = 0)
         {
             if (obj == null)
             {
                 return defaultValue;
             }
+
             try
             {
                 return Convert.ToInt64(obj);
@@ -116,6 +117,7 @@ namespace Framework.Infrastructure.Utils
             {
                 return defaultValue;
             }
+
             try
             {
                 decimal result;
@@ -135,6 +137,7 @@ namespace Framework.Infrastructure.Utils
             {
                 return defaultValue;
             }
+
             try
             {
                 return Convert.ToSingle(obj);
@@ -151,6 +154,7 @@ namespace Framework.Infrastructure.Utils
             {
                 return defaultValue;
             }
+
             try
             {
                 return Convert.ToDouble(obj);
@@ -182,6 +186,7 @@ namespace Framework.Infrastructure.Utils
                 if (defaultValue != null)
                     enumValue = (T)System.Enum.ToObject(typeof(T), defaultValue);
             }
+
             return enumValue;
         }
 
@@ -234,7 +239,10 @@ namespace Framework.Infrastructure.Utils
             {
                 enumRet = System.Enum.ToObject(enumType, enumValue);
             }
-            catch (Exception) { enumRet = System.Enum.ToObject(enumType, defaultValue); }
+            catch (Exception)
+            {
+                enumRet = System.Enum.ToObject(enumType, defaultValue);
+            }
 
             return enumRet;
         }

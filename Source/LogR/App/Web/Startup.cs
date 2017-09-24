@@ -1,27 +1,23 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.IO;
+using Framework.Infrastructure.Config;
+using Framework.Infrastructure.Logging;
+using Framework.Web.Filters;
+using LogR.DI;
+using LogR.Web.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using LogR.Web.Controllers;
-using LogR.DI;
-using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.PlatformAbstractions;
-using Framework.Infrastructure.Logging;
-using Framework.Infrastructure.Config;
-using Framework.Web.Filters;
-using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace LogR.Web
 {
     public class Startup
     {
-        IHostingEnvironment hostingEnv;
+        private IHostingEnvironment hostingEnv;
 
         public Startup(IHostingEnvironment env)
         {
@@ -68,7 +64,6 @@ namespace LogR.Web
 
                 options.DescribeAllEnumsAsStrings();
             });
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

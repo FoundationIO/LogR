@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.Utils
 {
@@ -23,12 +19,14 @@ namespace Framework.Infrastructure.Utils
                     if ((info.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
                         continue;
                 }
+
                 size += (ulong)info.Length;
             }
+
             return size;
         }
 
-        public static String GetFileDirectory(String exeName)
+        public static string GetFileDirectory(string exeName)
         {
             try
             {
@@ -37,12 +35,11 @@ namespace Framework.Infrastructure.Utils
             }
             catch
             {
-                return "";
+                return string.Empty;
             }
         }
 
-
-        public static String GetApplicationExeDirectory()
+        public static string GetApplicationExeDirectory()
         {
             try
             {
@@ -51,7 +48,7 @@ namespace Framework.Infrastructure.Utils
             }
             catch
             {
-                return "";
+                return string.Empty;
             }
         }
 
@@ -62,7 +59,7 @@ namespace Framework.Infrastructure.Utils
 
         private static string CombineInternal(char slash, string path1, string path2, params string[] paramstrs)
         {
-            return string.Format("{0}{1}{2}{3}", path1.RemoveLastChar(slash), slash, path2.RemoveFirstChar(slash), (paramstrs == null || paramstrs.Length == 0) ? "" : PathString(paramstrs, slash));
+            return string.Format("{0}{1}{2}{3}", path1.RemoveLastChar(slash), slash, path2.RemoveFirstChar(slash), (paramstrs == null || paramstrs.Length == 0) ? string.Empty : PathString(paramstrs, slash));
         }
 
         private static string PathString(string[] paramstrs, char slash)
@@ -72,6 +69,7 @@ namespace Framework.Infrastructure.Utils
             {
                 sb.Append(StringUtils.RemoveLastCharAndAddFirstChar(item, slash));
             }
+
             return sb.ToString();
         }
     }

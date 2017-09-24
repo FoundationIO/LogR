@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using LogR.Service;
-using LogR.Common.Interfaces.Service;
+﻿using LogR.Common.Interfaces.Service;
 using LogR.Common.Models.Search;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LogR.Web.Controllers
 {
     public class HomeController : Controller
     {
-        ILogRetrivalService logRetrivalService;
+        private ILogRetrivalService logRetrivalService;
+
         public HomeController(ILogRetrivalService logRetrivalService)
         {
             this.logRetrivalService = logRetrivalService;
         }
-        
+
         public IActionResult Index()
         {
             return RedirectToAction("Dashboard");
@@ -36,7 +32,6 @@ namespace LogR.Web.Controllers
             var appData = logRetrivalService.GetAppLogs(search);
             appData.ActiveTab = 2;
             return View(appData);
-
         }
 
         [Route("/performance-logs")]
@@ -45,8 +40,14 @@ namespace LogR.Web.Controllers
             var perfData = logRetrivalService.GetPerformanceLogs(search);
             perfData.ActiveTab = 3;
             return View(perfData);
-
         }
 
+        [Route("/stats")]
+        public IActionResult Stats()
+        {
+            var data = logRetrivalService.GetStats();
+            data.ActiveTab = 4;
+            return View(data);
+        }
     }
 }

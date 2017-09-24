@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Framework.Web.Messages
 {
@@ -13,46 +9,51 @@ namespace Framework.Web.Messages
     {
         public static bool IsErrorMsgSet(this ViewContext helper)
         {
-            if ((helper.TempData != null) && (helper.TempData.Keys.Any(item => item.Equals(NotifyMessageContants.ErrorMsg))))
+            if ((helper.TempData != null) && helper.TempData.Keys.Any(item => item.Equals(NotifyMessageContants.ErrorMsg)))
             {
                 return true;
             }
+
             return false;
         }
 
         public static bool IsInfoMsgSet(this ViewContext helper)
         {
-            if ((helper.TempData != null) && (helper.TempData.Keys.Any(item => item.Equals(NotifyMessageContants.InfoMsg))))
+            if ((helper.TempData != null) && helper.TempData.Keys.Any(item => item.Equals(NotifyMessageContants.InfoMsg)))
             {
                 return true;
             }
+
             return false;
         }
 
         public static bool IsWarningMsgSet(this ViewContext helper)
         {
-            if ((helper.TempData != null) && (helper.TempData.Keys.Any(item => item.Equals(NotifyMessageContants.WarningMsg))))
+            if ((helper.TempData != null) && helper.TempData.Keys.Any(item => item.Equals(NotifyMessageContants.WarningMsg)))
             {
                 return true;
             }
+
             return false;
         }
 
         public static bool IsSuccessMsgSet(this ViewContext helper)
         {
-            if ((helper.TempData != null) && (helper.TempData.Keys.Any(item => item.Equals(NotifyMessageContants.SuccessMsg))))
+            if ((helper.TempData != null) && helper.TempData.Keys.Any(item => item.Equals(NotifyMessageContants.SuccessMsg)))
             {
                 return true;
             }
+
             return false;
         }
 
         public static bool IsShowCaptionSet(this ViewContext helper)
         {
-            if ((helper.TempData != null) && (helper.TempData.Keys.Any(item => item.Equals(NotifyMessageContants.ShowCaption))))
+            if ((helper.TempData != null) && helper.TempData.Keys.Any(item => item.Equals(NotifyMessageContants.ShowCaption)))
             {
                 return true;
             }
+
             return false;
         }
 
@@ -81,14 +82,14 @@ namespace Framework.Web.Messages
             return helper.ViewContext.IsShowCaptionSet();
         }
 
-        //
         public static HtmlString ShowErrorMsgIfSet(this ViewContext helper)
         {
             if (IsErrorMsgSet(helper))
             {
                 return NotifyHtmlHelper.DisplayErrorMsg((string)helper.TempData[NotifyMessageContants.ErrorMsg]);
             }
-            return new HtmlString("");
+
+            return new HtmlString(string.Empty);
         }
 
         public static HtmlString ShowInfoMsgIfSet(this ViewContext helper)
@@ -97,7 +98,8 @@ namespace Framework.Web.Messages
             {
                 return NotifyHtmlHelper.DisplayInfoMsg((string)helper.TempData[NotifyMessageContants.InfoMsg]);
             }
-            return new HtmlString("");
+
+            return new HtmlString(string.Empty);
         }
 
         public static HtmlString ShowWarningMsgIfSet(this ViewContext helper)
@@ -106,7 +108,8 @@ namespace Framework.Web.Messages
             {
                 return NotifyHtmlHelper.DisplayWarningMsg((string)helper.TempData[NotifyMessageContants.WarningMsg]);
             }
-            return new HtmlString("");
+
+            return new HtmlString(string.Empty);
         }
 
         public static HtmlString ShowSuccessMsgIfSet(this ViewContext helper)
@@ -115,20 +118,21 @@ namespace Framework.Web.Messages
             {
                 return NotifyHtmlHelper.DisplaySuccessMsg((string)helper.TempData[NotifyMessageContants.SuccessMsg]);
             }
-            return new HtmlString("");
+
+            return new HtmlString(string.Empty);
         }
 
         public static HtmlString ShowAllMessages(this ViewContext helper)
         {
             var sb = new StringBuilder();
             sb.Append(ShowErrorMsgIfSet(helper));
-            sb.Append("");
+            sb.Append(string.Empty);
             sb.Append(ShowInfoMsgIfSet(helper));
-            sb.Append("");
+            sb.Append(string.Empty);
             sb.Append(ShowWarningMsgIfSet(helper));
-            sb.Append("");
+            sb.Append(string.Empty);
             sb.Append(ShowSuccessMsgIfSet(helper));
-            sb.Append("");
+            sb.Append(string.Empty);
             return new HtmlString(sb.ToString());
         }
     }

@@ -1,49 +1,55 @@
-﻿using Framework.Infrastructure.Constants;
-using LogR.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
-using NetMQ;
+using Framework.Infrastructure.Constants;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Service;
 using LogR.Common.Models.Logs;
-using Framework.Infrastructure.Utils;
+using NetMQ;
 
 namespace LogR.Service
 {
     public class LogCollectService : ILogCollectService
     {
-        NetMQQueue<RawLogData> queue;
-        NetMQPoller poller;
-        ILogRepository logRepository;
+        private NetMQQueue<RawLogData> queue;
+        private NetMQPoller poller;
+        private ILogRepository logRepository;
+
         public LogCollectService(ILogRepository logRepository)
         {
             this.logRepository = logRepository;
             queue = new NetMQQueue<RawLogData>();
-            poller = new NetMQPoller { queue } ;
+            poller = new NetMQPoller
+            {
+                queue
+            };
             queue.ReceiveReady += (sender, args) => ProcessLogFromQueue(queue.Dequeue());
             poller.RunAsync();
         }
-        
+
         public void AddToQue(LogType logType, string logString, DateTime date)
         {
-            if (logString.IsTrimmedStringNullOrEmpty() == false)
+            if (string.IsNullOrEmpty(logString) == false)
                 queue.Enqueue(new RawLogData { Type = logType, Data = logString , ReceiveDate = date });
+        }
+
+        public void AddToDb(LogType logType, string logString, DateTime date)
+        {
+            if (string.IsNullOrEmpty(logString) == false)
+                logRepository.SaveLog(new RawLogData { Type = logType, Data = logString, ReceiveDate = date });
         }
 
         public void ProcessLogFromQueue(RawLogData logData)
         {
+            //fixme: Optimize this
             Task.Run(() =>
             {
                 SaveToDb(logData);
-            });            
+            });
         }
 
-        public void SaveToDb(RawLogData logData)
+        private void SaveToDb(RawLogData logData)
         {
             logRepository.SaveLog(logData);
         }
-
     }
 }

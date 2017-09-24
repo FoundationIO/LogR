@@ -3,69 +3,80 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Framework.Utilities.PocoGenerator.Utilities
 {
-
     public class GeneratorUtils
     {
-        static Regex rxCleanUp = new Regex(@"[^\w\d_]", RegexOptions.Compiled);
+        private static Regex rxCleanUp = new Regex(@"[^\w\d_]", RegexOptions.Compiled);
 
-        static string[] cs_keywords = { "abstract", "event", "new", "struct", "as", "explicit", "null",
-         "switch", "base", "extern", "object", "this", "bool", "false", "operator", "throw",
-         "break", "finally", "out", "true", "byte", "fixed", "override", "try", "case", "float",
-         "params", "typeof", "catch", "for", "private", "uint", "char", "foreach", "protected",
-         "ulong", "checked", "goto", "public", "unchecked", "class", "if", "readonly", "unsafe",
-         "const", "implicit", "ref", "ushort", "continue", "in", "return", "using", "decimal",
-         "int", "sbyte", "virtual", "default", "interface", "sealed", "volatile", "delegate",
-         "internal", "short", "void", "do", "is", "sizeof", "while", "double", "lock",
-         "stackalloc", "else", "long", "static", "enum", "namespace", "string" };
+        private static string[] csKeywords =
+        {
+            "abstract", "event", "new", "struct", "as", "explicit", "null",
+            "switch", "base", "extern", "object", "this", "bool", "false", "operator", "throw",
+            "break", "finally", "out", "true", "byte", "fixed", "override", "try", "case", "float",
+            "params", "typeof", "catch", "for", "private", "uint", "char", "foreach", "protected",
+            "ulong", "checked", "goto", "public", "unchecked", "class", "if", "readonly", "unsafe",
+            "const", "implicit", "ref", "ushort", "continue", "in", "return", "using", "decimal",
+            "int", "sbyte", "virtual", "default", "interface", "sealed", "volatile", "delegate",
+            "internal", "short", "void", "do", "is", "sizeof", "while", "double", "lock",
+            "stackalloc", "else", "long", "static", "enum", "namespace", "string",
+        };
 
-        public static Func<string, string> CleanUp = (str) =>
+        private static Func<string, string> cleanUp = (str) =>
         {
             str = rxCleanUp.Replace(str, "_");
 
-            if (char.IsDigit(str[0]) || cs_keywords.Contains(str))
+            if (char.IsDigit(str[0]) || csKeywords.Contains(str))
+            {
                 str = "@" + str;
+            }
 
-            str = str.Replace("_", "");
+            str = str.Replace("_", string.Empty);
             return str;
         };
 
-        public static Func<string, string> CleanUpTable = (str) =>
+        private static Func<string, string> cleanUpTable = (str) =>
         {
             str = rxCleanUp.Replace(str, "_");
 
-            if (char.IsDigit(str[0]) || cs_keywords.Contains(str))
+            if (char.IsDigit(str[0]) || csKeywords.Contains(str))
+            {
                 str = "@" + str;
+            }
 
             if (str.StartsWith("vw"))
+            {
                 str = str.Substring(2) + "View";
+            }
             else if (str.StartsWith("tbl"))
+            {
                 str = str.Substring(3);
+            }
 
-            str = str.Replace("_", "");
+            str = str.Replace("_", string.Empty);
             return str;
         };
 
         public static string MakeClassName(string str)
         {
-            return CleanUpTable(GeneratorUtils.Inflector.ToTitleCase(GeneratorUtils.Inflector.MakeSingular(str)));
-        }
-        public static string MakePropertyName(string str)
-        {
-            return CleanUpTable(GeneratorUtils.Inflector.ToTitleCase(str));
+            return cleanUpTable(GeneratorUtils.Inflector.ToTitleCase(GeneratorUtils.Inflector.MakeSingular(str)));
         }
 
+        public static string MakePropertyName(string str)
+        {
+            return cleanUpTable(GeneratorUtils.Inflector.ToTitleCase(str));
+        }
 
         public static string GetNullableValueAsString(bool value)
         {
             if (value == true)
+            {
                 return "true";
+            }
+
             return "false";
         }
-
 
         public static string ZapPassword(string connectionString)
         {
@@ -77,39 +88,58 @@ namespace Framework.Utilities.PocoGenerator.Utilities
         {
             int startPos = type.IndexOf(",");
             if (startPos < 0)
+            {
                 return -1;
+            }
+
             int endPos = type.IndexOf(")");
             if (endPos < 0)
+            {
                 return -1;
+            }
+
             string typePrecisionStr = type.Substring(startPos + 1, endPos - startPos - 1);
             int result = -1;
             if (int.TryParse(typePrecisionStr, out result))
+            {
                 return result;
+            }
             else
+            {
                 return -1;
+            }
         }
 
         public static int GetDatatypeSize(string type)
         {
             int result = -1;
             if (int.TryParse(type, out result))
+            {
                 return result;
+            }
 
             int startPos = type.IndexOf("(");
             if (startPos < 0)
+            {
                 return -1;
+            }
+
             int endPos = type.IndexOf(",");
             if (endPos < 0)
             {
                 endPos = type.IndexOf(")");
             }
+
             string typeSizeStr = type.Substring(startPos + 1, endPos - startPos - 1);
             if (int.TryParse(typeSizeStr, out result))
+            {
                 return result;
+            }
             else
+            {
                 return -1;
+            }
         }
-
 
         public static class Inflector
         {
@@ -137,7 +167,7 @@ namespace Framework.Utilities.PocoGenerator.Utilities
                 AddPluralRule("^(ox)$", "$1en");
                 AddPluralRule("(quiz)$", "$1zes");
 
-                AddSingularRule("s$", String.Empty);
+                AddSingularRule("s$", string.Empty);
                 AddSingularRule("ss$", "ss");
                 AddSingularRule("(n)ews$", "$1ews");
                 AddSingularRule("([ti])a$", "$1um");
@@ -181,10 +211,94 @@ namespace Framework.Utilities.PocoGenerator.Utilities
                 AddUnknownCountRule("sheep");
             }
 
+            public static string MakePlural(string word)
+            {
+                return ApplyRules(_plurals, word);
+            }
+
+            public static string MakeSingular(string word)
+            {
+                return ApplyRules(_singulars, word);
+            }
+
+            public static string ToTitleCase(string word)
+            {
+                return Regex.Replace(ToHumanCase(AddUnderscores(word)), @"\b([a-z])", match => { return match.Captures[0].Value.ToUpper(); });
+            }
+
+            public static string ToHumanCase(string lowercaseAndUnderscoredWord)
+            {
+                return MakeInitialCaps(Regex.Replace(lowercaseAndUnderscoredWord, @"_", " "));
+            }
+
+            public static string AddUnderscores(string pascalCasedWord)
+            {
+                return Regex.Replace(Regex.Replace(Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])", "$1_$2"), @"[-\s]", "_").ToLower();
+            }
+
+            public static string MakeInitialCaps(string word)
+            {
+                return string.Concat(word.Substring(0, 1).ToUpper(), word.Substring(1).ToLower());
+            }
+
+            public static string MakeInitialLowerCase(string word)
+            {
+                return string.Concat(word.Substring(0, 1).ToLower(), word.Substring(1));
+            }
+
+            public static bool IsStringNumeric(string str)
+            {
+                double result;
+                return double.TryParse(str, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out result);
+            }
+
+            public static string UppercaseFirst(string s)
+            {
+                if (string.IsNullOrEmpty(s))
+                {
+                    return string.Empty;
+                }
+
+                return char.ToUpper(s[0]) + s.Substring(1);
+            }
+
+            public static string AddOrdinalSuffix(string number)
+            {
+                if (IsStringNumeric(number))
+                {
+                    int n = int.Parse(number);
+                    int nMod100 = n % 100;
+
+                    if (nMod100 >= 11 && nMod100 <= 13)
+                    {
+                        return string.Concat(number, "th");
+                    }
+
+                    switch (n % 10)
+                    {
+                        case 1:
+                            return string.Concat(number, "st");
+                        case 2:
+                            return string.Concat(number, "nd");
+                        case 3:
+                            return string.Concat(number, "rd");
+                        default:
+                            return string.Concat(number, "th");
+                    }
+                }
+
+                return number;
+            }
+
+            public static string ConvertUnderscoresToDashes(string underscoredWord)
+            {
+                return underscoredWord.Replace('_', '-');
+            }
+
             private static void AddIrregularRule(string singular, string plural)
             {
-                AddPluralRule(String.Concat("(", singular[0], ")", singular.Substring(1), "$"), String.Concat("$1", plural.Substring(1)));
-                AddSingularRule(String.Concat("(", plural[0], ")", plural.Substring(1), "$"), String.Concat("$1", singular.Substring(1)));
+                AddPluralRule(string.Concat("(", singular[0], ")", singular.Substring(1), "$"), string.Concat("$1", plural.Substring(1)));
+                AddSingularRule(string.Concat("(", plural[0], ")", plural.Substring(1), "$"), string.Concat("$1", singular.Substring(1)));
             }
 
             private static void AddUnknownCountRule(string word)
@@ -202,16 +316,6 @@ namespace Framework.Utilities.PocoGenerator.Utilities
                 _singulars.Add(new InflectorRule(rule, replacement));
             }
 
-            public static string MakePlural(string word)
-            {
-                return ApplyRules(_plurals, word);
-            }
-
-            public static string MakeSingular(string word)
-            {
-                return ApplyRules(_singulars, word);
-            }
-
             private static string ApplyRules(IList<InflectorRule> rules, string word)
             {
                 string result = word;
@@ -227,84 +331,14 @@ namespace Framework.Utilities.PocoGenerator.Utilities
                         }
                     }
                 }
+
                 return result;
             }
 
-            public static string ToTitleCase(string word)
-            {
-                return Regex.Replace(ToHumanCase(AddUnderscores(word)), @"\b([a-z])",
-                    delegate (Match match) { return match.Captures[0].Value.ToUpper(); });
-            }
-
-            public static string ToHumanCase(string lowercaseAndUnderscoredWord)
-            {
-                return MakeInitialCaps(Regex.Replace(lowercaseAndUnderscoredWord, @"_", " "));
-            }
-
-            public static string AddUnderscores(string pascalCasedWord)
-            {
-                return Regex.Replace(Regex.Replace(Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])", "$1_$2"), @"[-\s]", "_").ToLower();
-            }
-
-            public static string MakeInitialCaps(string word)
-            {
-                return String.Concat(word.Substring(0, 1).ToUpper(), word.Substring(1).ToLower());
-            }
-
-            public static string MakeInitialLowerCase(string word)
-            {
-                return String.Concat(word.Substring(0, 1).ToLower(), word.Substring(1));
-            }
-
-            public static bool IsStringNumeric(string str)
-            {
-                double result;
-                return (double.TryParse(str, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out result));
-            }
-
-            public static string UppercaseFirst(string s)
-            {
-                if (string.IsNullOrEmpty(s))
-                    return string.Empty;
-                return char.ToUpper(s[0]) + s.Substring(1);
-            }
-
-
-            public static string AddOrdinalSuffix(string number)
-            {
-                if (IsStringNumeric(number))
-                {
-                    int n = int.Parse(number);
-                    int nMod100 = n % 100;
-
-                    if (nMod100 >= 11 && nMod100 <= 13)
-                        return String.Concat(number, "th");
-
-                    switch (n % 10)
-                    {
-                        case 1:
-                            return String.Concat(number, "st");
-                        case 2:
-                            return String.Concat(number, "nd");
-                        case 3:
-                            return String.Concat(number, "rd");
-                        default:
-                            return String.Concat(number, "th");
-                    }
-                }
-                return number;
-            }
-
-            public static string ConvertUnderscoresToDashes(string underscoredWord)
-            {
-                return underscoredWord.Replace('_', '-');
-            }
-
-            #region Nested type: InflectorRule
             private class InflectorRule
             {
-                public readonly Regex regex;
-                public readonly string replacement;
+                private readonly Regex regex;
+                private readonly string replacement;
 
                 public InflectorRule(string regexPattern, string replacementText)
                 {
@@ -315,17 +349,19 @@ namespace Framework.Utilities.PocoGenerator.Utilities
                 public string Apply(string word)
                 {
                     if (!regex.IsMatch(word))
+                    {
                         return null;
+                    }
 
                     string replace = regex.Replace(word, replacement);
                     if (word == word.ToUpper())
+                    {
                         replace = replace.ToUpper();
+                    }
 
                     return replace;
                 }
             }
-
-            #endregion
         }
     }
 }

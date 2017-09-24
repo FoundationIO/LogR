@@ -1,32 +1,24 @@
-﻿using LinqToDB.Data;
-using LinqToDB.DataProvider;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Framework.Infrastructure.Config;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Config;
+using LinqToDB.Data;
+using LinqToDB.DataProvider;
 
 namespace Framework.Data.DbAccess
 {
     public class DBManager : IDisposable, IDBManager
     {
-        LogSettings logConfig;
-        IBaseConfiguration config;
-        ILog log;
-        IDBInfo dbInfo;
-        IDataProvider dbProvider;
+        private LogSettings logConfig;
+        private IBaseConfiguration config;
+        private ILog log;
+        private IDBInfo dbInfo;
+        private IDataProvider dbProvider;
         private DataConnection connection = null;
-
-        public string ConnectionString { get; set; }
-
         private DataConnectionTransaction commonTransaction = null;
-
-        private static bool loggingToggled = false;
 
         public DBManager(IBaseConfiguration config, ILog log , IDBInfo dbInfo, IDataProvider dbProvider)
         {
@@ -39,53 +31,14 @@ namespace Framework.Data.DbAccess
             EnsureOpenConnection();
         }
 
-        private void ToggleLogging()
+        public string ConnectionString { get; set; }
+
+        public LinqToDB.Data.DataConnection Connection
         {
-            if (loggingToggled != true)
-            LinqToDB.Common.Configuration.AvoidSpecificDataProviderAPI = true;
-
-            if (logConfig.LogSql)
+            get
             {
-                DataConnection.TurnTraceSwitchOn(System.Diagnostics.TraceLevel.Verbose);
-                DataConnection.OnTrace = delegate (TraceInfo info)
-                {
-                    if (info.TraceInfoStep == TraceInfoStep.BeforeExecute)
-                        return;
-
-                    var profiledDbCommand = info.Command;
-
-                    var result = "";
-                    result = info.RecordsAffected.ToString();
-
-                    var ptxt = new StringBuilder();
-                    foreach (DbParameter param in profiledDbCommand.Parameters)
-                    {
-                        ptxt.Append(String.Format("{2} {0} = {1} ", param.ParameterName, param.Value, ptxt.Length > 0 ? "," : ""));
-                    }
-
-                    var parameterString = ptxt.ToString();
-
-                    if (info.Exception == null)
-                        log.Sql((profiledDbCommand.CommandType == CommandType.StoredProcedure ? "SP - " : "") + profiledDbCommand.CommandText + (parameterString.Length > 0 ? ("//" + parameterString) : ""), result, info.ExecutionTime ?? new TimeSpan(0));
-                    else
-                        log.SqlError(info.Exception, (profiledDbCommand.CommandType == CommandType.StoredProcedure ? "SP - " : "") + profiledDbCommand.CommandText + (parameterString.Length > 0 ? ("//" + parameterString) : ""));
-                };
-            }
-            else
-            {
-                DataConnection.TurnTraceSwitchOn(System.Diagnostics.TraceLevel.Off);
-            }
-        }
-
-        private void EnsureOpenConnection()
-        {
-            if ((connection == null) || ((connection.Connection == null) || (connection.Connection.State == ConnectionState.Closed || connection.Connection.State == ConnectionState.Broken)))
-            {
-                if (connection != null)
-                    connection.Dispose();
-                connection = new DataConnection(dbInfo.GetDBProvider(), ConnectionString);
-                connection.CommandTimeout = config.DatabaseCommandTimeout;
-
+                EnsureOpenConnection();
+                return connection;
             }
         }
 
@@ -115,10 +68,52 @@ namespace Framework.Data.DbAccess
             commonTransaction.Dispose();
         }
 
-        public LinqToDB.Data.DataConnection Connection
+        private void ToggleLogging()
         {
-            get { EnsureOpenConnection(); return connection; }
+            LinqToDB.Common.Configuration.AvoidSpecificDataProviderAPI = true;
+
+            if (logConfig.LogSql)
+            {
+                DataConnection.TurnTraceSwitchOn(System.Diagnostics.TraceLevel.Verbose);
+                DataConnection.OnTrace = info =>
+                {
+                    if (info.TraceInfoStep == TraceInfoStep.BeforeExecute)
+                        return;
+
+                    var profiledDbCommand = info.Command;
+
+                    var result = string.Empty;
+                    result = info.RecordsAffected.ToString();
+
+                    var ptxt = new StringBuilder();
+                    foreach (DbParameter param in profiledDbCommand.Parameters)
+                    {
+                        ptxt.Append(string.Format("{2} {0} = {1} ", param.ParameterName, param.Value, ptxt.Length > 0 ? "," : string.Empty));
+                    }
+
+                    var parameterString = ptxt.ToString();
+
+                    if (info.Exception == null)
+                        log.Sql((profiledDbCommand.CommandType == CommandType.StoredProcedure ? "SP - " : string.Empty) + profiledDbCommand.CommandText + (parameterString.Length > 0 ? ("//" + parameterString) : string.Empty), result, info.ExecutionTime ?? new TimeSpan(0));
+                    else
+                        log.SqlError(info.Exception, (profiledDbCommand.CommandType == CommandType.StoredProcedure ? "SP - " : string.Empty) + profiledDbCommand.CommandText + (parameterString.Length > 0 ? ("//" + parameterString) : string.Empty));
+                };
+            }
+            else
+            {
+                DataConnection.TurnTraceSwitchOn(System.Diagnostics.TraceLevel.Off);
+            }
+        }
+
+        private void EnsureOpenConnection()
+        {
+            if ((connection == null) || ((connection.Connection == null) || (connection.Connection.State == ConnectionState.Closed || connection.Connection.State == ConnectionState.Broken)))
+            {
+                if (connection != null)
+                    connection.Dispose();
+                connection = new DataConnection(dbInfo.GetDBProvider(), ConnectionString);
+                connection.CommandTimeout = config.DatabaseCommandTimeout;
+            }
         }
     }
-
 }

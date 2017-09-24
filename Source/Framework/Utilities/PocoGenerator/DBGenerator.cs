@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using DatabaseSchemaReader;
 using DatabaseSchemaReader.DataSchema;
 using Framework.Utilities.PocoGenerator.Utilities;
@@ -17,7 +10,8 @@ namespace Framework.Utilities.PocoGenerator
 {
     public class DbGenerator
     {
-        Config config;
+        private Config config;
+
         public DbGenerator(Config config)
         {
             this.config = config;
@@ -25,7 +19,6 @@ namespace Framework.Utilities.PocoGenerator
 
         public DatabaseSchema GetSchema()
         {
-
 #if NET461
             var dbReader = new DatabaseReader(config.ConnectionString, config.ServerType);
 #else
@@ -33,19 +26,20 @@ namespace Framework.Utilities.PocoGenerator
 #endif
             var schema = dbReader.ReadAll();
 
-            //Fix all the names of the Views and Tables then proceed to check for duplicates
+            // Fix all the names of the Views and Tables then proceed to check for duplicates
             foreach (var tbl in schema.Tables)
             {
                 tbl.NetName = GeneratorUtils.MakeClassName(tbl.Name);
                 FixColumns(tbl.Columns);
             }
+
             foreach (var view in schema.Views)
             {
                 view.NetName = GeneratorUtils.MakeClassName(view.Name);
                 FixColumns(view.Columns);
             }
 
-            //Now look for duplicates and correct the variable names
+            // Now look for duplicates and correct the variable names
             foreach (var tbl in schema.Tables)
             {
                 FixTableAndViewName(tbl.NetName, schema.Tables, schema.Views);
@@ -96,9 +90,7 @@ namespace Framework.Utilities.PocoGenerator
                     idx++;
                     view.NetName = view.NetName + "_" + idx;
                 }
-
             }
-
         }
 
         public void FixColumns(List<DatabaseColumn> columns)
@@ -126,12 +118,12 @@ namespace Framework.Utilities.PocoGenerator
                             idx++;
                             continue;
                         }
+
                         idx++;
                         newCol.NetName = newCol.NetName + "_" + idx;
                     }
                 }
             }
-
         }
 
         public void LoadAndGenerate()
@@ -146,7 +138,5 @@ namespace Framework.Utilities.PocoGenerator
                 File.WriteAllText(item.CodeFile, result);
             }
         }
-
     }
-
 }

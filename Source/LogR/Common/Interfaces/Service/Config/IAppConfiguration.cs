@@ -1,24 +1,15 @@
-﻿using Framework.Infrastructure.Constants;
-using Framework.Infrastructure.Config;
-using Framework.Infrastructure.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Framework.Infrastructure.Config;
 
 namespace LogR.Common.Interfaces.Service.Config
 {
     public interface IAppConfiguration : IBaseConfiguration
     {
-        int ServerPort { get;}
+        int ServerPort { get; }
 
-        String IndexBaseFolder { get; }
+        string IndexBaseFolder { get; }
 
-        String AppLogIndexFolder { get; }
+        string AppLogIndexFolder { get; }
 
-        String PerformanceLogIndexFolder { get; }
+        string PerformanceLogIndexFolder { get; }
     }
 }

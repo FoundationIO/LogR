@@ -1,17 +1,11 @@
-﻿using Framework.Infrastructure.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Framework.Infrastructure.Exceptions;
 
 namespace Framework.Infrastructure.Models.Result
 {
     public class ReturnModel<T>
     {
-        public T Result { get; set; }
-        public bool IsSuccess { get; set; }
-        public ErrorHolder ErrorHolder { get; set; }
-        public int ActiveTab { get; set; }
-
         public ReturnModel(T result)
         {
             Result = result;
@@ -21,19 +15,27 @@ namespace Framework.Infrastructure.Models.Result
         public ReturnModel(Exception ex)
         {
             IsSuccess = false;
-            ErrorHolder = ErrorHolder.Create(ex);
+            ErrorHolder = new Error(ex);
         }
 
         public ReturnModel(string errorMsg, Exception ex = null)
         {
             IsSuccess = false;
-            ErrorHolder = ErrorHolder.Create(errorMsg, ex);
+            ErrorHolder = new Error(errorMsg, ex);
         }
 
         public ReturnModel(string errorMsg, List<ErrorItem> errorList)
         {
             IsSuccess = false;
-            ErrorHolder = ErrorHolder.Create(errorMsg, errorList);
+            ErrorHolder = new Error(errorMsg, errorList);
         }
+
+        public T Result { get; set; }
+
+        public bool IsSuccess { get; set; }
+
+        public Error ErrorHolder { get; set; }
+
+        public int ActiveTab { get; set; }
     }
 }

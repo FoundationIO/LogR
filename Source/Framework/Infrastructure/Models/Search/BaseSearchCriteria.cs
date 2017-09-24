@@ -1,22 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.Models.Search
 {
     public class BaseSearchCriteria
     {
-        public int Page { get; set; }
-        public int PageSize { get; set; }
-        public int Keyword { get; set; }
-        public string SortBy { get; set; }
-        public bool SortAscending { get; set; }
-        public int CurrentRows { get; set; }
-
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
-
         public BaseSearchCriteria()
         {
             PageSize = 100;
@@ -25,6 +12,26 @@ namespace Framework.Infrastructure.Models.Search
             TotalRowCount = -1;
             CurrentRows = -1;
         }
+
+        public int Page { get; set; }
+
+        public int PageSize { get; set; }
+
+        public int Keyword { get; set; }
+
+        public string SortBy { get; set; }
+
+        public bool SortAscending { get; set; }
+
+        public int CurrentRows { get; set; }
+
+        public DateTime? FromDate { get; set; }
+
+        public DateTime? ToDate { get; set; }
+
+        public long TotalRowCount { get; set; }
+
+        public int NumericPageCount { get; set; }
 
         public void FixDefaultValues()
         {
@@ -41,16 +48,6 @@ namespace Framework.Infrastructure.Models.Search
             {
                 this.FromDate = this.ToDate.Value.AddDays(-7);
             }
-        }
-
-        private void ValidateMandatoryParams()
-        {
-            if (TotalRowCount == -1)
-                throw new Exception("TotalRowCount should be set to the criteria object before sending to the View");
-
-            if (CurrentRows == -1)
-                throw new Exception("CurrentRows should be set to the criteria object before sending to the View");
-
         }
 
         public int CurrentPageStartRow()
@@ -73,18 +70,20 @@ namespace Framework.Infrastructure.Models.Search
             return result;
         }
 
-
         public long PageCount()
         {
             ValidateMandatoryParams();
-            long pageCount = TotalRowCount % this.PageSize == 0 ? TotalRowCount / this.PageSize : TotalRowCount / this.PageSize + 1;
+            long pageCount = TotalRowCount % this.PageSize == 0 ? TotalRowCount / this.PageSize : (TotalRowCount / this.PageSize) + 1;
             return Math.Max(pageCount, 1);
         }
 
+        private void ValidateMandatoryParams()
+        {
+            if (TotalRowCount == -1)
+                throw new Exception("TotalRowCount should be set to the criteria object before sending to the View");
 
-        public long TotalRowCount { get; set; }
-
-        public int NumericPageCount { get; set; }
-
+            if (CurrentRows == -1)
+                throw new Exception("CurrentRows should be set to the criteria object before sending to the View");
+        }
     }
 }

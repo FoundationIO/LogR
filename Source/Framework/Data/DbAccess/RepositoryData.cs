@@ -1,22 +1,24 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using LinqToDB;
-using LinqToDB.Linq;
 
 namespace Framework.Data.DbAccess
 {
-    public class RepositoryData<T> : IDisposable, IRepositoryData<T> where T : class , new()
+    public class RepositoryData<T> : IDisposable, IRepositoryData<T>
+        where T : class , new()
     {
         private readonly IDBManager dbMgr;
-        public ITable<T> Table { get { return dbMgr.Connection.GetTable<T>(); } }
 
         public RepositoryData(IDBManager dbMgr)
         {
             this.dbMgr = dbMgr;
+        }
+
+        public ITable<T> Table
+        {
+            get { return dbMgr.Connection.GetTable<T>(); }
         }
 
         public void Dispose()
@@ -64,7 +66,6 @@ namespace Framework.Data.DbAccess
         {
             return Table.FirstOrDefault(predicate);
         }
-
 
         public void BeginTransaction()
         {
@@ -119,6 +120,7 @@ namespace Framework.Data.DbAccess
             {
                 totalItems = Table.Count();
             }
+
             return querable.ToList();
         }
 
@@ -136,9 +138,9 @@ namespace Framework.Data.DbAccess
             {
                 querable = querable.Where(predicate);
             }
+
             return querable.ToList();
         }
-
 
         public void InsertAll(List<T> list)
         {

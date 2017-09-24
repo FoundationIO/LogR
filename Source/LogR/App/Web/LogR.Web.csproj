@@ -7,23 +7,47 @@
     <OutputType>Exe</OutputType>
     <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
     <StartupObject>LogR.Web.Program</StartupObject>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x86</PlatformTarget>
     <NoWarn>1591</NoWarn>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
     <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <WarningsAsErrors />
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <NoWarn>1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <WarningsAsErrors />
+    <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <NoWarn>1591</NoWarn>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>0</WarningLevel>
     <DefineConstants>TRACE;RELEASE</DefineConstants>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <NoWarn>1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
+    <WarningLevel>0</WarningLevel>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
+    <WarningsAsErrors />
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,19 +63,32 @@
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.105.2" />
     <PackageReference Include="Swashbuckle" Version="6.0.0-beta902" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
   </ItemGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|$(TargetFramework)|AnyCPU'">
+    <DocumentationFile>bin\Debug\$(TargetFramework)\logR.Web.xml</DocumentationFile>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|$(TargetFramework)|x64'">
     <DocumentationFile>bin\Debug\$(TargetFramework)\logR.Web.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|$(TargetFramework)|AnyCPU'">
     <DocumentationFile>bin\Release\$(TargetFramework)\logR.Web.xml</DocumentationFile>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|$(TargetFramework)|x64'">
+    <DocumentationFile>bin\Release\$(TargetFramework)\logR.Web.xml</DocumentationFile>
+  </PropertyGroup>
   
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\..\LogR.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\images\" />

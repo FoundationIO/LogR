@@ -1,17 +1,12 @@
-﻿using FluentMigrator.Runner.Processors;
+﻿using System;
+using System.Threading;
+using FluentMigrator.Runner.Processors;
+using Framework.Infrastructure.Config;
+using Framework.Infrastructure.Constants;
 using LinqToDB.DataProvider;
 using LinqToDB.DataProvider.MySql;
 using LinqToDB.DataProvider.SQLite;
 using LinqToDB.DataProvider.SqlServer;
-using Framework.Infrastructure.Constants;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Framework.Infrastructure.Config;
-using Framework.Infrastructure.Logging;
 
 namespace Framework.Data.DbAccess
 {
@@ -20,7 +15,7 @@ namespace Framework.Data.DbAccess
         private static SqlServerDataProvider sqlServerProvider = new SqlServerDataProvider("default", SqlServerVersion.v2008);
         private static SQLiteDataProvider sqlite3Provider = new SQLiteDataProvider();
         private static MySqlDataProvider mySqlProvider = new MySqlDataProvider();
-        public IBaseConfiguration config;
+        private IBaseConfiguration config;
 
         public DBInfo(IBaseConfiguration config)
         {
@@ -32,19 +27,20 @@ namespace Framework.Data.DbAccess
             int workerThreads, completionPortThreads;
             ThreadPool.GetMaxThreads(out workerThreads, out completionPortThreads);
 
-            var connectionStr = "";
+            var connectionStr = string.Empty;
 
-            var dbType = (config.DatabaseType ?? "").Trim().ToLower();
+            var dbType = (config.DatabaseType ?? string.Empty).Trim().ToLower();
             switch (dbType)
             {
                 case DBType.MYSQL:
-                    {                        
+                    {
                         if (config.DatabaseUseIntegratedLogin)
                             connectionStr = $"IntegratedSecurity=yes;Server={config.DatabaseServer};Database={config.DatabaseName};";
                         else
                             connectionStr = $"Server={config.DatabaseServer};Database={config.DatabaseName};Uid={config.DatabaseUserName};Pwd={config.DatabasePassword};";
                         break;
                     }
+
                 case DBType.SQLSERVER:
                     {
                         if (config.DatabaseUseIntegratedLogin)
@@ -53,36 +49,42 @@ namespace Framework.Data.DbAccess
                             connectionStr = $"Server={config.DatabaseServer};Initial Catalog={config.DatabaseName};Persist Security Info=True;User ID={config.DatabaseUserName};Password={config.DatabasePassword};MultipleActiveResultSets=False;Application Name={config.AppName};Max Pool Size={workerThreads};";
                         break;
                     }
+
                 case DBType.SQLITE3:
                     {
                         connectionStr = $"Data Source={config.DatabaseName}; Version=3;PRAGMA journal_mode=WAL;";
                         break;
                     }
+
                 default:
                     {
                         throw new Exception($"Unable to get Configuration string, Unknown Database type specified in the configuration {config.DatabaseType}");
                     }
             }
+
             return connectionStr;
         }
 
         public MigrationProcessorFactory GetMigrationProcessorFactory()
         {
-            var dbType = (config.DatabaseType ?? "").Trim().ToLower();
+            var dbType = (config.DatabaseType ?? string.Empty).Trim().ToLower();
             switch (dbType)
             {
                 case DBType.MYSQL:
                     {
                         return new FluentMigrator.Runner.Processors.MySql.MySqlProcessorFactory();
                     }
+
                 case DBType.SQLSERVER:
                     {
                         return new FluentMigrator.Runner.Processors.SqlServer.SqlServer2008ProcessorFactory();
                     }
+
                 case DBType.SQLITE3:
                     {
                         return new FluentMigrator.Runner.Processors.SQLite.SQLiteProcessorFactory();
                     }
+
                 default:
                     {
                         throw new Exception($"Unable to get Migration Process Factory, Unknown Database type specified in the configuration {config.DatabaseType}");
@@ -92,28 +94,31 @@ namespace Framework.Data.DbAccess
 
         public IDataProvider GetDBProvider()
         {
-            var dbType = (config.DatabaseType ?? "").Trim().ToLower();
+            var dbType = (config.DatabaseType ?? string.Empty).Trim().ToLower();
             switch (dbType)
             {
                 case DBType.MYSQL:
                     {
                         return mySqlProvider;
                     }
+
                 case DBType.SQLSERVER:
                     {
                         return sqlServerProvider;
                     }
+
                 case DBType.SQLITE3:
                     {
                         return sqlite3Provider;
                     }
+
                 default:
                     {
                         throw new Exception($"Unable to get DB Provider, Unknown Database type specified in the configuration {config.DatabaseType}");
                     }
             }
-            throw new Exception(String.Format("DB Type {0} is not supported yet", config.DatabaseType));
-        }
 
+            throw new Exception(string.Format("DB Type {0} is not supported yet", config.DatabaseType));
+        }
     }
 }

@@ -8,7 +8,6 @@
         <section class="content-header">
             <h1>
                 App Logs
-                <small>V 2.0</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -80,7 +79,7 @@
                                         <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "ThreadId" }, { "DisplayName", "ThreadId" } })</th>
                                         <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "CurrentFunction" }, { "DisplayName", "Function" } })</th>
                                         <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "CurrentTag" }, { "DisplayName", "Tag" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "AspnetUserIdentity" }, { "DisplayName", "User" } })</th>
+                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "UserIdentity" }, { "DisplayName", "User" } })</th>
                                         <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "RemoteAddress" }, { "DisplayName", "Ip" } })</th>
                                         <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "SqlResult" }, { "DisplayName", "SqlResult" } })</th>
                                         <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "ElapsedTime" }, { "DisplayName", "ElapsedTime" } })</th>
@@ -100,7 +99,7 @@
                                             <td>@Current.ThreadId</td>
                                             <td>@Current.CurrentFunction</td>
                                             <td>@Current.CurrentTag</td>
-                                            <td>@Current.AspnetUserIdentity</td>
+                                            <td>@Current.UserIdentity</td>
                                             <td>@Current.RemoteAddress</td>
                                             <td>@Current.SqlResult</td>
                                             <td>@Current.ElapsedTime</td>

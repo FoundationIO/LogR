@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using System.ServiceProcess;
-using LogR.DI;
 using Framework.Data.Migrations;
-using Framework.Infrastructure.Logging;
-using Framework.Infrastructure.Config;
-using Framework.Infrastructure.Utils;
 using Framework.Infrastructure.DI;
+using Framework.Infrastructure.Logging;
+using Framework.Infrastructure.Utils;
 using LogR.Common.Interfaces.Service.Config;
+using LogR.DI;
+using Microsoft.AspNetCore.Hosting;
 
 namespace LogR.Web
 {
@@ -76,8 +71,6 @@ namespace LogR.Web
                     if (args.IsParamValueAvailable("/C") || Environment.UserInteractive)
                     {
                         host.Run();
-                        //Console.WriteLine("Please press any key to exit");
-                        //Console.ReadKey();
                     }
                     else
                     {
@@ -86,6 +79,5 @@ namespace LogR.Web
                 }
             }
         }
-
     }
 }

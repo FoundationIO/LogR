@@ -1,0 +1,121 @@
+﻿@model Framework.Infrastructure.Models.Result.ReturnModel<LogR.Common.Models.Stats.SystemStats>
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Stats
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Stats</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        @if (Model.IsSuccess == false)
+        {
+            @Html.Partial("_Message", Model.ErrorHolder.FriendlyMessage)
+        }
+        else
+        {
+        <!-- Info boxes -->
+        <div class="row">
+            <div class="col-md-2 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">LastNumberOfLogsDeleted</span>
+                        <span class="info-box-number">@Model.Result.LastNumberOfLogsDeleted</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+
+            <div class="col-md-2 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fa fa-bug"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">LastLogDeletedDate</span>
+                        <span class="info-box-number">@Model.Result.LastLogDeletedDateTime</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+
+            <div class="col-md-2 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fa fa-bug"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">GetAppDataFolderSize</span>
+                        <span class="info-box-number">@Model.Result.AppDataFolderSize</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+
+            <!-- /.col -->
+            <div class="col-md-2 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-aqua"><i class="fa fa-exclamation-triangle"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">PerformanceDataFolderSize</span>
+                        <span class="info-box-number">@Model.Result.PerformanceDataFolderSize</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+
+
+            <div class="col-md-2 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">LogFileCount</span>
+                        <span class="info-box-number"><a href="/performance-logs">@Model.Result.LogFileCount</a></span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+
+            <div class="col-md-2 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fa fa-bug"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">LogFolderSize</span>
+                        <span class="info-box-number">@Model.Result.LogFolderSize</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        }
+    </section>
+
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+
+		

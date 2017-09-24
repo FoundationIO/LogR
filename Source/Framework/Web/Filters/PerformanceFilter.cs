@@ -1,20 +1,16 @@
-﻿using Framework.Infrastructure.Logging;
-using Framework.Infrastructure.Models.Result;
+﻿using System;
+using System.Collections.Generic;
+using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Utils;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Framework.Web.Filters
 {
     public class PerformanceFilter : ActionFilterAttribute, IExceptionFilter
     {
-
         private DateTime startTime;
         private ILog log;
 
@@ -52,7 +48,7 @@ namespace Framework.Web.Filters
                     parametersForLog.Add(new KeyValuePair<string, object>(param.Name, new object()));
                 }
 
-                log.Performance(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName, startTime, endTime, parametersForLog, httpContext.Response.StatusCode, ex == null ? "Completed" : "Error", ex == null ? "" : "Exception - " + ExceptionUtils.RecursivelyGetExceptionMessage(ex));
+                log.Performance(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName, startTime, endTime, parametersForLog, httpContext.Response.StatusCode, ex == null ? "Completed" : "Error", ex == null ? string.Empty : "Exception - " + ExceptionUtils.RecursivelyGetExceptionMessage(ex));
             }
         }
     }

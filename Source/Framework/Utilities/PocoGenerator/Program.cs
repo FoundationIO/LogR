@@ -1,10 +1,4 @@
-﻿using DatabaseSchemaReader;
-using RazorLight;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 using Framework.Utilities.PocoGenerator.Utilities;
 
 namespace Framework.Utilities.PocoGenerator
@@ -13,17 +7,17 @@ namespace Framework.Utilities.PocoGenerator
     {
         public static int Main(string[] args)
         {
-            if(args.Length == 0)
+            if (args.Length == 0)
             {
                 PrintUsage();
                 return -1;
             }
 
-            if ( ! (args.IsParamValueAvailable("-config") ||
-                    args.IsParamValueAvailable("-new")  || 
-                    (args.IsParamValueAvailable("-connectionString") && 
+            if (!(args.IsParamValueAvailable("-config") ||
+                    args.IsParamValueAvailable("-new") ||
+                    (args.IsParamValueAvailable("-connectionString") &&
                      args.IsParamValueAvailable("-dbtype") &&
-                     args.IsParamValueAvailable("-templatefile") && 
+                     args.IsParamValueAvailable("-templatefile") &&
                      args.IsParamValueAvailable("-codefile"))))
             {
                 PrintUsage();
@@ -39,7 +33,7 @@ namespace Framework.Utilities.PocoGenerator
             return 0;
         }
 
-        static void PrintUsage()
+        private static void PrintUsage()
         {
             Console.WriteLine("Usage:");
             Console.WriteLine("\t -new  <config_file.json> : Create new configuration file");
@@ -47,12 +41,9 @@ namespace Framework.Utilities.PocoGenerator
             Console.WriteLine("Following used to send data without config file.");
             Console.WriteLine("You need to provide all the following command lines");
             Console.WriteLine("\t -connectionString <connection_string>");
-            Console.WriteLine("\t -dbtype <dbType>   : sqlite3, mssql"); 
-            Console.WriteLine("\t -templatefile <template_file.cshtml>   : This is a razor template file"); 
-            Console.WriteLine("\t -codefile <code_file_to_generate.cs>   : This is a output file generated from template file"); 
-            
+            Console.WriteLine("\t -dbtype <dbType>   : sqlite3, mssql");
+            Console.WriteLine("\t -templatefile <template_file.cshtml>   : This is a razor template file");
+            Console.WriteLine("\t -codefile <code_file_to_generate.cs>   : This is a output file generated from template file");
         }
-
-
     }
 }

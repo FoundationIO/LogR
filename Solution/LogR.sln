@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{06888B0F-7D07-42DA-A194-2286A54FBEBE}"
 EndProject
@@ -26,6 +26,15 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocoGenerator", "..\Source\Framework\Utilities\PocoGenerator\PocoGenerator.csproj", "{E7D2422B-0BDB-4A05-BA53-9DCBE8C281BD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{DE67D327-7338-40BE-8F0E-1E7B3C50E344}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{E679AA87-1D2F-4CC3-9373-367B5826F880}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogR.Test", "..\Source\LogR\Test\LogR.Test.csproj", "{0E337D46-3BEA-4D96-B834-E706CE500D6E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{8E9A8350-4386-4BFC-80E0-F7246947CE67}"
+	ProjectSection(SolutionItems) = preProject
+		..\Configuration\loggerServerConfig.json = ..\Configuration\loggerServerConfig.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +78,10 @@ Global
 		{E7D2422B-0BDB-4A05-BA53-9DCBE8C281BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7D2422B-0BDB-4A05-BA53-9DCBE8C281BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7D2422B-0BDB-4A05-BA53-9DCBE8C281BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E337D46-3BEA-4D96-B834-E706CE500D6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E337D46-3BEA-4D96-B834-E706CE500D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E337D46-3BEA-4D96-B834-E706CE500D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E337D46-3BEA-4D96-B834-E706CE500D6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,5 +97,10 @@ Global
 		{57D78642-C1B1-4C81-8C3F-645D249BD309} = {29C57489-B5A9-4A7E-AC03-31F07A6554A0}
 		{E7D2422B-0BDB-4A05-BA53-9DCBE8C281BD} = {DE67D327-7338-40BE-8F0E-1E7B3C50E344}
 		{DE67D327-7338-40BE-8F0E-1E7B3C50E344} = {06888B0F-7D07-42DA-A194-2286A54FBEBE}
+		{E679AA87-1D2F-4CC3-9373-367B5826F880} = {29C57489-B5A9-4A7E-AC03-31F07A6554A0}
+		{0E337D46-3BEA-4D96-B834-E706CE500D6E} = {E679AA87-1D2F-4CC3-9373-367B5826F880}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7F8D4035-BF0A-4844-A268-AF0B2BB7A735}
 	EndGlobalSection
 EndGlobal

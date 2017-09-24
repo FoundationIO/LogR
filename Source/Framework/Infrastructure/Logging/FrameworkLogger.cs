@@ -1,19 +1,14 @@
-﻿
-using Framework.Infrastructure.Config;
+﻿using System;
 using Framework.Infrastructure.Models.Config;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.Logging
 {
     public class FrameworkLogger : ILogger
     {
-        LogSettings logConfig;
-        ILog log;
+        private LogSettings logConfig;
+        private ILog log;
+
         public FrameworkLogger(LogSettings logConfig, ILog log)
         {
             this.logConfig = logConfig;
@@ -59,7 +54,6 @@ namespace Framework.Infrastructure.Logging
                     log.Info(exception, message);
                     break;
             }
-
         }
 
         public bool IsEnabled(LogLevel logLevel)

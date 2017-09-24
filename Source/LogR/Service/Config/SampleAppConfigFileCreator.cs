@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using LogR.Common.Interfaces.Service.Config;
 
 namespace LogR.Service.Config
@@ -48,5 +44,4 @@ namespace LogR.Service.Config
             return sb.ToString();
         }
     }
-
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Framework.Utilities.PocoGenerator.Utilities
 {
@@ -10,7 +7,9 @@ namespace Framework.Utilities.PocoGenerator.Utilities
         public static bool IsParamAvailable(this string[] args, string paramName)
         {
             if (args == null)
+            {
                 return false;
+            }
 
             for (var i = 0; i < args.Length; ++i)
             {
@@ -19,13 +18,16 @@ namespace Framework.Utilities.PocoGenerator.Utilities
                     return true;
                 }
             }
+
             return false;
         }
 
         public static bool IsParamValueAvailable(this string[] args, string paramName)
         {
             if (args == null)
+            {
                 return false;
+            }
 
             for (var i = 0; i < args.Length; ++i)
             {
@@ -37,13 +39,16 @@ namespace Framework.Utilities.PocoGenerator.Utilities
                     }
                 }
             }
+
             return false;
         }
 
         public static string GetParamValueAsString(this string[] args, string paramName, string defaultValue = "")
         {
             if (args == null)
+            {
                 return defaultValue;
+            }
 
             for (var i = 0; i < args.Length; ++i)
             {
@@ -56,6 +61,7 @@ namespace Framework.Utilities.PocoGenerator.Utilities
                     }
                 }
             }
+
             return defaultValue;
         }
 
@@ -73,5 +79,4 @@ namespace Framework.Utilities.PocoGenerator.Utilities
             }
         }
     }
-
 }

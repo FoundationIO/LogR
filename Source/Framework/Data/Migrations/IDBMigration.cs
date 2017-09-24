@@ -3,6 +3,7 @@
     public interface IDBMigration
     {
         bool IsMigrationUptoDate();
+
         bool MigrateToLatestVersion();
     }
 }

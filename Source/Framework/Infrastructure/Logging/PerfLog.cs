@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Diagnostics;
-using Framework.Infrastructure.Utils;
 using System.Collections.Generic;
 
 namespace Framework.Infrastructure.Logging
 {
     public class PerfLog : IDisposable
     {
-        private readonly string module = "";
-        private readonly string function = "";
+        private readonly string module = string.Empty;
+        private readonly string function = string.Empty;
         private bool started = false;
-        private readonly bool autoCloseIsError = true;
+        private bool autoCloseIsError = true;
         private bool logToDefaultLogger = false;
         private ILog log;
-        private DateTime startTime,endTime;
+        private DateTime startTime, endTime;
+
         public PerfLog(ILog log, string moduleName, string functionName, bool startMeasuringOnCreate, bool autoCloseIsError, bool logToDefaultLogger = true)
         {
             module = moduleName;
@@ -36,13 +35,6 @@ namespace Framework.Infrastructure.Logging
             }
         }
 
-        private void StopAndWriteToLog(string status = "completed", string additionalMsg = "")
-        {
-            started = false;
-            endTime = DateTime.Now;
-            log.Performance(module, function,startTime, endTime, new List<KeyValuePair<string, object>>(), 1, status, additionalMsg);
-        }
-
         public void StopAndWriteCompleteLog(string additionalMsg = "")
         {
             StopAndWriteToLog("Completed", additionalMsg);
@@ -62,6 +54,13 @@ namespace Framework.Infrastructure.Logging
                 else
                     StopAndWriteCompleteLog();
             }
+        }
+
+        private void StopAndWriteToLog(string status = "completed", string additionalMsg = "")
+        {
+            started = false;
+            endTime = DateTime.Now;
+            log.Performance(module, function, startTime, endTime, new List<KeyValuePair<string, object>>(), 1, status, additionalMsg);
         }
     }
 }

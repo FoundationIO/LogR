@@ -1,28 +1,28 @@
-﻿using Framework.Infrastructure.Models;
+﻿using System;
 using Framework.Infrastructure.Logging;
+using Framework.Infrastructure.Models.Result;
+using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Service;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;
 using LogR.Common.Models.Stats;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Framework.Infrastructure.Models.Result;
 
 namespace LogR.Service
 {
     public class LogRetrivalService : ILogRetrivalService
     {
-        ILog log;
-        public LogRetrivalService(ILog log)
+        private ILog log;
+        private ILogRepository logRepository;
+
+        public LogRetrivalService(ILog log, ILogRepository logRepository)
         {
             this.log = log;
+            this.logRepository = logRepository;
         }
 
         public ReturnModel<DashboardSummary> GetDashboardSummary()
         {
-            var result = new ReturnModel<DashboardSummary>(new DashboardSummary());
+            var result = logRepository.GetDashboardSummary();
             return result;
         }
 
@@ -30,10 +30,7 @@ namespace LogR.Service
         {
             try
             {
-                var resultList = new List<AppLog>();
-                search.TotalRowCount = 0;
-                search.CurrentRows = 0;
-                return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, resultList);
+                return logRepository.GetAppLogs(search);
             }
             catch (Exception ex)
             {
@@ -48,10 +45,7 @@ namespace LogR.Service
         {
             try
             {
-                var resultList = new List<PerformanceLog>();
-                search.TotalRowCount = 0;
-                search.CurrentRows = 0;
-                return new ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria>(search, resultList);
+                return logRepository.GetPerformanceLogs(search);
             }
             catch (Exception ex)
             {
@@ -62,12 +56,11 @@ namespace LogR.Service
             }
         }
 
-
         public ReturnModel<bool> DeleteAppLog(string id)
         {
             try
             {
-                return new ReturnModel<bool>(true);
+                return logRepository.DeleteAppLog(id);
             }
             catch (Exception ex)
             {
@@ -76,5 +69,17 @@ namespace LogR.Service
             }
         }
 
+        public ReturnModel<SystemStats> GetStats()
+        {
+            try
+            {
+                return logRepository.GetStats();
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting stats");
+                return new ReturnModel<SystemStats>("Error when getting stats", ex);
+            }
+        }
     }
 }
