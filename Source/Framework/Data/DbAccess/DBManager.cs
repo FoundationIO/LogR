@@ -20,7 +20,7 @@ namespace Framework.Data.DbAccess
         private DataConnection connection = null;
         private DataConnectionTransaction commonTransaction = null;
 
-        public DBManager(IBaseConfiguration config, ILog log , IDBInfo dbInfo, IDataProvider dbProvider)
+        public DBManager(IBaseConfiguration config, ILog log , IDBInfo dbInfo)
         {
             this.config = config;
             this.logConfig = config.LogSettings;
@@ -111,8 +111,10 @@ namespace Framework.Data.DbAccess
             {
                 if (connection != null)
                     connection.Dispose();
-                connection = new DataConnection(dbInfo.GetDBProvider(), ConnectionString);
-                connection.CommandTimeout = config.DatabaseCommandTimeout;
+                connection = new DataConnection(dbInfo.GetDBProvider(), ConnectionString)
+                {
+                    CommandTimeout = config.DatabaseCommandTimeout
+                };
             }
         }
     }

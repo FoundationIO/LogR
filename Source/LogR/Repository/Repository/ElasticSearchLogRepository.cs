@@ -4,7 +4,6 @@ using System.Linq;
 using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
-//using Lucene.Net.Store;
 using Framework.Infrastructure.Models.Search;
 using Framework.Infrastructure.Utils;
 using LogR.Common.Interfaces.Repository;
@@ -12,53 +11,20 @@ using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;
 using LogR.Common.Models.Stats;
-using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Index;
-using Lucene.Net.Search;
-using Lucene.Net.Store;
-using Lucene.Net.Util;
 
 namespace LogR.Repository
 {
-    public class LogRepository : ILogRepository
+    public class ElasticSearchLogRepository : BaseLogRepository, ILogRepository
     {
-        private static bool isAppIndexExists = false;
-
-        private static bool isPerfIndexExists = false;
-
-        private Directory appLogDirectory;
-
-        private Directory prefLogDirectory;
-
-        private ILog log;
-
-        private IAppConfiguration config;
-
-        public LogRepository(ILog log, IAppConfiguration config)
+        public ElasticSearchLogRepository(ILog log, IAppConfiguration config)
+            : base(log, config)
         {
-            this.log = log;
-            this.config = config;
-
-            appLogDirectory = FSDirectory.Open(config.AppLogIndexFolder);
-            prefLogDirectory = FSDirectory.Open(config.PerformanceLogIndexFolder);
-
-            if (isPerfIndexExists == false)
-            {
-                using (var writer = GetNewPerfWriter())
-                    writer.Commit();
-
-                isAppIndexExists = true;
-            }
-
-            if (isAppIndexExists == false)
-            {
-                using (var writer = GetNewAppWriter())
-                    writer.Commit();
-            }
         }
 
-        public ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
+        public ReturnListModel<AppLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
         {
+            throw new NotImplementedException();
+            /*
             try
             {
                 using (var reader = GetNewPerfReader())
@@ -98,10 +64,14 @@ namespace LogR.Repository
                 search.CurrentRows = 0;
                 return new ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria>(search, "Error when getting Performance Log list ", ex);
             }
+            */
         }
 
         public Tuple<long, long> DeleteOldLogs(DateTime pastDate)
         {
+            throw new NotImplementedException();
+            /*
+
             long appLogCount = 0, perfLogCount = 0;
             try
             {
@@ -135,10 +105,13 @@ namespace LogR.Repository
 
             var result = new Tuple<long, long>(appLogCount, perfLogCount);
             return result;
+            */
         }
 
         public ReturnModel<bool> DeletePerformanceLog(string id)
         {
+            throw new NotImplementedException();
+            /*
             try
             {
                 using (var writer = GetNewPerfWriter())
@@ -154,10 +127,14 @@ namespace LogR.Repository
                 log.Error(ex, "Error when getting Deleting Performance Log  - id = " + id);
                 return new ReturnModel<bool>(ex);
             }
+            */
         }
 
         public void SaveLog(RawLogData data)
         {
+            throw new NotImplementedException();
+            /*
+
             if (data == null)
             {
                 log.Error("Error ");
@@ -179,10 +156,13 @@ namespace LogR.Repository
             {
                 log.Error(ex, "Error when processing Base Log - Message = " + data?.Data);
             }
+            */
         }
 
         public ReturnListModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search)
         {
+            throw new NotImplementedException();
+            /*
             try
             {
                 using (var reader = GetNewPerfReader())
@@ -227,10 +207,13 @@ namespace LogR.Repository
                 search.CurrentRows = 0;
                 return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, ex);
             }
+            */
         }
 
         public ReturnModel<bool> DeleteAppLog(string id)
         {
+            throw new NotImplementedException();
+            /*
             try
             {
                 using (var writer = GetNewAppWriter())
@@ -245,10 +228,13 @@ namespace LogR.Repository
                 log.Error(ex, "Error when getting Deleting App Log  - id = " + id);
                 return new ReturnModel<bool>(ex);
             }
+            */
         }
 
         public ReturnModel<DashboardSummary> GetDashboardSummary()
         {
+            throw new NotImplementedException();
+            /*
             try
             {
                 var result = new DashboardSummary();
@@ -284,10 +270,13 @@ namespace LogR.Repository
                 log.Error(ex, "Error when getting Dashboard Summary");
                 return new ReturnModel<DashboardSummary>(ex);
             }
+            */
         }
 
         public ReturnListModel<string, BaseSearchCriteria> GetMachineNames(BaseSearchCriteria search)
         {
+            throw new NotImplementedException();
+            /*
             try
             {
                 using (var reader = GetNewAppReader())
@@ -304,10 +293,13 @@ namespace LogR.Repository
                 search.CurrentRows = 0;
                 return new ReturnListModel<string, BaseSearchCriteria>(search, ex);
             }
+            */
         }
 
         public ReturnListModel<string, BaseSearchCriteria> GetAppNames(BaseSearchCriteria search)
         {
+            throw new NotImplementedException();
+            /*
             try
             {
                 using (var reader = GetNewAppReader())
@@ -324,10 +316,13 @@ namespace LogR.Repository
                 search.CurrentRows = 0;
                 return new ReturnListModel<string, BaseSearchCriteria>(search, ex);
             }
+            */
         }
 
         public ReturnListModel<string, BaseSearchCriteria> GetSeverityNames(BaseSearchCriteria search)
         {
+            throw new NotImplementedException();
+            /*
             try
             {
                 using (var reader = GetNewAppReader())
@@ -344,10 +339,13 @@ namespace LogR.Repository
                 search.CurrentRows = 0;
                 return new ReturnListModel<string, BaseSearchCriteria>(search, ex);
             }
+            */
         }
 
         public ReturnListModel<string, BaseSearchCriteria> GetUserNames(BaseSearchCriteria search)
         {
+            throw new NotImplementedException();
+            /*
             try
             {
                 using (var reader = GetNewAppReader())
@@ -364,10 +362,13 @@ namespace LogR.Repository
                 search.CurrentRows = 0;
                 return new ReturnListModel<string, BaseSearchCriteria>(search, ex);
             }
+            */
         }
 
         public Dictionary<DateTime, long> GetAppLogsStatsByDay()
         {
+            throw new NotImplementedException();
+            /*
             Dictionary<DateTime, long> result = new Dictionary<DateTime, long>();
             try
             {
@@ -392,6 +393,7 @@ namespace LogR.Repository
             }
 
             //return result;
+            */
         }
 
         public void GetPerformanceLogsStatsByDay()
@@ -425,17 +427,10 @@ namespace LogR.Repository
         {
             try
             {
-                var item = JsonUtils.Deserialize<PerformanceLog>(message);
-                if (item == null)
-                {
-                    log.Error("Unable to deserialize the performance log message -  " + message);
-                    return;
-                }
-
-                item.Id = Guid.NewGuid().ToString();
-                item.LongdateAsTicks = item.Longdate.Ticks;
-                using (var writer = GetNewPerfWriter())
-                    writer.Add<PerformanceLog>(item);
+                var item = GetPerformanceLogFromRawLog(message);
+                throw new NotImplementedException();
+                //using (var writer = GetNewPerfWriter())
+                //    writer.Add<PerformanceLog>(item);
             }
             catch (Exception ex)
             {
@@ -447,21 +442,15 @@ namespace LogR.Repository
         {
             try
             {
-                var item = JsonUtils.Deserialize<AppLog>(message);
-                if (item == null)
-                {
-                    log.Error("Unable to deserialize the app log message -  " + message);
-                    return;
-                }
+                var item = GetAppLogFromRawLog(message);
 
-                item.Id = Guid.NewGuid().ToString();
-                item.LongdateAsTicks = item.Longdate.Ticks;
+                throw new NotImplementedException();
 
-                using (var writer = GetNewAppWriter())
-                {
-                    writer.Add(item);
-                    writer.Commit();
-                }
+                //using (var writer = GetNewAppWriter())
+                //{
+                //    writer.Add(item);
+                //    writer.Commit();
+                //}
             }
             catch (Exception ex)
             {
@@ -488,41 +477,6 @@ namespace LogR.Repository
         {
             var filenameList = System.IO.Directory.GetFiles(config.LogSettings.LogLocation, "*.*");
             return filenameList.LongCount();
-        }
-
-        private IndexWriter GetNewPerfWriter()
-        {
-            return new IndexWriter(prefLogDirectory, new IndexWriterConfig(LuceneVersion.LUCENE_48, new StandardAnalyzer(LuceneVersion.LUCENE_48)));
-        }
-
-        private IndexWriter GetNewAppWriter()
-        {
-            return new IndexWriter(appLogDirectory, new IndexWriterConfig(LuceneVersion.LUCENE_48, new StandardAnalyzer(LuceneVersion.LUCENE_48)));
-        }
-
-        private bool IsPerfLogIndexAvailable()
-        {
-            return DirectoryReader.IndexExists(prefLogDirectory);
-        }
-
-        private bool IsAppLogIndexAvailable()
-        {
-            return DirectoryReader.IndexExists(appLogDirectory);
-        }
-
-        private IndexReader GetNewPerfReader()
-        {
-            return DirectoryReader.Open(prefLogDirectory);
-        }
-
-        private IndexReader GetNewAppReader()
-        {
-            return DirectoryReader.Open(appLogDirectory);
-        }
-
-        private IndexReader GetNewReader(IndexWriter writer)
-        {
-            return DirectoryReader.Open(writer, false);
         }
     }
 }

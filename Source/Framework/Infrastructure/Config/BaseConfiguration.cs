@@ -19,7 +19,11 @@ namespace Framework.Infrastructure.Config
         //General App Related
         public string AppName { get; set; } = null;
 
+        public bool AutomaticMigration { get; private set; }
+
         public string MigrationNamespace { get; set; } = null;
+
+        public string MigrationProfile { get; set; } = null;
 
         // log related
         public LogSettings LogSettings { get; private set; }
@@ -62,28 +66,28 @@ namespace Framework.Infrastructure.Config
 
         protected void PopulateFromConfigFile(IConfigurationSection appSettings, IConfigurationSection frameworkLogSetting, string configLocation)
         {
-            var logTrace = SafeUtils.Bool(appSettings["logTrace"], true);
-            var logDebug = SafeUtils.Bool(appSettings["logDebug"], true);
-            var logInfo = SafeUtils.Bool(appSettings["logInfo"], true);
-            var logSql = SafeUtils.Bool(appSettings["logSql"], true);
-            var logWarn = SafeUtils.Bool(appSettings["logWarn"], true);
-            var logError = SafeUtils.Bool(appSettings["logError"], true);
-            var logPerformance = SafeUtils.Bool(appSettings["logPerformance"], true);
+            var logTrace = SafeUtils.Bool(appSettings[Strings.Config.LogTrace], true);
+            var logDebug = SafeUtils.Bool(appSettings[Strings.Config.LogDebug], true);
+            var logInfo = SafeUtils.Bool(appSettings[Strings.Config.LogInfo], true);
+            var logSql = SafeUtils.Bool(appSettings[Strings.Config.LogSql], true);
+            var logWarn = SafeUtils.Bool(appSettings[Strings.Config.LogWarn], true);
+            var logError = SafeUtils.Bool(appSettings[Strings.Config.LogError], true);
+            var logPerformance = SafeUtils.Bool(appSettings[Strings.Config.LogPerformance], true);
 
-            var logToFile = SafeUtils.Bool(appSettings["logToFile"], true);
-            var logToDebugger = SafeUtils.Bool(appSettings["logToDebugger"], true);
-            var logToConsole = SafeUtils.Bool(appSettings["logToConsole"], true);
+            var logToFile = SafeUtils.Bool(appSettings[Strings.Config.LogToFile], true);
+            var logToDebugger = SafeUtils.Bool(appSettings[Strings.Config.LogToDebugger], true);
+            var logToConsole = SafeUtils.Bool(appSettings[Strings.Config.LogToConsole], true);
 
-            var logLocation = appSettings["logLocation"] ?? FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "Logs");
-            if (logLocation.IsTrimmedStringNotNullOrEmpty() && logLocation.Contains("|ConfigPath|"))
+            var logLocation = appSettings[Strings.Config.LogLocation] ?? FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "Logs");
+            if (logLocation.IsTrimmedStringNotNullOrEmpty() && logLocation.Contains(Strings.Config.ConfigPath))
             {
-                logLocation = logLocation.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
+                logLocation = logLocation.Replace(Strings.Config.ConfigPath, FileUtils.GetFileDirectory(configLocation));
                 logLocation = Path.GetFullPath(new Uri(logLocation).LocalPath);
             }
 
             //Load .Net core's Logging configuration
             var otherLogSettings = new List<KeyValuePair<string, Microsoft.Extensions.Logging.LogLevel>>();
-            var logLevelSettings = frameworkLogSetting.GetSection("LogLevel");
+            var logLevelSettings = frameworkLogSetting.GetSection(Strings.Config.LogLevel);
             foreach (var setting in logLevelSettings.GetChildren())
             {
                 var logLevel = SafeUtils.Enum<Microsoft.Extensions.Logging.LogLevel>(setting.Value, Microsoft.Extensions.Logging.LogLevel.None);
@@ -92,21 +96,22 @@ namespace Framework.Infrastructure.Config
 
             LogSettings = new LogSettings(logTrace, logDebug, logInfo, logSql, logWarn, logError, logLocation, logToFile, logToConsole, logToDebugger, logPerformance, otherLogSettings);
 
-            DatabaseName = appSettings["databaseName"] ?? DatabaseName;
-            if (DatabaseName.IsTrimmedStringNotNullOrEmpty() && DatabaseName.Contains("|ConfigPath|"))
+            DatabaseName = appSettings[Strings.Config.DatabaseName] ?? DatabaseName;
+            if (DatabaseName.IsTrimmedStringNotNullOrEmpty() && DatabaseName.Contains(Strings.Config.ConfigPath))
             {
-                DatabaseName = DatabaseName.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
+                DatabaseName = DatabaseName.Replace(Strings.Config.ConfigPath, FileUtils.GetFileDirectory(configLocation));
                 DatabaseName = Path.GetFullPath(new Uri(DatabaseName).LocalPath);
             }
 
-            DatabaseType = appSettings["databaseType"] ?? DatabaseType;
-            DatabaseServer = appSettings["databaseServer"] ?? DatabaseServer;
-            DatabaseUserName = appSettings["databaseUserName"] ?? DatabaseUserName;
-            DatabasePassword = appSettings["databasePassword"] ?? DatabasePassword;
-            DatabaseCommandTimeout = SafeUtils.Int(appSettings["databaseCommandTimeout"], DatabaseCommandTimeout);
-            MaxPoolSize = SafeUtils.Int(appSettings["maxPoolSize"], MaxPoolSize);
-            MigrationNamespace = appSettings["migrationNamespace"] ?? string.Empty;
-
+            DatabaseType = appSettings[Strings.Config.DatabaseType] ?? DatabaseType;
+            DatabaseServer = appSettings[Strings.Config.DatabaseServer] ?? DatabaseServer;
+            DatabaseUserName = appSettings[Strings.Config.DatabaseUserName] ?? DatabaseUserName;
+            DatabasePassword = appSettings[Strings.Config.DatabasePassword] ?? DatabasePassword;
+            DatabaseCommandTimeout = SafeUtils.Int(appSettings[Strings.Config.DatabaseCommandTimeout], DatabaseCommandTimeout);
+            MaxPoolSize = SafeUtils.Int(appSettings[Strings.Config.MaxPoolSize], MaxPoolSize);
+            MigrationNamespace = appSettings[Strings.Config.MigrationNamespace] ?? string.Empty;
+            AutomaticMigration = SafeUtils.Bool(appSettings[Strings.Config.AutomaticMigration],false);
+            MigrationProfile = null; // Always null and if App wants to use any other profile, they are free to do so
             AppName = Path.GetFileNameWithoutExtension(GetType().GetTypeInfo().Assembly.Location);
         }
     }

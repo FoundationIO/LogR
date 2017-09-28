@@ -64,6 +64,7 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Framework\Data\Framework.Data.csproj" />
     <ProjectReference Include="..\..\Framework\Infrastructure\Framework.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>

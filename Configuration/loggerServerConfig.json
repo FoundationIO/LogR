@@ -1,7 +1,7 @@
 ﻿{
   "configuration": {
     "appSettings": {
-      "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes",
+
 
       "logTrace": true,
       "logDebug": true,
@@ -23,9 +23,59 @@
       "databasePassword": "",
       "databaseCommandTimeout": 99,
       "maxPoolSize": 99,
-      "migrationNamespace": "LogR.Repository.Migration",
 
-      "serverPort": 9090
+      "automaticMigration": true,
+      "migrationNamespace": "LogR.Repository.Migration.Application",
+
+      "sqlBasedIndexStoreMigrationNamespace": "LogR.Repository.Migration.Application.SqlBasedIndexStore",
+
+      "serverPort": 9090,
+
+      "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes",
+
+      "batchSizeToIndex": 1,
+      "indexStoreType": "lucene",
+
+      "luceneIndexStoreSettings": {
+        "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes"
+      },
+
+      "sqlite3IndexStoreSettings": {
+        "dbLocation": "|ConfigPath|\\..\\Data\\SqliteLogStore\\LogStore.sqlite3"
+      },
+
+      "MongoDBIndexStoreSettings": {
+        "server": "",
+        "userName": "",
+        "password": ""
+      },
+
+      "embbededElasticSearchIndexStoreSettings": {
+      },
+
+      "mySqlIndexStoreSettings": {
+        "databaseName": "LogDb",
+        "databaseServer": "",
+        "databaseUserName": "",
+        "databasePassword": "",
+        "databaseCommandTimeout": 99
+      },
+
+      "sqlServerIndexStoreSettings": {
+        "databaseName": "LogDb",
+        "databaseServer": "",
+        "databaseUserName": "",
+        "databasePassword": "",
+        "databaseCommandTimeout": 99
+      },
+
+      "postgresqlIndexStoreSettings": {
+        "databaseName": "LogDb",
+        "databaseServer": "",
+        "databaseUserName": "",
+        "databasePassword": "",
+        "databaseCommandTimeout": 99
+      }
     }
   },
 

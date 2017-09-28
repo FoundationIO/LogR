@@ -13,7 +13,7 @@ namespace LogR.Common.Interfaces.Service
 
         ReturnModel<DashboardSummary> GetDashboardSummary();
 
-        ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search);
+        ReturnListModel<AppLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search);
 
         ReturnModel<SystemStats> GetStats();
     }

@@ -7,6 +7,7 @@ using Framework.Infrastructure.Utils;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.DI;
 using Microsoft.AspNetCore.Hosting;
+using LogR.Repository.Migration;
 
 namespace LogR.Web
 {
@@ -34,9 +35,18 @@ namespace LogR.Web
             }
             else
             {
-                IDBMigration migration = DISetup.ServiceProvider.GetService<IDBMigration>();
-                var log = DISetup.ServiceProvider.GetService<ILog>();
+                var migration = DISetup.ServiceProvider.GetService<IDBMigration>();
                 var config = DISetup.ServiceProvider.GetService<IAppConfiguration>();
+
+                if (config.IsSqlBasedIndexStore())
+                {
+                    var sqlIndexStoreMigration = DISetup.ServiceProvider.GetService<ISqlBasedIndexStoreDBMigration>();
+                    if (sqlIndexStoreMigration.IsMigrationUptoDate() == false)
+                    {
+                        if (sqlIndexStoreMigration.MigrateToLatestVersion() == false)
+                            throw new Exception("Unable to update the Database version");
+                    }                        
+                }
 
                 if (args.IsParamValueAvailable("/migrate"))
                 {
@@ -57,7 +67,14 @@ namespace LogR.Web
                 {
                     if (migration.IsMigrationUptoDate() == false)
                     {
-                        throw new Exception("Database version is not upto date.Please run the application with the / migration option and make the database version upto date");
+                        if (config.AutomaticMigration == false)
+                        {
+                            throw new Exception("Database version is not upto date.Please run the application with the / migration option and make the database version upto date");
+                        }
+
+                        if(migration.MigrateToLatestVersion() == false)
+                            throw new Exception("Unable to update the Database version");
+
                     }
 
                     var host = new WebHostBuilder()

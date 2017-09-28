@@ -26,7 +26,7 @@ namespace LogR.Common.Interfaces.Repository
 
         ReturnListModel<string, BaseSearchCriteria> GetMachineNames(BaseSearchCriteria search);
 
-        ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search);
+        ReturnListModel<AppLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search);
 
         void GetPerformanceLogsStatsByDay();
 

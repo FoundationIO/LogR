@@ -20,8 +20,12 @@ namespace Framework.Infrastructure.Config
 
         int DatabaseCommandTimeout { get; }
 
-        string AppName { get; set; }
+        string AppName { get; }
 
-        string MigrationNamespace { get; set; }
+        string MigrationNamespace { get; }
+
+        bool AutomaticMigration { get; }
+
+        string MigrationProfile { get; }
     }
 }

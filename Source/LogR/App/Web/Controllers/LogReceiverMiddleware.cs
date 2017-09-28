@@ -34,12 +34,12 @@ namespace LogR.Web.Controllers
             }
             else if (context.Request.Path.StartsWithSegments("/add/app-log"))
             {
-                service.AddToQue(LogType.AppLog, ReadBody(context), DateTime.UtcNow);
+                service.AddToDb(LogType.AppLog, ReadBody(context), DateTime.UtcNow);
                 await context.Response.WriteAsync("OK");
             }
             else if (context.Request.Path.StartsWithSegments("/add/performance-log"))
             {
-                service.AddToQue(LogType.PerformanceLog, ReadBody(context), DateTime.UtcNow);
+                service.AddToDb(LogType.PerformanceLog, ReadBody(context), DateTime.UtcNow);
                 await context.Response.WriteAsync("OK");
             }
             else

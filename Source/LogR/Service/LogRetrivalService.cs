@@ -41,7 +41,7 @@ namespace LogR.Service
             }
         }
 
-        public ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
+        public ReturnListModel<AppLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace LogR.Service
                 log.Error(ex, "Error when getting Performance Log  List ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<PerformanceLog, PerformanceLogSearchCriteria>(search, ex);
+                return new ReturnListModel<AppLog, PerformanceLogSearchCriteria>(search, ex);
             }
         }
 

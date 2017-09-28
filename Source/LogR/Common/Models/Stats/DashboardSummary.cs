@@ -19,9 +19,9 @@ namespace LogR.Common.Models.Stats
 
         public long TotalPerformanceLogCount { get; set; }
 
-        public List<PerformanceLog> LastestPerformanceLogs { get; set; } = new List<PerformanceLog>();
+        public List<AppLog> LastestPerformanceLogs { get; set; } = new List<AppLog>();
 
-        public List<PerformanceLog> LastestErrorPerformanceLogs { get; set; } = new List<PerformanceLog>();
+        public List<AppLog> LastestErrorPerformanceLogs { get; set; } = new List<AppLog>();
 
         public long ErrorSqlAppLogCount { get; set; }
     }

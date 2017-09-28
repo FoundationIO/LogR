@@ -22,10 +22,9 @@ namespace Framework.Data.DbAccess
             this.config = config;
         }
 
-        public string GetConnectionString()
+        public virtual string GetConnectionString()
         {
-            int workerThreads, completionPortThreads;
-            ThreadPool.GetMaxThreads(out workerThreads, out completionPortThreads);
+            ThreadPool.GetMaxThreads(out int workerThreads, out int completionPortThreads);
 
             var connectionStr = string.Empty;
 
@@ -65,7 +64,7 @@ namespace Framework.Data.DbAccess
             return connectionStr;
         }
 
-        public MigrationProcessorFactory GetMigrationProcessorFactory()
+        public virtual MigrationProcessorFactory GetMigrationProcessorFactory()
         {
             var dbType = (config.DatabaseType ?? string.Empty).Trim().ToLower();
             switch (dbType)
@@ -92,7 +91,7 @@ namespace Framework.Data.DbAccess
             }
         }
 
-        public IDataProvider GetDBProvider()
+        public virtual IDataProvider GetDBProvider()
         {
             var dbType = (config.DatabaseType ?? string.Empty).Trim().ToLower();
             switch (dbType)

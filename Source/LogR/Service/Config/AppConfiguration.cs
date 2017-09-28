@@ -4,7 +4,10 @@ using System.Reflection;
 using Framework.Infrastructure.Config;
 using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Utils;
+using LogR.Common.Constants;
+using LogR.Common.Enums;
 using LogR.Common.Interfaces.Service.Config;
+using LogR.Common.Models.Config;
 using Microsoft.Extensions.Configuration;
 
 namespace LogR.Service.Config
@@ -17,6 +20,28 @@ namespace LogR.Service.Config
             PrepareFolders();
         }
 
+        public int BatchSizeToIndex { get; private set; } = 1;
+
+        public IndexStoreType IndexStoreType { get; }
+
+        public LuceneIndexStoreSettings LuceneIndexStoreSettings { get; }
+
+        public Sqite3IndexStoreSettings Sqite3IndexStoreSettings { get; }
+
+        public SqlServerIndexStoreSettings SqlServerIndexStoreSettings { get; }
+
+        public MySqlIndexStoreSettings MySqlIndexStoreSettings { get; }
+
+        public PostgresqlIndexStoreSettings PostgresqlIndexStoreSettings { get; }
+
+        public ElasticSearchIndexStoreSettings ElasticSearchIndexStoreSettings { get; }
+
+        public EmbeddedElasticSearchIndexStoreSettings EmbeddedElasticSearchIndexStoreSettings { get; }
+
+        public RaptorDBIndexStoreSettings RaptorDBIndexStoreSettings { get; }
+
+        public MongoDBIndexStoreSettings MongoDBIndexStoreSettings { get; }
+
         public int ServerPort { get; private set; }
 
         public string IndexBaseFolder { get; private set; }
@@ -25,7 +50,7 @@ namespace LogR.Service.Config
         {
             get
             {
-                return IndexBaseFolder + "\\" + "app_log_index\\";
+                return IndexBaseFolder + "\\" + StringConstants.Config.AppLogIndex + "\\";
             }
         }
 
@@ -33,8 +58,16 @@ namespace LogR.Service.Config
         {
             get
             {
-                return IndexBaseFolder + "\\" + "performance_log_index\\";
+                return IndexBaseFolder + "\\" + StringConstants.Config.PerformanceLogIndex + "\\";
             }
+        }
+
+        public bool IsSqlBasedIndexStore()
+        {
+            return this.IndexStoreType == IndexStoreType.MySql ||
+                    this.IndexStoreType == IndexStoreType.Sqlite3 ||
+                    this.IndexStoreType == IndexStoreType.SqlServer ||
+                    this.IndexStoreType == IndexStoreType.Postgresql;
         }
 
         protected new void PrepareFolders()
@@ -84,13 +117,13 @@ namespace LogR.Service.Config
 
             if (MigrationNamespace.IsTrimmedStringNullOrEmpty())
             {
-                throw new Exception("MigrationNamespace is empty");
+                throw new Exception(ErrorConstants.MigrationNamespaceIsEmpty);
             }
 
-            IndexBaseFolder = appSettings["indexBaseFolder"] != null ? appSettings["indexBaseFolder"] : IndexBaseFolder;
-            if (IndexBaseFolder != null && IndexBaseFolder.Contains("|ConfigPath|"))
+            IndexBaseFolder = appSettings[StringConstants.Config.IndexBaseFolder] ?? IndexBaseFolder;
+            if (IndexBaseFolder != null && IndexBaseFolder.Contains(Strings.Config.ConfigPath))
             {
-                IndexBaseFolder = IndexBaseFolder.Replace("|ConfigPath|", FileUtils.GetFileDirectory(configLocation));
+                IndexBaseFolder = IndexBaseFolder.Replace(Strings.Config.ConfigPath, FileUtils.GetFileDirectory(configLocation));
                 IndexBaseFolder = Path.GetFullPath(new Uri(IndexBaseFolder).LocalPath);
             }
 
@@ -104,8 +137,9 @@ namespace LogR.Service.Config
                 Directory.CreateDirectory(PerformanceLogIndexFolder);
             }
 
-            ServerPort = SafeUtils.Int(appSettings["serverPort"], ServerPort);
+            ServerPort = SafeUtils.Int(appSettings[Strings.Config.ServerPort], ServerPort);
             AppName = Path.GetFileNameWithoutExtension(this.GetType().GetTypeInfo().Assembly.Location);
+            BatchSizeToIndex = SafeUtils.Int(appSettings[StringConstants.Config.BatchSizeToIndex], ServerPort);
         }
     }
 }

@@ -60,6 +60,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Repository\ElasticSearchLogRepository.cs" />
+    <Compile Remove="Repository\EmbbededElasticSearchLogRepository.cs" />
+    <Compile Remove="Repository\MongoDBLogRepository.cs" />
+    <Compile Remove="Repository\MysqlLogRepository.cs" />
+    <Compile Remove="Repository\PostgresqlLogRepository.cs" />
+    <Compile Remove="Repository\RaptorDBLogRepository.cs" />
+    <Compile Remove="Repository\SqlServerLogRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="linq2db" Version="1.8.3" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00004" />
     <PackageReference Include="Lucene.Net.Queries" Version="4.8.0-beta00004" />
