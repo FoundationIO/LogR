@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace LogR.Service.Config
 {
-    public class AppConfiguration : BaseConfiguration , IAppConfiguration
+    public class AppConfiguration : BaseConfiguration, IAppConfiguration
     {
         public AppConfiguration()
         {
@@ -139,7 +139,54 @@ namespace LogR.Service.Config
 
             ServerPort = SafeUtils.Int(appSettings[Strings.Config.ServerPort], ServerPort);
             AppName = Path.GetFileNameWithoutExtension(this.GetType().GetTypeInfo().Assembly.Location);
-            BatchSizeToIndex = SafeUtils.Int(appSettings[StringConstants.Config.BatchSizeToIndex], ServerPort);
+            BatchSizeToIndex = SafeUtils.Int(appSettings[StringConstants.Config.BatchSizeToIndex], BatchSizeToIndex);
+
+            /*
+                        var indexType = SafeUtils.Enum<IndexStoreType>(appSettings[StringConstants.Config.IndexStoreType], IndexStoreType.Lucene);
+
+                        if (indexType == IndexStoreType.Lucene)
+                        {
+                            this.LuceneIndexStoreSettings = new LuceneIndexStoreSettings();
+                            StringConstants.Config.IndexBaseFolder;
+                        }
+                        else if (indexType == IndexStoreType.Sqlite3)
+                        {
+                            this.Sqite3IndexStoreSettings = new Sqite3IndexStoreSettings();
+                            StringConstants.Config.IndexBaseFolder;
+                        }
+                        else if (indexType == IndexStoreType.SqlServer)
+                        {
+                            this.SqlServerIndexStoreSettings = new SqlServerIndexStoreSettings();
+                            StringConstants.Config.IndexBaseFolder;
+                        }
+                        else if (indexType == IndexStoreType.Sqlite3)
+                        {
+                            this.LuceneIndexStoreSettings = new LuceneIndexStoreSettings();
+                            StringConstants.Config.IndexBaseFolder;
+                        }
+                        else if (indexType == IndexStoreType.Sqlite3)
+                        {
+                            this.LuceneIndexStoreSettings = new LuceneIndexStoreSettings();
+                            StringConstants.Config.IndexBaseFolder;
+                        }
+                        else if (indexType == IndexStoreType.Sqlite3)
+                        {
+                            this.LuceneIndexStoreSettings = new LuceneIndexStoreSettings();
+                            StringConstants.Config.IndexBaseFolder;
+                        }
+
+                    public MySqlIndexStoreSettings MySqlIndexStoreSettings { get; }
+
+                    public PostgresqlIndexStoreSettings PostgresqlIndexStoreSettings { get; }
+
+                    public ElasticSearchIndexStoreSettings ElasticSearchIndexStoreSettings { get; }
+
+                    public EmbeddedElasticSearchIndexStoreSettings EmbeddedElasticSearchIndexStoreSettings { get; }
+
+                    public RaptorDBIndexStoreSettings RaptorDBIndexStoreSettings { get; }
+
+                    public MongoDBIndexStoreSettings MongoDBIndexStoreSettings { get; }
+            */
         }
     }
 }

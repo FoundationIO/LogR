@@ -16,12 +16,14 @@ namespace Framework.Data.Migrations
         private ILog log;
         private IDBInfo dbInfo;
         private string migrationNamespace;
+        private string migrationProfile;
 
         public DBMigration(IBaseConfiguration config , ILog log, IDBInfo dbInfo)
         {
             this.log = log;
             this.dbInfo = dbInfo;
             migrationNamespace = config.MigrationNamespace;
+            migrationProfile = config.MigrationProfile;
         }
 
         public bool IsMigrationUptoDate()
@@ -31,7 +33,8 @@ namespace Framework.Data.Migrations
 
             var migrationContext = new RunnerContext(announcer)
             {
-                Namespace = migrationNamespace
+                Namespace = migrationNamespace ,
+                Profile = migrationProfile
             };
 
             var options = new MigrationOptions { PreviewOnly = false, Timeout = 60 };
