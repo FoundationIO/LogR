@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Framework.Data.Migrations;
 
-namespace LogR.Repository.Migration
+namespace LogR.Common.Interfaces.Repository
 {
     public interface ISqlBasedIndexStoreDBMigration : IDBMigration
     {

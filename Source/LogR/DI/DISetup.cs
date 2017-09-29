@@ -9,8 +9,10 @@ using LogR.Common.Interfaces.Service;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Repository;
 using LogR.Repository.DbAccess;
+using LogR.Repository.Migration;
 using LogR.Service;
 using LogR.Service.Config;
+using LogR.Service.Migration;
 using Microsoft.Extensions.DependencyInjection;
 using Repository.DbAccess;
 
@@ -40,9 +42,11 @@ namespace LogR.DI
                 .AddScoped<IDBManager, DBManager>()
                 .AddSingleton<IDBMigration, DBMigration>()
                 .AddScoped<ISqlIndexStoreDBManager, SqlIndexStoreDBManager>()
+                .AddScoped<ISqlBasedIndexStoreDBMigration, SqlBasedIndexStoreDBMigration>()
                 .AddSingleton<ISqlIndexStoreDBInfo, SqlIndexStoreDBInfo>()
                 .AddSingleton<ISqlIndexStoreConfiguration, SqlIndexStoreConfiguration>()
                 .AddSingleton<ISampleAppConfigFileCreator, SampleAppConfigFileCreator>()
+                .AddSingleton<IMigrationService, MigrationService>()
                 .AddScoped<ILogRepository>(serviceProvider =>
                 {
                     var config = serviceProvider.GetRequiredService<IAppConfiguration>();
