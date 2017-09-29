@@ -34,5 +34,20 @@ namespace Framework.Infrastructure.Constants
             public const string ServerPort = "serverPort";
             public const string LogLevel = "LogLevel";
         }
+
+        public class Log
+        {
+            public const string Trace = "TRACE";
+            public const string Error = "ERROR";
+            public const string Warning = "WARNING";
+            public const string Info = "INFO";
+            public const string Fatal = "FATAL";
+            public const string Debug = "DEBUG";
+            public const string SqlBeginTransaction = "SQL-BEGIN-TRANSACTION";
+            public const string SqlCommitTransaction = "SQL-COMMIT-TRANSACTION";
+            public const string SqlRollbackTransaction = "SQL-ROLLBACK-TRANSACTION";
+            public const string Sql = "SQL";
+            public const string SqlError = "SQL-ERROR";
+        }
     }
 }

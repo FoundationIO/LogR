@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LogR.Task": {
+      "commandName": "Project",
+      "commandLineArgs": "/seed"
+    }
+  }
+}

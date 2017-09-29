@@ -32,6 +32,7 @@ namespace LogR.Common.Models.Logs
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
+            writer.WriteValue(value);
         }
     }
 }

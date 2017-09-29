@@ -1,25 +1,27 @@
 ﻿using System;
 using System.IO;
+using Framework.Data.Migrations;
 using Framework.Infrastructure.DI;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Utils;
-using LogR.DI;
-using LogR.Common.Interfaces.Service.Config;
-using Framework.Data.Migrations;
-using LogR.Repository.Migration;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Service.Config;
+using LogR.Common.Interfaces.Service.Task;
+using LogR.DI;
+using LogR.Repository.Migration;
 
 namespace LogR.Task
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             var migration = DISetup.ServiceProvider.GetService<IMigrationService>();
             var configFileCreator = DISetup.ServiceProvider.GetService<ISampleAppConfigFileCreator>();
+            var seedCreator = DISetup.ServiceProvider.GetService<ISeedService>();
+            var loadTestGenerator = DISetup.ServiceProvider.GetService<ILoadTestService>();
 
             var servicename = args.GetParamValueAsString("/servicename", "LoggerService");
-
 
             if (args.IsParamValueAvailable("create_config"))
             {
@@ -33,11 +35,12 @@ namespace LogR.Task
             }
             else if (args.IsParamValueAvailable("seed"))
             {
-                migration.MigrateLocalDatastoreIfNeeded();
+                var count = args.GetParamValueAs("seed", 500000);
+                seedCreator.GenerateLogs(count);
             }
-            else if (args.IsParamValueAvailable("sendlogs"))
+            else if (args.IsParamValueAvailable("loadtest"))
             {
-                migration.MigrateLocalDatastoreIfNeeded();
+                loadTestGenerator.Run();
             }
             else
             {
@@ -54,7 +57,5 @@ namespace LogR.Task
             Console.WriteLine("/sendlogs for sending logs to rest api");
             Console.ReadKey();
         }
-
-
     }
 }

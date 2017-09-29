@@ -34,11 +34,11 @@ namespace LogR.Repository
                 throw new Exception("Unable to deserialize the app log message -  " + message);
             }
 
-            item.Id = Guid.NewGuid();
+            item.AppLogId = Guid.NewGuid().ToString();
             item.LogType = (int)LogType.AppLog;
-            if (item.Longdate == null)
+            if (item.Longdate.IsInvalidDate())
                 item.Longdate = DateTime.UtcNow;
-            item.LongdateAsTicks = item.Longdate.Value.Ticks;
+            item.LongdateAsTicks = item.Longdate.Ticks;
             return item;
         }
 
@@ -50,11 +50,11 @@ namespace LogR.Repository
                 throw new Exception("Unable to deserialize the performance log message -  " + message);
             }
 
-            item.Id = Guid.NewGuid();
+            item.AppLogId = Guid.NewGuid().ToString();
             item.LogType = (int)LogType.PerformanceLog;
-            if (item.Longdate == null)
+            if (item.Longdate.IsInvalidDate())
                 item.Longdate = DateTime.UtcNow;
-            item.LongdateAsTicks = item.Longdate.Value.Ticks;
+            item.LongdateAsTicks = item.Longdate.Ticks;
             return item;
         }
     }

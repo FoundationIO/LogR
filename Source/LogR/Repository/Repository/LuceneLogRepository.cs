@@ -139,7 +139,7 @@ namespace LogR.Repository
             {
                 using (var writer = GetNewPerfWriter())
                 {
-                    writer.Delete<AppLog>(x => x.Id == SafeUtils.Guid(id));
+                    writer.Delete<AppLog>(x => x.AppLogId == id);
                     writer.Commit();
                 }
 
@@ -231,7 +231,7 @@ namespace LogR.Repository
             {
                 using (var writer = GetNewAppWriter())
                 {
-                    writer.Delete<AppLog>(x => x.Id == SafeUtils.Guid(id));
+                    writer.Delete<AppLog>(x => x.AppLogId == id);
                 }
 
                 return new ReturnModel<bool>(true);

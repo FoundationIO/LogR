@@ -6,18 +6,18 @@ namespace LogR.Common.Models.Logs
 {
     public class AppLog
     {
-        [JsonProperty("id")]
-        public Guid Id { get; set; }
+        [JsonProperty("applog-id")]
+        public string AppLogId { get; set; }
 
         [JsonProperty("log-type")]
         public int LogType { get; set; }
 
         [JsonProperty("corelation-id")]
-        public Guid CorelationId { get; set; }
+        public string CorelationId { get; set; }
 
         [JsonProperty("long-date")]
-        [JsonConverter(typeof(LogDateConverter))]
-        public DateTime? Longdate { get; set; }
+        //[JsonConverter(typeof(LogDateConverter))]
+        public DateTime Longdate { get; set; }
 
         [JsonProperty("longdate-as-ticks")]
         public long LongdateAsTicks { get; set; }

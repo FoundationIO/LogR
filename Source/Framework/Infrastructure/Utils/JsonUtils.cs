@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Framework.Infrastructure.Utils
 {
@@ -11,7 +12,14 @@ namespace Framework.Infrastructure.Utils
 
         public static string Serialize(object obj)
         {
-            return JsonConvert.SerializeObject(obj);
+            ITraceWriter traceWriter = new MemoryTraceWriter();
+
+            return JsonConvert.SerializeObject(obj, Formatting.None, new JsonSerializerSettings
+                {
+                    TraceWriter = traceWriter,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    NullValueHandling = NullValueHandling.Ignore
+                });
         }
     }
 }
