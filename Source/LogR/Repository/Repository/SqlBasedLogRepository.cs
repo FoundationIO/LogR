@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common.Interfaces.Repository;
 using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;

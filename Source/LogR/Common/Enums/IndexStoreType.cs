@@ -8,6 +8,8 @@ namespace LogR.Common.Enums
 {
     public enum IndexStoreType
     {
+        None = 0,
+
         Lucene = 10,
 
         Sqlite3 = 20,

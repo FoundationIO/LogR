@@ -53,8 +53,4 @@
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\Framework.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <Folder Include="Models\Config\" />
-  </ItemGroup>
 </Project>

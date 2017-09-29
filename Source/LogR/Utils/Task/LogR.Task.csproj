@@ -49,13 +49,25 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Framework\Data\Framework.Data.csproj">
+      <Project>{F8B5FB2E-ABCB-48C7-9AC2-1DDCD3D2B2DF}</Project>
+      <Name>Framework.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Framework\Infrastructure\Framework.Infrastructure.csproj">
       <Project>{986ea1d5-12de-46d8-97b2-e59a64383ebd}</Project>
       <Name>Framework.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\LogR.Common.csproj">
+      <Project>{93E87FD5-0D53-4138-B1BC-E670F4FA9F4F}</Project>
+      <Name>LogR.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DI\LogR.DI.csproj">
       <Project>{206cc116-2296-42af-8208-5fc8ecb0034a}</Project>
       <Name>LogR.DI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Repository\LogR.Repository.csproj">
+      <Project>{79A041FA-EB5C-4543-B5F9-979F6C195D18}</Project>
+      <Name>LogR.Repository</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

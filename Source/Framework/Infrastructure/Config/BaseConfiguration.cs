@@ -112,6 +112,7 @@ namespace Framework.Infrastructure.Config
             MigrationNamespace = appSettings[Strings.Config.MigrationNamespace] ?? string.Empty;
             AutomaticMigration = SafeUtils.Bool(appSettings[Strings.Config.AutomaticMigration],false);
             MigrationProfile = null; // Always null and if App wants to use any other profile, they are free to do so
+
             AppName = Path.GetFileNameWithoutExtension(GetType().GetTypeInfo().Assembly.Location);
         }
     }

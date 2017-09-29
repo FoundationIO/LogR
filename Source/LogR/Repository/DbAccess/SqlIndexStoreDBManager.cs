@@ -1,4 +1,3 @@
-using Common.Interfaces.Repository;
 using Framework.Data.DbAccess;
 using Framework.Infrastructure.Logging;
 using LogR.Common.Interfaces.Repository;

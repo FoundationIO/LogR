@@ -2,9 +2,9 @@
 
 namespace LogR.Repository.Migration.Application
 {
-    [Migration(201704121135)]
+    [Migration(201709281540)]
     [Profile("LogIndexStore")]
-    public class SqlBasedIndexStoreMigration_2017_04_12_11_35 : FluentMigrator.Migration
+    public class SqlBasedIndexStoreMigration_2017_09_28_15_40 : FluentMigrator.Migration
     {
         public override void Up()
         {

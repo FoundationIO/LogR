@@ -34,7 +34,7 @@
       "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes",
 
       "batchSizeToIndex": 1,
-      "indexStoreType": "lucene",
+      "indexStoreType": "Lucene",
 
       "luceneIndexStoreSettings": {
         "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes"

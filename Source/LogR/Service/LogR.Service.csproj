@@ -73,5 +73,6 @@
     <ProjectReference Include="..\..\Framework\Infrastructure\Framework.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Framework\Web\Framework.Web.csproj" />
     <ProjectReference Include="..\Common\LogR.Common.csproj" />
+    <ProjectReference Include="..\Repository\LogR.Repository.csproj" />
   </ItemGroup>
 </Project>

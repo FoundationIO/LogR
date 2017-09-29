@@ -12,13 +12,13 @@ namespace LogR.Common.Interfaces.Service.Config
 
         LuceneIndexStoreSettings LuceneIndexStoreSettings { get; }
 
-        Sqite3IndexStoreSettings Sqite3IndexStoreSettings { get; }
+        SqlBasedIndexStoreSettings Sqite3IndexStoreSettings { get; }
 
-        SqlServerIndexStoreSettings SqlServerIndexStoreSettings { get; }
+        SqlBasedIndexStoreSettings SqlServerIndexStoreSettings { get; }
 
-        MySqlIndexStoreSettings MySqlIndexStoreSettings { get; }
+        SqlBasedIndexStoreSettings MySqlIndexStoreSettings { get; }
 
-        PostgresqlIndexStoreSettings PostgresqlIndexStoreSettings { get; }
+        SqlBasedIndexStoreSettings PostgresqlIndexStoreSettings { get; }
 
         ElasticSearchIndexStoreSettings ElasticSearchIndexStoreSettings { get; }
 

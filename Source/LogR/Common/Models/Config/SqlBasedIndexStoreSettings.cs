@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace LogR.Common.Models.Config
 {
-    public class SqlServerIndexStoreSettings
+    public class SqlBasedIndexStoreSettings : BaseSettings
     {
+        public SqlBasedIndexStoreSettings(IConfiguration configuration)
+            : base(configuration)
+        {
+        }
+
         public string DbLocation { get; internal set; }
 
         public string DatabaseName { get; internal set; }

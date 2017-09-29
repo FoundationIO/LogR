@@ -21,6 +21,8 @@ namespace LogR.Web.Controllers
         [Route("/")]
         public IActionResult Dashboard()
         {
+            //Look at https://blog.platformular.com/2012/04/12/create-a-dashboard-experience-in-asp-net-mvc/
+            //for creating dashboard
             var summary = logRetrivalService.GetDashboardSummary();
             summary.ActiveTab = 1;
             return View(summary);

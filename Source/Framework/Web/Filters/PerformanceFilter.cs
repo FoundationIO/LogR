@@ -39,17 +39,16 @@ namespace Framework.Web.Filters
         private void HandlePerfLog(ActionDescriptor descriptor, HttpContext httpContext, Exception ex)
         {
             var endTime = DateTime.Now;
-            var controllerActionDescriptor = descriptor as ControllerActionDescriptor;
-            if (controllerActionDescriptor != null)
-            {
-                var parametersForLog = new List<KeyValuePair<string, object>>();
-                foreach (var param in controllerActionDescriptor.Parameters)
-                {
-                    parametersForLog.Add(new KeyValuePair<string, object>(param.Name, new object()));
-                }
+            if (!(descriptor is ControllerActionDescriptor controllerActionDescriptor))
+                return;
 
-                log.Performance(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName, startTime, endTime, parametersForLog, httpContext.Response.StatusCode, ex == null ? "Completed" : "Error", ex == null ? string.Empty : "Exception - " + ExceptionUtils.RecursivelyGetExceptionMessage(ex));
+            var parametersForLog = new List<KeyValuePair<string, object>>();
+            foreach (var param in controllerActionDescriptor.Parameters)
+            {
+                parametersForLog.Add(new KeyValuePair<string, object>(param.Name, new object()));
             }
+
+            log.Performance(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName, startTime, endTime, parametersForLog, httpContext.Response.StatusCode, ex == null ? "Completed" : "Error", ex == null ? string.Empty : "Exception - " + ExceptionUtils.RecursivelyGetExceptionMessage(ex));
         }
     }
 }

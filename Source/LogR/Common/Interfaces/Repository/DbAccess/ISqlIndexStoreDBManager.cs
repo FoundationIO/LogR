@@ -1,6 +1,6 @@
 using Framework.Data.DbAccess;
 
-namespace Common.Interfaces.Repository
+namespace LogR.Common.Interfaces.Repository
 {
     public interface ISqlIndexStoreDBManager : IDBManager
     {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Models.Config;
+using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Service.Config;
 
 namespace LogR.Repository.DbAccess
@@ -53,10 +54,6 @@ namespace LogR.Repository.DbAccess
                 this.DatabasePassword = config.PostgresqlIndexStoreSettings.DatabasePassword;
                 this.DatabaseUseIntegratedLogin = config.PostgresqlIndexStoreSettings.DatabaseUseIntegratedLogin;
                 this.DatabaseCommandTimeout = config.PostgresqlIndexStoreSettings.DatabaseCommandTimeout;
-            }
-            else
-            {
-                throw new NotImplementedException("Unsupported Index Data Store provided");
             }
 
             this.AppName = config.AppName;

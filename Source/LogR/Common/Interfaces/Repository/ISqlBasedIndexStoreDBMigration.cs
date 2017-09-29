@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Framework.Data.Migrations;
 
-namespace LogR.Common.Models.Config
+namespace LogR.Repository.Migration
 {
-    public class Sqite3IndexStoreSettings
+    public interface ISqlBasedIndexStoreDBMigration : IDBMigration
     {
-        public string DbLocation { get; internal set; }
     }
 }

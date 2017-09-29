@@ -1,5 +1,6 @@
 ﻿using Framework.Data.Migrations;
 using Framework.Infrastructure.Logging;
+using LogR.Common.Interfaces.Repository;
 using LogR.Repository.DbAccess;
 using System;
 using System.Collections.Generic;

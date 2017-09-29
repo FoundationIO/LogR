@@ -1,5 +1,4 @@
 ﻿using System;
-using Common.Interfaces.Repository;
 using Framework.Data.DbAccess;
 using Framework.Data.Migrations;
 using Framework.Infrastructure.Config;
@@ -42,12 +41,12 @@ namespace LogR.DI
                 .AddSingleton<IDBMigration, DBMigration>()
                 .AddScoped<ISqlIndexStoreDBManager, SqlIndexStoreDBManager>()
                 .AddSingleton<ISqlIndexStoreDBInfo, SqlIndexStoreDBInfo>()
+                .AddSingleton<ISqlIndexStoreConfiguration, SqlIndexStoreConfiguration>()
                 .AddSingleton<ISampleAppConfigFileCreator, SampleAppConfigFileCreator>()
                 .AddScoped<ILogRepository>(serviceProvider =>
                 {
                     var config = serviceProvider.GetRequiredService<IAppConfiguration>();
                     var log = serviceProvider.GetRequiredService<ILog>();
-                    var dbManager = serviceProvider.GetRequiredService<ISqlIndexStoreDBManager>();
 
                     var storeType = config.IndexStoreType;
 
@@ -60,6 +59,7 @@ namespace LogR.DI
                         case IndexStoreType.Sqlite3:
                         case IndexStoreType.Postgresql:
                         case IndexStoreType.SqlServer:
+                            var dbManager = serviceProvider.GetRequiredService<ISqlIndexStoreDBManager>();
                             return new SqlBasedLogRepository(log, config, dbManager);
 
                         //case IndexStoreType.MongoDB:
