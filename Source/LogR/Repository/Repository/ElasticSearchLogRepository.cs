@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Elasticsearch.Net;
 using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
@@ -11,14 +12,51 @@ using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;
 using LogR.Common.Models.Stats;
+using Nest;
 
 namespace LogR.Repository
 {
     public class ElasticSearchLogRepository : BaseLogRepository, ILogRepository
     {
+        private static bool isAppIndexExists = false;
+        private static bool isPerfIndexExists = false;
+
+        private ElasticClient client;
+        private string appLogIndexName;
+        private string perfLogIndexName;
+
         public ElasticSearchLogRepository(ILog log, IAppConfiguration config)
             : base(log, config)
         {
+            var node = new Uri(config.ElasticSearchIndexStoreSettings.ServerName);
+            var connectionPool = new SingleNodeConnectionPool(node);
+
+            var settings = new ConnectionSettings(connectionPool, (Func<ConnectionSettings, IElasticsearchSerializer>)null);
+            client = new ElasticClient(settings);
+
+            appLogIndexName = config.ElasticSearchIndexStoreSettings.AppLogIndex;
+            perfLogIndexName = config.ElasticSearchIndexStoreSettings.PerformanceLogIndex;
+
+            if (isPerfIndexExists == false)
+            {
+                client.CreateIndex(
+                    perfLogIndexName,
+                    x => x.Mappings(
+                        m => m.Map<AppLog>(t =>
+                        t.Properties(prop => prop.Keyword(str => str.Name(s => s.AppLogId))))));
+
+                isPerfIndexExists = true;
+            }
+
+            if (isAppIndexExists == false)
+            {
+                client.CreateIndex(
+                    appLogIndexName,
+                    x => x.Mappings(
+                        m => m.Map<AppLog>(t =>
+                            t.Properties(prop => prop.Keyword(str => str.Name(s => s.AppLogId))))));
+                isAppIndexExists = true;
+            }
         }
 
         public ReturnListModel<AppLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
@@ -132,9 +170,6 @@ namespace LogR.Repository
 
         public void SaveLog(RawLogData data)
         {
-            throw new NotImplementedException();
-            /*
-
             if (data == null)
             {
                 log.Error("Error ");
@@ -143,28 +178,51 @@ namespace LogR.Repository
 
             try
             {
+                List<string> lst = new List<string>
+                    {
+                        data.Data
+                    };
+
                 if (data.Type == LogType.PerformanceLog)
                 {
-                    SavePerformanceLogX(data.Data);
+                    SavePerformanceLogX(lst);
                 }
                 else
                 {
-                    SaveAppLogX(data.Data);
+                    SaveAppLogX(lst);
                 }
             }
             catch (Exception ex)
             {
                 log.Error(ex, "Error when processing Base Log - Message = " + data?.Data);
             }
-            */
+        }
+
+        public void SaveLog(List<RawLogData> data)
+        {
+            if (data == null)
+            {
+                log.Error("Error ");
+                return;
+            }
+
+            try
+            {
+                SaveAppLogX(data.Where(x1 => x1.Type == LogType.AppLog).Select(x2 => x2.Data).ToList());
+                SavePerformanceLogX(data.Where(x1 => x1.Type == LogType.PerformanceLog).Select(x2 => x2.Data).ToList());
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when processing Base Log - Message");
+            }
         }
 
         public ReturnListModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search)
         {
-            throw new NotImplementedException();
-            /*
             try
             {
+                var lst = client.Search<AppLog>(s => s.Index(appLogIndexName)).Documents.ToList();
+                /*
                 using (var reader = GetNewPerfReader())
                 {
                     var searcher = new IndexSearcher(reader);
@@ -199,6 +257,12 @@ namespace LogR.Repository
                     search.CurrentRows = resultList.Count;
                     return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, resultList, totalRows);
                 }
+                */
+                var totalRows = lst.Count();
+                search.TotalRowCount = totalRows;
+                var resultList = lst;
+                search.CurrentRows = resultList.Count;
+                return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, resultList, totalRows);
             }
             catch (Exception ex)
             {
@@ -207,7 +271,6 @@ namespace LogR.Repository
                 search.CurrentRows = 0;
                 return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, ex);
             }
-            */
         }
 
         public ReturnModel<bool> DeleteAppLog(string id)
@@ -415,57 +478,68 @@ namespace LogR.Repository
 
         public ReturnModel<SystemStats> GetStats()
         {
-            SystemStats stat = new SystemStats();
-            stat.AppDataFolderSize = GetAppDataFolderSize();
-            stat.PerformanceDataFolderSize = GetPerformanceDataFolderSize();
-            stat.LogFolderSize = GetLogFolderSize();
-            stat.LogFileCount = GetLogFileCount();
+            SystemStats stat = new SystemStats
+            {
+                AppDataFolderSize = GetAppDataFolderSize(),
+                PerformanceDataFolderSize = GetPerformanceDataFolderSize(),
+                LogFolderSize = GetLogFolderSize(),
+                LogFileCount = GetLogFileCount()
+            };
             return new ReturnModel<SystemStats>(stat);
         }
 
-        private void SavePerformanceLogX(string message)
+        private void SavePerformanceLogX(List<string> messageList)
         {
             try
             {
-                var item = GetPerformanceLogFromRawLog(message);
-                throw new NotImplementedException();
-                //using (var writer = GetNewPerfWriter())
-                //    writer.Add<PerformanceLog>(item);
+                var lst = new List<AppLog>();
+                foreach (var message in messageList)
+                {
+                    var item = GetPerformanceLogFromRawLog(message);
+                    if (item == null)
+                        continue;
+                    lst.Add(item);
+                }
+
+                client.Bulk(x => x.CreateMany(lst).Index(perfLogIndexName));
+                client.Flush(perfLogIndexName);
             }
             catch (Exception ex)
             {
-                log.Error(ex, "Error when saving Performance Log - Message = " + message);
+                log.Error(ex, "Error when saving Performance Log - Message = " + messageList.ToString(","));
             }
         }
 
-        private void SaveAppLogX(string message)
+        private void SaveAppLogX(List<string> messageList)
         {
             try
             {
-                var item = GetAppLogFromRawLog(message);
+                var lst = new List<AppLog>();
+                foreach (var message in messageList)
+                {
+                    var item = GetAppLogFromRawLog(message);
+                    if (item == null)
+                        continue;
+                    lst.Add(item);
+                }
 
-                throw new NotImplementedException();
-
-                //using (var writer = GetNewAppWriter())
-                //{
-                //    writer.Add(item);
-                //    writer.Commit();
-                //}
+                client.Bulk(x => x.CreateMany(lst).Index(appLogIndexName));
+                client.Flush(appLogIndexName);
             }
             catch (Exception ex)
             {
-                log.Error(ex, "Error when saving App Log - Message = " + message);
+                log.Error(ex, "Error when saving App Log - Message = " + messageList.ToString(","));
             }
         }
 
         private ulong GetAppDataFolderSize()
         {
-            return FileUtils.GetDirectorySize(config.AppLogIndexFolder);
+            return 0;
         }
 
         private ulong GetPerformanceDataFolderSize()
         {
-            return FileUtils.GetDirectorySize(config.PerformanceLogIndexFolder);
+            return 0;
         }
 
         private ulong GetLogFolderSize()

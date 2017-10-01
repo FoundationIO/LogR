@@ -77,8 +77,8 @@ namespace LogR.DI
                         //case IndexStoreType.RaptorDB:
                         //    return new RaptorDBLogRepository(log, config);
 
-                        //case IndexStoreType.ElasticSearch:
-                        //    return new ElasticSearchLogRepository(log, config);
+                        case IndexStoreType.ElasticSearch:
+                            return new ElasticSearchLogRepository(log, config);
 
                         //case IndexStoreType.EmbbededElasticSearch:
                         //    return new EmbbededElasticSearchLogRepository(log, config);

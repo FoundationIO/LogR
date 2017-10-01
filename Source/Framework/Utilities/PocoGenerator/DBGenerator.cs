@@ -133,8 +133,9 @@ namespace Framework.Utilities.PocoGenerator
 
             foreach (var item in config.InputOutputFiles)
             {
-                var engine = EngineFactory.CreatePhysical(Path.GetDirectoryName(item.TemplateFile));
-                string result = engine.Parse(Path.GetFileName(item.TemplateFile), model);
+                var fac = new EngineFactory();
+                var engine = fac.ForFileSystem(Path.GetDirectoryName(item.TemplateFile));
+                string result = engine.CompileRenderAsync(Path.GetFileName(item.TemplateFile), model).Result;
                 File.WriteAllText(item.CodeFile, result);
             }
         }

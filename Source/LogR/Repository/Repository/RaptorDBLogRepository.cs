@@ -16,7 +16,6 @@ namespace LogR.Repository
 {
     public class RaptorDBLogRepository : BaseLogRepository, ILogRepository
     {
-
         public RaptorDBLogRepository(ILog log, IAppConfiguration config)
             : base(log, config)
         {
@@ -158,6 +157,11 @@ namespace LogR.Repository
                 log.Error(ex, "Error when processing Base Log - Message = " + data?.Data);
             }
             */
+        }
+
+        public void SaveLog(List<RawLogData> data)
+        {
+            throw new NotImplementedException();
         }
 
         public ReturnListModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search)
@@ -416,11 +420,13 @@ namespace LogR.Repository
 
         public ReturnModel<SystemStats> GetStats()
         {
-            SystemStats stat = new SystemStats();
-            stat.AppDataFolderSize = GetAppDataFolderSize();
-            stat.PerformanceDataFolderSize = GetPerformanceDataFolderSize();
-            stat.LogFolderSize = GetLogFolderSize();
-            stat.LogFileCount = GetLogFileCount();
+            SystemStats stat = new SystemStats
+            {
+                AppDataFolderSize = GetAppDataFolderSize(),
+                PerformanceDataFolderSize = GetPerformanceDataFolderSize(),
+                LogFolderSize = GetLogFolderSize(),
+                LogFileCount = GetLogFileCount()
+            };
             return new ReturnModel<SystemStats>(stat);
         }
 
@@ -462,12 +468,12 @@ namespace LogR.Repository
 
         private ulong GetAppDataFolderSize()
         {
-            return FileUtils.GetDirectorySize(config.AppLogIndexFolder);
+            return 0;
         }
 
         private ulong GetPerformanceDataFolderSize()
         {
-            return FileUtils.GetDirectorySize(config.PerformanceLogIndexFolder);
+            return 0;
         }
 
         private ulong GetLogFolderSize()

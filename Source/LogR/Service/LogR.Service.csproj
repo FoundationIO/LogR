@@ -58,7 +58,7 @@
   
   <ItemGroup>
     <PackageReference Include="DataGenerator" Version="4.0.0.18" />
-    <PackageReference Include="NetMQ" Version="4.0.0.1" />
+    <PackageReference Include="NetMQ" Version="4.0.0.4-beta" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
   </ItemGroup>
 

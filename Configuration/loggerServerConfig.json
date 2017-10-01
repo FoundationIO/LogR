@@ -9,7 +9,7 @@
         "logSql": true,
         "logWarn": true,
         "logError": true,
-        "logPerformance" :  true,
+        "logPerformance": true,
         "logToFile": true,
         "logLocation": "|ConfigPath|\\..\\Data\\Logs",
 
@@ -34,7 +34,7 @@
       "serverPort": 9090,
       "batchSizeToIndex": 1,
 
-      "indexStoreType": "Lucene",
+      "indexStoreType": "ElasticSearch",
 
       "luceneIndexStoreSettings": {
         "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes\\LuceneLogStore"
@@ -51,13 +51,20 @@
       },
 
       "MongoDBIndexStoreSettings": {
-        "server": "",
+        "serverName": "http://localhost:9200",
         "userName": "",
-        "password": ""
+        "password": "",
+        "appLogIndex": "appLogIndex",
+        "performanceLogIndex": "performanceLogIndex"
       },
 
-      "embbededElasticSearchIndexStoreSettings": {
-      },
+      "elasticSearchIndexStoreSettings": {
+        "serverName": "http://localhost:9200",
+        "userName": "",
+        "password": "",
+        "appLogIndex": "appLogIndex",
+        "performanceLogIndex": "performanceLogIndex"
+      }
     }
   },
 
