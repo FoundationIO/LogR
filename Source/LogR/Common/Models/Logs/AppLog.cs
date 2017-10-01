@@ -74,10 +74,10 @@ namespace LogR.Common.Models.Logs
         public string PerfFunctionName { get; set; }
 
         [JsonProperty("start-time")]
-        public string StartTime { get; set; }
+        public DateTime StartTime { get; set; }
 
         [JsonProperty("elapsed-time")]
-        public string ElapsedTime { get; set; }
+        public double ElapsedTime { get; set; }
 
         [JsonProperty("perf-status")]
         public string PerfStatus { get; set; }

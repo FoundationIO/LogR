@@ -63,13 +63,7 @@ namespace LogR.Service
 
         public void ProcessLogFromQueue(List<RawLogData> logDataLst)
         {
-            foreach (var logData in logDataLst)
-                SaveToDb(logData);
-        }
-
-        private void SaveToDb(RawLogData logData)
-        {
-            logRepository.SaveLog(logData);
+            logRepository.SaveLog(logDataLst);
         }
     }
 }

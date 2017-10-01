@@ -36,6 +36,8 @@ namespace LogR.Common.Interfaces.Repository
 
         ReturnListModel<string, BaseSearchCriteria> GetUserNames(BaseSearchCriteria search);
 
+        void SaveLog(List<RawLogData> data);
+
         void SaveLog(RawLogData data);
     }
 }

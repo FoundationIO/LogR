@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using Framework.Infrastructure.Config;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Config;
+using LinqToDB;
 using LinqToDB.Data;
 using LinqToDB.DataProvider;
 
@@ -20,7 +24,7 @@ namespace Framework.Data.DbAccess
         private DataConnection connection = null;
         private DataConnectionTransaction commonTransaction = null;
 
-        public DBManager(IBaseConfiguration config, ILog log , IDBInfo dbInfo)
+        public DBManager(IBaseConfiguration config, ILog log, IDBInfo dbInfo)
         {
             this.config = config;
             this.logConfig = config.LogSettings;
@@ -66,6 +70,141 @@ namespace Framework.Data.DbAccess
             log.SqlCommitTransaction(0, true);
             commonTransaction.Commit();
             commonTransaction.Dispose();
+        }
+
+        public int Delete<T>(Expression<Func<T, bool>> where)
+            where T : class
+        {
+            return GetTable<T>().Delete(where);
+        }
+
+        public void Insert<T>(T obj)
+            where T : class
+        {
+            var identityValue = this.Connection.InsertWithIdentity<T>(obj);
+        }
+
+        public void Insert<T>(IEnumerable<T> objs)
+            where T : class
+        {
+            foreach (var obj in objs)
+            {
+                Insert(obj);
+            }
+        }
+
+        public void Update<T>(T obj)
+            where T : class
+        {
+            Connection.Update<T>(obj);
+        }
+
+        public void Update<T>(IEnumerable<T> objs)
+            where T : class
+        {
+            foreach (var obj in objs)
+            {
+                Update(obj);
+            }
+        }
+
+        public T First<T>(Expression<Func<T, bool>> predicate)
+            where T : class
+        {
+            return GetTable<T>().First(predicate);
+        }
+
+        public T FirstOrDefault<T>(Expression<Func<T, bool>> predicate)
+            where T : class
+        {
+            return GetTable<T>().FirstOrDefault(predicate);
+        }
+
+        public BulkCopyRowsCopied BulkCopy<T>(IEnumerable<T> lst)
+            where T : class
+        {
+            return this.Connection.BulkCopy<T>(lst);
+        }
+
+        public List<T> Select<T>(Expression<Func<T, bool>> predicate)
+            where T : class
+        {
+            return GetTable<T>().Where(predicate).ToList();
+        }
+
+        public List<T> SelectAll<T>()
+            where T : class
+        {
+            return GetTable<T>().ToList<T>();
+        }
+
+        public long Count<T>(Expression<Func<T, bool>> predicate)
+            where T : class
+        {
+            return GetTable<T>().Count(predicate);
+        }
+
+        public long Count<T>()
+            where T : class
+        {
+            return GetTable<T>().Count<T>();
+        }
+
+        public List<T> SelectByPage<T>(int pageNumber, int pageSize, out long totalItems, Expression<Func<T, bool>> predicate = null)
+            where T : class
+        {
+            if (pageSize == 0)
+                pageSize = 100;
+            if (pageNumber <= 0)
+                pageNumber = 1;
+
+            var querable = GetTable<T>().Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+
+            if (predicate != null)
+            {
+                querable = querable.Where(predicate);
+                totalItems = GetTable<T>().Count(predicate);
+            }
+            else
+            {
+                totalItems = GetTable<T>().Count();
+            }
+
+            return querable.ToList();
+        }
+
+        public List<T> SelectByPage<T>(int pageNumber, int pageSize, Expression<Func<T, bool>> predicate = null)
+            where T : class
+        {
+            if (pageSize == 0)
+                pageSize = 100;
+
+            if (pageNumber <= 0)
+                pageNumber = 1;
+
+            var querable = GetTable<T>().Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+
+            if (predicate != null)
+            {
+                querable = querable.Where(predicate);
+            }
+
+            return querable.ToList();
+        }
+
+        public void InsertAll<T>(List<T> list)
+            where T : class
+        {
+            foreach (var item in list)
+            {
+                Insert(item);
+            }
+        }
+
+        private ITable<T> GetTable<T>()
+            where T : class
+        {
+            return Connection.GetTable<T>();
         }
 
         private void ToggleLogging()

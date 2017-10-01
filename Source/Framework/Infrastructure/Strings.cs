@@ -37,6 +37,7 @@ namespace Framework.Infrastructure.Constants
 
         public class Log
         {
+            public const string Critical = "CRITICAL";
             public const string Trace = "TRACE";
             public const string Error = "ERROR";
             public const string Warning = "WARNING";

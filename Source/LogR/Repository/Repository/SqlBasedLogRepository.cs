@@ -121,18 +121,42 @@ namespace LogR.Repository
 
             try
             {
+                List<string> lst = new List<string>
+                    {
+                        data.Data
+                    };
+
                 if (data.Type == LogType.PerformanceLog)
                 {
-                    SavePerformanceLogX(data.Data);
+                    SavePerformanceLogX(lst);
                 }
                 else
                 {
-                    SaveAppLogX(data.Data);
+                    SaveAppLogX(lst);
                 }
             }
             catch (Exception ex)
             {
                 log.Error(ex, "Error when processing Base Log - Message = " + data?.Data);
+            }
+        }
+
+        public void SaveLog(List<RawLogData> data)
+        {
+            if (data == null)
+            {
+                log.Error("Error ");
+                return;
+            }
+
+            try
+            {
+                SavePerformanceLogX(data.Where(x => x.Type == LogType.PerformanceLog).Select(x => x.Data).ToList());
+                SaveAppLogX(data.Where(x => x.Type == LogType.AppLog).Select(x => x.Data).ToList());
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when processing Base Log - Message");
             }
         }
 
@@ -357,12 +381,18 @@ namespace LogR.Repository
             return new ReturnModel<SystemStats>(stat);
         }
 
-        private void SavePerformanceLogX(string message)
+        private void SavePerformanceLogX(List<string> message)
         {
             try
             {
-                var item = GetPerformanceLogFromRawLog(message);
-                dbManager.Connection.Insert<AppLog>(item);
+                var lst = new List<AppLog>();
+                foreach (var msg in message)
+                {
+                    var item = GetPerformanceLogFromRawLog(msg);
+                    lst.Add(item);
+                }
+
+                dbManager.BulkCopy<AppLog>(lst);
             }
             catch (Exception ex)
             {
@@ -370,12 +400,18 @@ namespace LogR.Repository
             }
         }
 
-        private void SaveAppLogX(string message)
+        private void SaveAppLogX(List<string> message)
         {
             try
             {
-                var item = GetAppLogFromRawLog(message);
-                dbManager.Connection.Insert<AppLog>(item);
+                var lst = new List<AppLog>();
+                foreach (var msg in message)
+                {
+                    var item = GetAppLogFromRawLog(msg);
+                    lst.Add(item);
+                }
+
+                dbManager.BulkCopy<AppLog>(lst);
             }
             catch (Exception ex)
             {

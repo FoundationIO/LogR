@@ -1,0 +1,3 @@
+﻿@using Framework.Infrastructure.Constants
+@model System.String
+@if (Model ==  Strings.Log.Fatal || Model == Strings.Log.Critical ||  Model == Strings.Log.Error || Model == Strings.Log.SqlError) { @Html.Raw("label-danger"); } else if (Model == Strings.Log.Sql){ @Html.Raw("label-success");} else if (Model == Strings.Log.Warning){ @Html.Raw("label-warning");} else if (Model == Strings.Log.Debug){ @Html.Raw("label-primary");} else if (Model == Strings.Log.Info || Model == Strings.Log.SqlBeginTransaction || Model == Strings.Log.SqlCommitTransaction  || Model == Strings.Log.SqlRollbackTransaction ){ @Html.Raw("label-info");} else { @Html.Raw("label-success");}

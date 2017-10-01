@@ -30,24 +30,30 @@ namespace LogR.Repository
 
         private Directory prefLogDirectory;
 
+        private IndexWriter prefLogWriter;
+
+        private IndexWriter appLogWriter;
+
         public LuceneLogRepository(ILog log, IAppConfiguration config)
             : base(log, config)
         {
             appLogDirectory = FSDirectory.Open(config.AppLogIndexFolder);
             prefLogDirectory = FSDirectory.Open(config.PerformanceLogIndexFolder);
 
+            prefLogWriter = new IndexWriter(prefLogDirectory, new IndexWriterConfig(LuceneVersion.LUCENE_48, new StandardAnalyzer(LuceneVersion.LUCENE_48)));
+
+            appLogWriter = new IndexWriter(appLogDirectory, new IndexWriterConfig(LuceneVersion.LUCENE_48, new StandardAnalyzer(LuceneVersion.LUCENE_48)));
+
             if (isPerfIndexExists == false)
             {
-                using (var writer = GetNewPerfWriter())
-                    writer.Commit();
+                prefLogWriter.Commit();
 
                 isPerfIndexExists = true;
             }
 
             if (isAppIndexExists == false)
             {
-                using (var writer = GetNewAppWriter())
-                    writer.Commit();
+                appLogWriter.Commit();
 
                 isAppIndexExists = true;
             }
@@ -103,11 +109,8 @@ namespace LogR.Repository
             {
                 log.Info("Deleting Performance Log  for days less than " + pastDate);
 
-                using (var writer = GetNewPerfWriter())
-                {
-                    writer.Delete<AppLog>(x => x.Longdate < pastDate);
-                    writer.Commit();
-                }
+                prefLogWriter.Delete<AppLog>(x => x.Longdate < pastDate);
+                prefLogWriter.Commit();
             }
             catch (Exception ex)
             {
@@ -117,12 +120,8 @@ namespace LogR.Repository
             try
             {
                 log.Info("Deleting App Log  for days less than " + pastDate);
-
-                using (var writer = GetNewAppWriter())
-                {
-                    writer.Delete<AppLog>(x => x.Longdate < pastDate);
-                    writer.Commit();
-                }
+                appLogWriter.Delete<AppLog>(x => x.Longdate < pastDate);
+                appLogWriter.Commit();
             }
             catch (Exception ex)
             {
@@ -137,11 +136,8 @@ namespace LogR.Repository
         {
             try
             {
-                using (var writer = GetNewPerfWriter())
-                {
-                    writer.Delete<AppLog>(x => x.AppLogId == id);
-                    writer.Commit();
-                }
+                prefLogWriter.Delete<AppLog>(x => x.AppLogId == id);
+                prefLogWriter.Commit();
 
                 return new ReturnModel<bool>(true);
             }
@@ -149,6 +145,25 @@ namespace LogR.Repository
             {
                 log.Error(ex, "Error when getting Deleting Performance Log  - id = " + id);
                 return new ReturnModel<bool>(ex);
+            }
+        }
+
+        public void SaveLog(List<RawLogData> data)
+        {
+            if (data == null)
+            {
+                log.Error("Error ");
+                return;
+            }
+
+            try
+            {
+                SavePerformanceLogX(data.Where(x => x.Type == LogType.PerformanceLog).Select(x => x.Data).ToList());
+                SaveAppLogX(data.Where(x => x.Type == LogType.AppLog).Select(x => x.Data).ToList());
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when processing Base Log - Message");
             }
         }
 
@@ -162,13 +177,18 @@ namespace LogR.Repository
 
             try
             {
+                List<string> lst = new List<string>
+                    {
+                        data.Data
+                    };
+
                 if (data.Type == LogType.PerformanceLog)
                 {
-                    SavePerformanceLogX(data.Data);
+                    SavePerformanceLogX(lst);
                 }
                 else
                 {
-                    SaveAppLogX(data.Data);
+                    SaveAppLogX(lst);
                 }
             }
             catch (Exception ex)
@@ -181,11 +201,10 @@ namespace LogR.Repository
         {
             try
             {
-                using (var reader = GetNewPerfReader())
+                using (var reader = GetNewAppReader())
                 {
                     var searcher = new IndexSearcher(reader);
                     var lst = searcher.AsQueryable<AppLog>();
-
                     if (search.FromDate.IsValidDate() && search.ToDate.IsValidDate())
                     {
                         if (search.FromDate.Value <= search.ToDate.Value)
@@ -210,6 +229,7 @@ namespace LogR.Repository
                     lst = lst.OrderByDescending(x => x.Longdate);
 
                     var totalRows = lst.AsQueryable().Count();
+
                     search.TotalRowCount = totalRows;
                     var resultList = lst.ApplyPaging(search.Page, search.PageSize).ToList();
                     search.CurrentRows = resultList.Count;
@@ -229,11 +249,7 @@ namespace LogR.Repository
         {
             try
             {
-                using (var writer = GetNewAppWriter())
-                {
-                    writer.Delete<AppLog>(x => x.AppLogId == id);
-                }
-
+                appLogWriter.Delete<AppLog>(x => x.AppLogId == id);
                 return new ReturnModel<bool>(true);
             }
             catch (Exception ex)
@@ -419,34 +435,39 @@ namespace LogR.Repository
             return new ReturnModel<SystemStats>(stat);
         }
 
-        private void SavePerformanceLogX(string message)
+        private void SavePerformanceLogX(List<string> messageList)
         {
             try
             {
-                var item = GetPerformanceLogFromRawLog(message);
-                using (var writer = GetNewPerfWriter())
-                    writer.Add<AppLog>(item);
+                foreach (var message in messageList)
+                {
+                    var item = GetPerformanceLogFromRawLog(message);
+                    prefLogWriter.Add<AppLog>(item);
+                }
+
+                prefLogWriter.Commit();
             }
             catch (Exception ex)
             {
-                log.Error(ex, "Error when saving Performance Log - Message = " + message);
+                log.Error(ex, "Error when saving Performance Log - Message = " + messageList.ToString(","));
             }
         }
 
-        private void SaveAppLogX(string message)
+        private void SaveAppLogX(List<string> messageList)
         {
             try
             {
-                var item = GetAppLogFromRawLog(message);
-                using (var writer = GetNewAppWriter())
+                foreach (var message in messageList)
                 {
-                    writer.Add(item);
-                    writer.Commit();
+                    var item = GetAppLogFromRawLog(message);
+                    appLogWriter.Add(item);
                 }
+
+                appLogWriter.Commit();
             }
             catch (Exception ex)
             {
-                log.Error(ex, "Error when saving App Log - Message = " + message);
+                log.Error(ex, "Error when saving App Log - Message = " + messageList.ToString(","));
             }
         }
 
@@ -469,16 +490,6 @@ namespace LogR.Repository
         {
             var filenameList = System.IO.Directory.GetFiles(config.LogSettings.LogLocation, "*.*");
             return filenameList.LongCount();
-        }
-
-        private IndexWriter GetNewPerfWriter()
-        {
-            return new IndexWriter(prefLogDirectory, new IndexWriterConfig(LuceneVersion.LUCENE_48, new StandardAnalyzer(LuceneVersion.LUCENE_48)));
-        }
-
-        private IndexWriter GetNewAppWriter()
-        {
-            return new IndexWriter(appLogDirectory, new IndexWriterConfig(LuceneVersion.LUCENE_48, new StandardAnalyzer(LuceneVersion.LUCENE_48)));
         }
 
         private bool IsPerfLogIndexAvailable()

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Framework.Infrastructure.Utils
 {
@@ -14,6 +16,25 @@ namespace Framework.Infrastructure.Utils
 
             pageNumber = pageNumber - 1; //Skip records of previous pages only
             return obj.Skip(pageSize * pageNumber).Take(pageSize);
+        }
+
+        public static void ForEachWithIndex<T>(this IEnumerable<T> enumerable, Action<T, int> handler)
+        {
+            if (enumerable == null)
+                return;
+            var idx = 0;
+            foreach (var item in enumerable)
+                handler(item, idx++);
+        }
+
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
+        {
+            if (enumerable == null)
+                return;
+            foreach (var item in enumerable)
+            {
+                action(item);
+            }
         }
     }
 }

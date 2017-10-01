@@ -81,7 +81,7 @@
                                         <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "CurrentTag" }, { "DisplayName", "Tag" } })</th>
                                         <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "UserIdentity" }, { "DisplayName", "User" } })</th>
                                         <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "RemoteAddress" }, { "DisplayName", "Ip" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "SqlResult" }, { "DisplayName", "SqlResult" } })</th>
+                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Result" }, { "DisplayName", "Result" } })</th>
                                         <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "ElapsedTime" }, { "DisplayName", "ElapsedTime" } })</th>
                                         <th>Message</th>
                                     </tr>
@@ -101,7 +101,7 @@
                                             <td>@Current.CurrentTag</td>
                                             <td>@Current.UserIdentity</td>
                                             <td>@Current.RemoteAddress</td>
-                                            <td>@Current.SqlResult</td>
+                                            <td>@Current.Result</td>
                                             <td>@Current.ElapsedTime</td>
                                             <td>@Current.Message</td>
 

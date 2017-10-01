@@ -17,7 +17,7 @@ namespace Framework.Infrastructure.Models.Search
 
         public int PageSize { get; set; }
 
-        public int Keyword { get; set; }
+        public string Keyword { get; set; }
 
         public string SortBy { get; set; }
 
