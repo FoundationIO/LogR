@@ -46,7 +46,7 @@ namespace Framework.Infrastructure.Logging
                 }
                 else
                 {
-                    return LogSettings.NoOpLogSettings();
+                    return config.LogSettings.NoOpLogSettings();
                 }
             }
 
@@ -60,26 +60,26 @@ namespace Framework.Infrastructure.Logging
             {
                 case LogLevel.Trace:
                 case LogLevel.Debug:
-                    return new LogSettings(true, true, true, true, true, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.LogPerformance, config.LogSettings.OtherFrameworkLogSettings);
+                    return config.LogSettings.TraceLogSettings();
                 case LogLevel.Information:
-                    return new LogSettings(false, false, true, true, true, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.LogPerformance, config.LogSettings.OtherFrameworkLogSettings);
+                    return config.LogSettings.InfoLogSettings();
 
                 case LogLevel.Warning:
-                    return new LogSettings(false, false, false, true, true, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.LogPerformance, config.LogSettings.OtherFrameworkLogSettings);
+                    return config.LogSettings.WarnLogSettings();
 
                 case LogLevel.Critical:
                 case LogLevel.Error:
-                    return new LogSettings(false, false, false, false, false, true, config.LogSettings.LogLocation, config.LogSettings.LogToFile, config.LogSettings.LogToConsole, config.LogSettings.LogToDebugger, config.LogSettings.LogPerformance, config.LogSettings.OtherFrameworkLogSettings);
+                    return config.LogSettings.ErrorLogSettings();
 
                 default:
                 case LogLevel.None:
-                    return LogSettings.NoOpLogSettings();
+                    return config.LogSettings.NoOpLogSettings();
             }
         }
 
         private LogSettings GetDefaultOrNoOpSettings()
         {
-            // fixme: need to change this this
+            // fixme: need to change this
             return config.LogSettings;
         }
     }

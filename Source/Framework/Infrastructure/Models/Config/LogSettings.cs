@@ -1,34 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 
 namespace Framework.Infrastructure.Models.Config
 {
-    public class LogSettings
+    public class LogSettings : BaseSettings
     {
+        private Func<string, string> configUpdator;
+
         public LogSettings(
-            bool logTrace,
-            bool logDebug,
-            bool logInfo,
-            bool logSql,
-            bool logWarn,
-            bool logError,
-            string logLocation,
-            bool logToFile,
-            bool logToConsole,
-            bool logToDebugger,
-            bool logPerformance,
-            List<KeyValuePair<string, Microsoft.Extensions.Logging.LogLevel>> otherFrameworkLogSettings)
+                IConfiguration configuration,
+                List<KeyValuePair<string, Microsoft.Extensions.Logging.LogLevel>> otherFrameworkLogSettings,
+                Func<string,string> configUpdator)
+            : base(configuration, configUpdator)
         {
-            LogTrace = logTrace;
-            LogDebug = logDebug;
-            LogInfo = logInfo;
-            LogWarn = logWarn;
-            LogError = logError;
-            LogLocation = logLocation;
-            LogToFile = logToFile;
-            LogToConsole = logToConsole;
-            LogToDebugger = logToDebugger;
-            LogPerformance = logPerformance;
             OtherFrameworkLogSettings = otherFrameworkLogSettings;
+            this.configUpdator = configUpdator;
         }
 
         //log related
@@ -56,9 +43,64 @@ namespace Framework.Infrastructure.Models.Config
 
         public List<KeyValuePair<string, Microsoft.Extensions.Logging.LogLevel>> OtherFrameworkLogSettings { get; private set; }
 
-        public static LogSettings NoOpLogSettings()
+        public LogSettings TraceLogSettings()
         {
-            return new LogSettings(false, false, false, false, false, false, string.Empty, false, false, false, false, null);
+            var result = (LogSettings)this.MemberwiseClone();
+            result.LogTrace = true;
+            result.LogDebug = true;
+            result.LogInfo = true;
+            result.LogSql = true;
+            result.LogWarn = true;
+            result.LogError = true;
+            return result;
+        }
+
+        public LogSettings InfoLogSettings()
+        {
+            var result = (LogSettings)this.MemberwiseClone();
+            result.LogTrace = false;
+            result.LogDebug = false;
+            result.LogInfo = true;
+            result.LogSql = true;
+            result.LogWarn = true;
+            result.LogError = true;
+            return result;
+        }
+
+        public LogSettings WarnLogSettings()
+        {
+            var result = (LogSettings)this.MemberwiseClone();
+            result.LogTrace = false;
+            result.LogDebug = false;
+            result.LogInfo = false;
+            result.LogSql = false;
+            result.LogWarn = true;
+            result.LogError = true;
+            return result;
+        }
+
+        public LogSettings ErrorLogSettings()
+        {
+            var result = (LogSettings)this.MemberwiseClone();
+            result.LogTrace = false;
+            result.LogDebug = false;
+            result.LogInfo = false;
+            result.LogSql = false;
+            result.LogWarn = false;
+            result.LogError = true;
+            return result;
+        }
+
+        public LogSettings NoOpLogSettings()
+        {
+            var result = (LogSettings)this.MemberwiseClone();
+            result.LogTrace = false;
+            result.LogDebug = false;
+            result.LogInfo = false;
+            result.LogSql = false;
+            result.LogWarn = false;
+            result.LogError = false;
+            return result;
         }
     }
 }

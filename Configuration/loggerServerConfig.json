@@ -2,46 +2,52 @@
   "configuration": {
     "appSettings": {
 
+      "logSettings": {
+        "logTrace": true,
+        "logDebug": true,
+        "logInfo": true,
+        "logSql": true,
+        "logWarn": true,
+        "logError": true,
+        "logPerformance" :  true,
+        "logToFile": true,
+        "logLocation": "|ConfigPath|\\..\\Data\\Logs",
 
-      "logTrace": true,
-      "logDebug": true,
-      "logInfo": true,
-      "logSql": true,
-      "logWarn": true,
-      "logError": true,
+        "logToDebugger": true,
+        "logToConsole": true
 
-      "logToFile": true,
-      "logLocation": "|ConfigPath|\\..\\Data\\Logs",
+      },
 
-      "logToDebugger": true,
-      "logToConsole": true,
-
-      "databaseType": "sqlite3",
-      "databaseName": "|ConfigPath|\\..\\Data\\Database\\LoggerInfo.sqlite3",
-      "databaseServer": "",
-      "databaseUserName": "",
-      "databasePassword": "",
-      "databaseCommandTimeout": 99,
-      "maxPoolSize": 99,
+      "dbSettings": {
+        "databaseType": "sqlite3",
+        "databaseName": "|ConfigPath|\\..\\Data\\Database\\LoggerInfo.sqlite3",
+        "databaseServer": "",
+        "databaseUserName": "",
+        "databasePassword": "",
+        "databaseCommandTimeout": 99,
+        "maxPoolSize": 99
+      },
 
       "automaticMigration": true,
       "migrationNamespace": "LogR.Repository.Migration.Application",
-
       "sqlBasedIndexStoreMigrationNamespace": "LogR.Repository.Migration.Application.SqlBasedIndexStore",
-
       "serverPort": 9090,
-
-      "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes",
-
       "batchSizeToIndex": 1,
+
       "indexStoreType": "Lucene",
 
       "luceneIndexStoreSettings": {
-        "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes"
+        "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes\\LuceneLogStore"
       },
 
-      "sqlite3IndexStoreSettings": {
-        "dbLocation": "|ConfigPath|\\..\\Data\\SqliteLogStore\\LogStore.sqlite3"
+      "sqlIndexStoreSettings": {
+        "databaseType": "sqlite3",
+        "databaseName": "|ConfigPath|\\..\\Data\\Indexes\\SqliteLogStore\\LogStore.sqlite3",
+        "databaseServer": "",
+        "databaseUserName": "",
+        "databasePassword": "",
+        "databaseCommandTimeout": 99,
+        "maxPoolSize": 99
       },
 
       "MongoDBIndexStoreSettings": {
@@ -52,30 +58,6 @@
 
       "embbededElasticSearchIndexStoreSettings": {
       },
-
-      "mySqlIndexStoreSettings": {
-        "databaseName": "LogDb",
-        "databaseServer": "",
-        "databaseUserName": "",
-        "databasePassword": "",
-        "databaseCommandTimeout": 99
-      },
-
-      "sqlServerIndexStoreSettings": {
-        "databaseName": "LogDb",
-        "databaseServer": "",
-        "databaseUserName": "",
-        "databasePassword": "",
-        "databaseCommandTimeout": 99
-      },
-
-      "postgresqlIndexStoreSettings": {
-        "databaseName": "LogDb",
-        "databaseServer": "",
-        "databaseUserName": "",
-        "databasePassword": "",
-        "databaseCommandTimeout": 99
-      }
     }
   },
 

@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using Framework.Infrastructure.Config;
 using Framework.Infrastructure.Constants;
+using Framework.Infrastructure.Models.Config;
 using Framework.Infrastructure.Utils;
 using LogR.Common.Constants;
 using LogR.Common.Enums;
@@ -14,8 +15,11 @@ namespace LogR.Service.Config
 {
     public class AppConfiguration : BaseConfiguration, IAppConfiguration
     {
-        public AppConfiguration()
+        private IAppConfigurationFile appConfigurationFile;
+
+        public AppConfiguration(IAppConfigurationFile appConfigurationFile)
         {
+            this.appConfigurationFile = appConfigurationFile;
             PopulateFromConfigFile();
             PrepareFolders();
         }
@@ -26,13 +30,7 @@ namespace LogR.Service.Config
 
         public LuceneIndexStoreSettings LuceneIndexStoreSettings { get; private set; }
 
-        public SqlBasedIndexStoreSettings Sqite3IndexStoreSettings { get; private set; }
-
-        public SqlBasedIndexStoreSettings SqlServerIndexStoreSettings { get; private set; }
-
-        public SqlBasedIndexStoreSettings MySqlIndexStoreSettings { get; private set; }
-
-        public SqlBasedIndexStoreSettings PostgresqlIndexStoreSettings { get; private set; }
+        public DbSettings SqlIndexStoreSettings { get; private set; }
 
         public ElasticSearchIndexStoreSettings ElasticSearchIndexStoreSettings { get; private set; }
 
@@ -43,24 +41,6 @@ namespace LogR.Service.Config
         public MongoDBIndexStoreSettings MongoDBIndexStoreSettings { get; private set; }
 
         public int ServerPort { get; private set; }
-
-        public string IndexBaseFolder { get; private set; }
-
-        public string AppLogIndexFolder
-        {
-            get
-            {
-                return IndexBaseFolder + "\\" + StringConstants.Config.AppLogIndex + "\\";
-            }
-        }
-
-        public string PerformanceLogIndexFolder
-        {
-            get
-            {
-                return IndexBaseFolder + "\\" + StringConstants.Config.PerformanceLogIndex + "\\";
-            }
-        }
 
         public bool IsSqlBasedIndexStore()
         {
@@ -79,21 +59,16 @@ namespace LogR.Service.Config
                 Directory.CreateDirectory(LogSettings.LogLocation);
             }
 
-            if (Directory.Exists(IndexBaseFolder) == false)
+            if (DbSettings.DatabaseType == DBType.SQLITE3)
             {
-                Directory.CreateDirectory(IndexBaseFolder);
-            }
-
-            if (DatabaseType == DBType.SQLITE3)
-            {
-                if (Directory.Exists(FileUtils.GetFileDirectory(DatabaseName)) == false)
-                    Directory.CreateDirectory(FileUtils.GetFileDirectory(DatabaseName));
+                if (Directory.Exists(FileUtils.GetFileDirectory(DbSettings.DatabaseName)) == false)
+                    Directory.CreateDirectory(FileUtils.GetFileDirectory(DbSettings.DatabaseName));
             }
         }
 
         protected override string GetConfigFileLocation()
         {
-            return AppConfigurationCallback.GetFileName();
+            return appConfigurationFile.GetFileName();
         }
 
         protected void PopulateFromConfigFile()
@@ -120,23 +95,6 @@ namespace LogR.Service.Config
                 throw new Exception(ErrorConstants.MigrationNamespaceIsEmpty);
             }
 
-            IndexBaseFolder = appSettings[StringConstants.Config.IndexBaseFolder] ?? IndexBaseFolder;
-            if (IndexBaseFolder != null && IndexBaseFolder.Contains(Strings.Config.ConfigPath))
-            {
-                IndexBaseFolder = IndexBaseFolder.Replace(Strings.Config.ConfigPath, FileUtils.GetFileDirectory(configLocation));
-                IndexBaseFolder = Path.GetFullPath(new Uri(IndexBaseFolder).LocalPath);
-            }
-
-            if (Directory.Exists(AppLogIndexFolder) == false)
-            {
-                Directory.CreateDirectory(AppLogIndexFolder);
-            }
-
-            if (Directory.Exists(PerformanceLogIndexFolder) == false)
-            {
-                Directory.CreateDirectory(PerformanceLogIndexFolder);
-            }
-
             ServerPort = SafeUtils.Int(appSettings[Strings.Config.ServerPort], ServerPort);
             AppName = Path.GetFileNameWithoutExtension(this.GetType().GetTypeInfo().Assembly.Location);
             BatchSizeToIndex = SafeUtils.Int(appSettings[StringConstants.Config.BatchSizeToIndex], BatchSizeToIndex);
@@ -146,27 +104,38 @@ namespace LogR.Service.Config
             if (IndexStoreType == IndexStoreType.Lucene)
             {
                 var luceneSettings = appSettings.GetSection("luceneIndexStoreSettings");
-                LuceneIndexStoreSettings = new LuceneIndexStoreSettings(luceneSettings);
+                LuceneIndexStoreSettings = new LuceneIndexStoreSettings(luceneSettings, (str) =>
+                {
+                    if (str.IsTrimmedStringNotNullOrEmpty() && str.Contains(Strings.Config.ConfigPath))
+                    {
+                        str = str.Replace(Strings.Config.ConfigPath, FileUtils.GetFileDirectory(configLocation));
+                        str = Path.GetFullPath(new Uri(str).LocalPath);
+                    }
+                    return str;
+                });
+
+                if (Directory.Exists(LuceneIndexStoreSettings.AppLogIndexFolder) == false)
+                {
+                    Directory.CreateDirectory(LuceneIndexStoreSettings.AppLogIndexFolder);
+                }
+
+                if (Directory.Exists(LuceneIndexStoreSettings.PerformanceLogIndexFolder) == false)
+                {
+                    Directory.CreateDirectory(LuceneIndexStoreSettings.PerformanceLogIndexFolder);
+                }
             }
-            else if (IndexStoreType == IndexStoreType.Sqlite3)
+            else if (IndexStoreType == IndexStoreType.Sqlite3 || IndexStoreType == IndexStoreType.SqlServer || IndexStoreType == IndexStoreType.Postgresql || IndexStoreType == IndexStoreType.MySql)
             {
-                var sqite3IndexStoreSettings = appSettings.GetSection("sqite3IndexStoreSettings");
-                this.Sqite3IndexStoreSettings = new SqlBasedIndexStoreSettings(sqite3IndexStoreSettings);
-            }
-            else if (IndexStoreType == IndexStoreType.SqlServer)
-            {
-                var configSettings = appSettings.GetSection("sqlServerIndexStoreSettings");
-                this.SqlServerIndexStoreSettings = new SqlBasedIndexStoreSettings(configSettings);
-            }
-            else if (IndexStoreType == IndexStoreType.Postgresql)
-            {
-                var configSettings = appSettings.GetSection("postgresqlIndexStoreSettings");
-                this.PostgresqlIndexStoreSettings = new SqlBasedIndexStoreSettings(configSettings);
-            }
-            else if (IndexStoreType == IndexStoreType.MySql)
-            {
-                var configSettings = appSettings.GetSection("mySqlIndexStoreSettings");
-                this.MySqlIndexStoreSettings = new SqlBasedIndexStoreSettings(configSettings);
+                var configSettings = appSettings.GetSection("sqlIndexStoreSettings");
+                this.SqlIndexStoreSettings = new DbSettings(configSettings, (str) =>
+                {
+                    if (str.IsTrimmedStringNotNullOrEmpty() && str.Contains(Strings.Config.ConfigPath))
+                    {
+                        str = str.Replace(Strings.Config.ConfigPath, FileUtils.GetFileDirectory(configLocation));
+                        str = Path.GetFullPath(new Uri(str).LocalPath);
+                    }
+                    return str;
+                });
             }
             else if (IndexStoreType == IndexStoreType.ElasticSearch)
             {
@@ -176,12 +145,28 @@ namespace LogR.Service.Config
             else if (IndexStoreType == IndexStoreType.EmbbededElasticSearch)
             {
                 var configSettings = appSettings.GetSection("embeddedElasticSearchIndexStoreSettings");
-                this.EmbeddedElasticSearchIndexStoreSettings = new EmbeddedElasticSearchIndexStoreSettings(configSettings);
+                this.EmbeddedElasticSearchIndexStoreSettings = new EmbeddedElasticSearchIndexStoreSettings(configSettings, (str) =>
+                {
+                    if (str.IsTrimmedStringNotNullOrEmpty() && str.Contains(Strings.Config.ConfigPath))
+                    {
+                        str = str.Replace(Strings.Config.ConfigPath, FileUtils.GetFileDirectory(configLocation));
+                        str = Path.GetFullPath(new Uri(str).LocalPath);
+                    }
+                    return str;
+                });
             }
             else if (IndexStoreType == IndexStoreType.RaptorDB)
             {
                 var configSettings = appSettings.GetSection("raptorDBIndexStoreSettings");
-                this.RaptorDBIndexStoreSettings = new RaptorDBIndexStoreSettings(configSettings);
+                this.RaptorDBIndexStoreSettings = new RaptorDBIndexStoreSettings(configSettings, (str) =>
+                {
+                    if (str.IsTrimmedStringNotNullOrEmpty() && str.Contains(Strings.Config.ConfigPath))
+                    {
+                        str = str.Replace(Strings.Config.ConfigPath, FileUtils.GetFileDirectory(configLocation));
+                        str = Path.GetFullPath(new Uri(str).LocalPath);
+                    }
+                    return str;
+                });
             }
             else if (IndexStoreType == IndexStoreType.MongoDB)
             {

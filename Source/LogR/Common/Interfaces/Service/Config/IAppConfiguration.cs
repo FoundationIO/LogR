@@ -1,4 +1,5 @@
 ﻿using Framework.Infrastructure.Config;
+using Framework.Infrastructure.Models.Config;
 using LogR.Common.Enums;
 using LogR.Common.Models.Config;
 
@@ -12,13 +13,7 @@ namespace LogR.Common.Interfaces.Service.Config
 
         LuceneIndexStoreSettings LuceneIndexStoreSettings { get; }
 
-        SqlBasedIndexStoreSettings Sqite3IndexStoreSettings { get; }
-
-        SqlBasedIndexStoreSettings SqlServerIndexStoreSettings { get; }
-
-        SqlBasedIndexStoreSettings MySqlIndexStoreSettings { get; }
-
-        SqlBasedIndexStoreSettings PostgresqlIndexStoreSettings { get; }
+        DbSettings SqlIndexStoreSettings { get; }
 
         ElasticSearchIndexStoreSettings ElasticSearchIndexStoreSettings { get; }
 
@@ -29,12 +24,6 @@ namespace LogR.Common.Interfaces.Service.Config
         MongoDBIndexStoreSettings MongoDBIndexStoreSettings { get; }
 
         int ServerPort { get; }
-
-        string IndexBaseFolder { get; }
-
-        string AppLogIndexFolder { get; }
-
-        string PerformanceLogIndexFolder { get; }
 
         bool IsSqlBasedIndexStore();
     }

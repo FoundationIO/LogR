@@ -51,6 +51,7 @@ namespace LogR.DI
                 .AddSingleton<IMigrationService, MigrationService>()
                 .AddSingleton<ISeedService, SeedService>()
                 .AddSingleton<ILoadTestService, LoadTestService>()
+                .AddSingleton<IAppConfigurationFile, AppConfigurationFile>()
                 .AddSingleton<ILogRepository>(serviceProvider =>
                 {
                     var config = serviceProvider.GetRequiredService<IAppConfiguration>();

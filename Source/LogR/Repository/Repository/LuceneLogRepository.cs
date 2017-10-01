@@ -37,8 +37,8 @@ namespace LogR.Repository
         public LuceneLogRepository(ILog log, IAppConfiguration config)
             : base(log, config)
         {
-            appLogDirectory = FSDirectory.Open(config.AppLogIndexFolder);
-            prefLogDirectory = FSDirectory.Open(config.PerformanceLogIndexFolder);
+            appLogDirectory = FSDirectory.Open(config.LuceneIndexStoreSettings.AppLogIndexFolder);
+            prefLogDirectory = FSDirectory.Open(config.LuceneIndexStoreSettings.PerformanceLogIndexFolder);
 
             prefLogWriter = new IndexWriter(prefLogDirectory, new IndexWriterConfig(LuceneVersion.LUCENE_48, new StandardAnalyzer(LuceneVersion.LUCENE_48)));
 
@@ -473,12 +473,12 @@ namespace LogR.Repository
 
         private ulong GetAppDataFolderSize()
         {
-            return FileUtils.GetDirectorySize(config.AppLogIndexFolder);
+            return FileUtils.GetDirectorySize(config.LuceneIndexStoreSettings.AppLogIndexFolder);
         }
 
         private ulong GetPerformanceDataFolderSize()
         {
-            return FileUtils.GetDirectorySize(config.PerformanceLogIndexFolder);
+            return FileUtils.GetDirectorySize(config.LuceneIndexStoreSettings.PerformanceLogIndexFolder);
         }
 
         private ulong GetLogFolderSize()

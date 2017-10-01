@@ -252,7 +252,7 @@ namespace Framework.Data.DbAccess
                     connection.Dispose();
                 connection = new DataConnection(dbInfo.GetDBProvider(), ConnectionString)
                 {
-                    CommandTimeout = config.DatabaseCommandTimeout
+                    CommandTimeout = config.DbSettings.DatabaseCommandTimeout
                 };
             }
         }

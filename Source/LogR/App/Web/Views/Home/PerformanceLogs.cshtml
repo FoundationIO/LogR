@@ -1,6 +1,6 @@
 ﻿@using Framework.Web.HtmlHelpers
 
-@model Framework.Infrastructure.Models.Result.ReturnListModel<LogR.Common.Models.Logs.PerformanceLog, LogR.Common.Models.Search.PerformanceLogSearchCriteria>
+@model Framework.Infrastructure.Models.Result.ReturnListModel<LogR.Common.Models.Logs.AppLog, LogR.Common.Models.Search.PerformanceLogSearchCriteria>
 
 <!-- Full Width Column -->
 <div class="content-wrapper">
@@ -102,12 +102,12 @@
                                             <td>@Current.UserIdentity</td>
                                             <td>@Current.RemoteAddress</td>
                                             <td>@Current.App</td>
-                                            <td>@Current.Module</td>
-                                            <td>@Current.FunctionName</td>
+                                            <td>@Current.PerfModule</td>
+                                            <td>@Current.PerfFunctionName</td>
                                             <td>@Current.StartTime</td>
                                             <td>@Current.ElapsedTime</td>
-                                            <td>@Current.Status</td>
-                                            <td>@Current.AdditionalMessage</td>
+                                            <td>@Current.PerfStatus</td>
+                                            <td>@Current.Message</td>
                                         </tr> 
                                         }
                                     </tbody>

@@ -28,36 +28,36 @@ namespace Framework.Data.DbAccess
 
             var connectionStr = string.Empty;
 
-            var dbType = (config.DatabaseType ?? string.Empty).Trim().ToLower();
+            var dbType = (config.DbSettings.DatabaseType ?? string.Empty).Trim().ToLower();
             switch (dbType)
             {
                 case DBType.MYSQL:
                     {
-                        if (config.DatabaseUseIntegratedLogin)
-                            connectionStr = $"IntegratedSecurity=yes;Server={config.DatabaseServer};Database={config.DatabaseName};";
+                        if (config.DbSettings.DatabaseUseIntegratedLogin)
+                            connectionStr = $"IntegratedSecurity=yes;Server={config.DbSettings.DatabaseServer};Database={config.DbSettings.DatabaseName};";
                         else
-                            connectionStr = $"Server={config.DatabaseServer};Database={config.DatabaseName};Uid={config.DatabaseUserName};Pwd={config.DatabasePassword};";
+                            connectionStr = $"Server={config.DbSettings.DatabaseServer};Database={config.DbSettings.DatabaseName};Uid={config.DbSettings.DatabaseUserName};Pwd={config.DbSettings.DatabasePassword};";
                         break;
                     }
 
                 case DBType.SQLSERVER:
                     {
-                        if (config.DatabaseUseIntegratedLogin)
-                            connectionStr = $"Integrated Security=true;Server={config.DatabaseServer};Initial Catalog={config.DatabaseName};Persist Security Info=True;MultipleActiveResultSets =False;Application Name={config.AppName};Max Pool Size={workerThreads};";
+                        if (config.DbSettings.DatabaseUseIntegratedLogin)
+                            connectionStr = $"Integrated Security=true;Server={config.DbSettings.DatabaseServer};Initial Catalog={config.DbSettings.DatabaseName};Persist Security Info=True;MultipleActiveResultSets =False;Application Name={config.AppName};Max Pool Size={workerThreads};";
                         else
-                            connectionStr = $"Server={config.DatabaseServer};Initial Catalog={config.DatabaseName};Persist Security Info=True;User ID={config.DatabaseUserName};Password={config.DatabasePassword};MultipleActiveResultSets=False;Application Name={config.AppName};Max Pool Size={workerThreads};";
+                            connectionStr = $"Server={config.DbSettings.DatabaseServer};Initial Catalog={config.DbSettings.DatabaseName};Persist Security Info=True;User ID={config.DbSettings.DatabaseUserName};Password={config.DbSettings.DatabasePassword};MultipleActiveResultSets=False;Application Name={config.AppName};Max Pool Size={workerThreads};";
                         break;
                     }
 
                 case DBType.SQLITE3:
                     {
-                        connectionStr = $"Data Source={config.DatabaseName}; Version=3;PRAGMA journal_mode=WAL;";
+                        connectionStr = $"Data Source={config.DbSettings.DatabaseName}; Version=3;PRAGMA journal_mode=WAL;";
                         break;
                     }
 
                 default:
                     {
-                        throw new Exception($"Unable to get Configuration string, Unknown Database type specified in the configuration {config.DatabaseType}");
+                        throw new Exception($"Unable to get Configuration string, Unknown Database type specified in the configuration {config.DbSettings.DatabaseType}");
                     }
             }
 
@@ -66,7 +66,7 @@ namespace Framework.Data.DbAccess
 
         public virtual MigrationProcessorFactory GetMigrationProcessorFactory()
         {
-            var dbType = (config.DatabaseType ?? string.Empty).Trim().ToLower();
+            var dbType = (config.DbSettings.DatabaseType ?? string.Empty).Trim().ToLower();
             switch (dbType)
             {
                 case DBType.MYSQL:
@@ -86,14 +86,14 @@ namespace Framework.Data.DbAccess
 
                 default:
                     {
-                        throw new Exception($"Unable to get Migration Process Factory, Unknown Database type specified in the configuration {config.DatabaseType}");
+                        throw new Exception($"Unable to get Migration Process Factory, Unknown Database type specified in the configuration {config.DbSettings.DatabaseType}");
                     }
             }
         }
 
         public virtual IDataProvider GetDBProvider()
         {
-            var dbType = (config.DatabaseType ?? string.Empty).Trim().ToLower();
+            var dbType = (config.DbSettings.DatabaseType ?? string.Empty).Trim().ToLower();
             switch (dbType)
             {
                 case DBType.MYSQL:
@@ -113,11 +113,11 @@ namespace Framework.Data.DbAccess
 
                 default:
                     {
-                        throw new Exception($"Unable to get DB Provider, Unknown Database type specified in the configuration {config.DatabaseType}");
+                        throw new Exception($"Unable to get DB Provider, Unknown Database type specified in the configuration {config.DbSettings.DatabaseType}");
                     }
             }
 
-            throw new Exception(string.Format("DB Type {0} is not supported yet", config.DatabaseType));
+            throw new Exception(string.Format("DB Type {0} is not supported yet", config.DbSettings.DatabaseType));
         }
     }
 }

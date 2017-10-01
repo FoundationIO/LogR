@@ -5,11 +5,11 @@ namespace LogR.Service.Config
 {
     public delegate string OnGetConfigFileName();
 
-    public class AppConfigurationCallback
+    public class AppConfigurationFile : IAppConfigurationFile
     {
         private const string LOGFILENAME = "LoggerServerConfig.json";
 
-        public static string GetFileName()
+        public string GetFileName()
         {
             var path = FileUtils.Combine(FileUtils.GetApplicationExeDirectory(), "..", "Configuration", LOGFILENAME);
             if (File.Exists(path))

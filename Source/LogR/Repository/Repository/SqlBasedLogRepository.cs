@@ -421,12 +421,12 @@ namespace LogR.Repository
 
         private ulong GetAppDataFolderSize()
         {
-            return FileUtils.GetDirectorySize(config.AppLogIndexFolder);
+            return 0;
         }
 
         private ulong GetPerformanceDataFolderSize()
         {
-            return FileUtils.GetDirectorySize(config.PerformanceLogIndexFolder);
+            return 0;
         }
 
         private ulong GetLogFolderSize()

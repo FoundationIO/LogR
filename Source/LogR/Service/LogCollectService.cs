@@ -28,14 +28,15 @@ namespace LogR.Service
             queue.ReceiveReady += (sender, args) =>
             {
                 var item = queue.Dequeue();
-                var lst = new List<RawLogData>();
-                lst.Add(item);
+                var lst = new List<RawLogData>
+                {
+                    item
+                };
                 if (config.BatchSizeToIndex > 1)
                 {
                     for (int i = 0; i < config.BatchSizeToIndex; ++i)
                     {
-                        RawLogData outData;
-                        if (queue.TryDequeue(out outData, new TimeSpan(10)) == false)
+                        if (queue.TryDequeue(out RawLogData outData, new TimeSpan(10)) == false)
                         {
                             break; //no more items in the Queue so we''ll make the system wait for the Queue
                         }

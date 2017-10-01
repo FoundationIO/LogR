@@ -33,6 +33,8 @@ namespace Framework.Infrastructure.Constants
             public const string MigrationNamespace = "migrationNamespace";
             public const string ServerPort = "serverPort";
             public const string LogLevel = "LogLevel";
+            public const string DbSettings = "dbSettings";
+            public const string LogSettings = "logSettings";
         }
 
         public class Log
