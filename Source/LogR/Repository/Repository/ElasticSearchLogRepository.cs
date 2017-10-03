@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Elasticsearch.Net;
+using FluentNest;
 using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
@@ -18,8 +19,8 @@ namespace LogR.Repository
 {
     public class ElasticSearchLogRepository : BaseLogRepository, ILogRepository
     {
-        private static bool isAppIndexExists = false;
-        private static bool isPerfIndexExists = false;
+        //private static bool isAppIndexCreated = false;
+        //private static bool isPerfIndexCreated = false;
 
         private ElasticClient client;
         private string appLogIndexName;
@@ -34,28 +35,22 @@ namespace LogR.Repository
             var settings = new ConnectionSettings(connectionPool, (Func<ConnectionSettings, IElasticsearchSerializer>)null);
             client = new ElasticClient(settings);
 
-            appLogIndexName = config.ElasticSearchIndexStoreSettings.AppLogIndex;
-            perfLogIndexName = config.ElasticSearchIndexStoreSettings.PerformanceLogIndex;
+            appLogIndexName = (config.ElasticSearchIndexStoreSettings.AppLogIndex ?? "").ToLower();
+            perfLogIndexName = (config.ElasticSearchIndexStoreSettings.PerformanceLogIndex ?? "").ToLower();
 
-            if (isPerfIndexExists == false)
+            //client.DeleteIndex(perfLogIndexName);
+
+            if (client.IndexExists(perfLogIndexName).Exists == false)
             {
-                client.CreateIndex(
-                    perfLogIndexName,
-                    x => x.Mappings(
-                        m => m.Map<AppLog>(t =>
-                        t.Properties(prop => prop.Keyword(str => str.Name(s => s.AppLogId))))));
-
-                isPerfIndexExists = true;
+                client.CreateIndex(perfLogIndexName);
             }
 
-            if (isAppIndexExists == false)
+            //client.DeleteIndex(appLogIndexName);
+
+            if (client.IndexExists(appLogIndexName).Exists == false)
             {
-                client.CreateIndex(
-                    appLogIndexName,
-                    x => x.Mappings(
-                        m => m.Map<AppLog>(t =>
-                            t.Properties(prop => prop.Keyword(str => str.Name(s => s.AppLogId))))));
-                isAppIndexExists = true;
+                var mappings = new CreateIndexDescriptor(appLogIndexName).Mappings(ms => ms.Map<AppLog>(map => map.AutoMap()));
+                var resp = client.CreateIndex(mappings);
             }
         }
 
@@ -221,47 +216,39 @@ namespace LogR.Repository
         {
             try
             {
-                var lst = client.Search<AppLog>(s => s.Index(appLogIndexName)).Documents.ToList();
-                /*
-                using (var reader = GetNewPerfReader())
+                var lst = LinqUtils.True<AppLog>();
+
+                if (search.FromDate.IsValidDate() && search.ToDate.IsValidDate())
                 {
-                    var searcher = new IndexSearcher(reader);
-                    var lst = searcher.AsQueryable<AppLog>();
-
-                    if (search.FromDate.IsValidDate() && search.ToDate.IsValidDate())
+                    if (search.FromDate.Value <= search.ToDate.Value)
                     {
-                        if (search.FromDate.Value <= search.ToDate.Value)
-                        {
-                            lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay() && x.Longdate <= search.ToDate.Value.EndOfDay());
-                        }
+                        lst = lst.Or(x => x.Longdate >= search.FromDate.Value.StartOfDay() && x.Longdate <= search.ToDate.Value.EndOfDay());
                     }
-                    else if (search.FromDate.IsValidDate())
-                    {
-                        lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay());
-                    }
-                    else if (search.ToDate.IsValidDate())
-                    {
-                        lst = lst.Where(x => x.Longdate <= search.ToDate.Value.EndOfDay());
-                    }
-
-                    if (search.LogType != null)
-                    {
-                        lst = lst.Where(x => x.Severity == search.LogType);
-                    }
-
-                    lst = lst.OrderByDescending(x => x.Longdate);
-
-                    var totalRows = lst.AsQueryable().Count();
-                    search.TotalRowCount = totalRows;
-                    var resultList = lst.ApplyPaging(search.Page, search.PageSize).ToList();
-                    search.CurrentRows = resultList.Count;
-                    return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, resultList, totalRows);
                 }
-                */
-                var totalRows = lst.Count();
+                else if (search.FromDate.IsValidDate())
+                {
+                    lst = lst.Or(x => x.Longdate >= search.FromDate.Value.StartOfDay());
+                }
+                else if (search.ToDate.IsValidDate())
+                {
+                    lst = lst.Or(x => x.Longdate <= search.ToDate.Value.EndOfDay());
+                }
+
+                if (search.LogType != null)
+                {
+                    lst = lst.Or(x => x.Severity == search.LogType);
+                }
+
+                var count = client.Search<AppLog>(s =>
+                    s.Index(appLogIndexName)).Total;
+
+                var result = client.Search<AppLog>(s =>
+                    s.Index(appLogIndexName).Skip(search.GetSkipValue()).Take(search.PageSize));
+
+                var totalRows = count;
                 search.TotalRowCount = totalRows;
-                var resultList = lst;
-                search.CurrentRows = resultList.Count;
+                var resultList = result.Documents.ToList();
+                search.CurrentRows = result.Documents.Count;
                 return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, resultList, totalRows);
             }
             catch (Exception ex)
@@ -488,6 +475,18 @@ namespace LogR.Repository
             return new ReturnModel<SystemStats>(stat);
         }
 
+        public void DeleteAllAppLogs()
+        {
+            if (client.IndexExists(appLogIndexName).Exists)
+                client.DeleteIndex(appLogIndexName);
+        }
+
+        public void DeleteAllPerformanceLogs()
+        {
+            if (client.IndexExists(perfLogIndexName).Exists)
+                client.DeleteIndex(perfLogIndexName);
+        }
+
         private void SavePerformanceLogX(List<string> messageList)
         {
             try
@@ -521,10 +520,11 @@ namespace LogR.Repository
                     if (item == null)
                         continue;
                     lst.Add(item);
+                    client.Index<AppLog>(item, idx => idx.Index(appLogIndexName));
                 }
 
-                client.Bulk(x => x.CreateMany(lst).Index(appLogIndexName));
-                client.Flush(appLogIndexName);
+                //client.Bulk(x => x.CreateMany(lst).Index(appLogIndexName));
+                //client.Flush(appLogIndexName);
             }
             catch (Exception ex)
             {

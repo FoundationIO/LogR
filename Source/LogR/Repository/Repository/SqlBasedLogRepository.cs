@@ -101,7 +101,7 @@ namespace LogR.Repository
         {
             try
             {
-                dbManager.Connection.GetTable<AppLog>().Where(x => x.AppLogId == id).Delete();
+                dbManager.Connection.GetTable<AppLog>().Where(x => x.AppLogId == SafeUtils.Guid(id)).Delete();
                 return new ReturnModel<bool>(true);
             }
             catch (Exception ex)
@@ -208,7 +208,7 @@ namespace LogR.Repository
         {
             try
             {
-                var lst = dbManager.Connection.GetTable<AppLog>().Where(x => x.AppLogId == id);
+                var lst = dbManager.Connection.GetTable<AppLog>().Where(x => x.AppLogId == SafeUtils.Guid(id));
                 return new ReturnModel<bool>(true);
             }
             catch (Exception ex)
@@ -379,6 +379,14 @@ namespace LogR.Repository
                 LogFileCount = GetLogFileCount()
             };
             return new ReturnModel<SystemStats>(stat);
+        }
+
+        public void DeleteAllAppLogs()
+        {
+        }
+
+        public void DeleteAllPerformanceLogs()
+        {
         }
 
         private void SavePerformanceLogX(List<string> message)

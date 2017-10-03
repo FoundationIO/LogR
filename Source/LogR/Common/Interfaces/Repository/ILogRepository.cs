@@ -10,6 +10,10 @@ namespace LogR.Common.Interfaces.Repository
 {
     public interface ILogRepository
     {
+        void DeleteAllAppLogs();
+
+        void DeleteAllPerformanceLogs();
+
         ReturnModel<bool> DeleteAppLog(string id);
 
         Tuple<long, long> DeleteOldLogs(DateTime pastDate);

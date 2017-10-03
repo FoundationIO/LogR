@@ -3,6 +3,7 @@ using Lucene.Net.Documents;
 using Lucene.Net.Mapping;
 using Lucene.Net.Search;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Lucene.Net.Index
@@ -40,6 +41,61 @@ namespace Lucene.Net.Index
         /// <param name="writer">
         /// The IndexWriter to use.
         /// </param>
+        /// <param name="objList">
+        /// The object list to write.
+        /// </param>
+        public static void Add<T>(this IndexWriter writer, List<T> objList)
+        {
+            Add<T>(writer, objList, MappingSettings.Default);
+        }
+
+        /// <summary>
+        /// Adds the specified object to the given IndexWriter.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the object to add.
+        /// </typeparam>
+        /// <param name="writer">
+        /// The IndexWriter to use.
+        /// </param>
+        /// <param name="objList">
+        /// The object list to write.
+        /// </param>
+        /// <param name="settings">
+        /// The MappingSettings to use when creating the Document to add to the index.
+        /// </param>
+        public static void Add<T>(this IndexWriter writer, List<T> objList, MappingSettings settings)
+        {
+            if (null == writer)
+            {
+                throw new ArgumentNullException("writer");
+            }
+            else if (null == objList)
+            {
+                throw new ArgumentNullException("objList");
+            }
+            else if (null == settings)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            var docList = new List<Document>();
+
+            foreach (var obj in objList)
+                docList.Add(obj.ToDocument<T>(settings));
+
+            writer.AddDocuments(docList);
+        }
+
+        /// <summary>
+        /// Adds the specified object to the given IndexWriter.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the object to add.
+        /// </typeparam>
+        /// <param name="writer">
+        /// The IndexWriter to use.
+        /// </param>
         /// <param name="obj">
         /// The object to write.
         /// </param>
@@ -62,6 +118,26 @@ namespace Lucene.Net.Index
             }
 
             writer.AddDocument(obj.ToDocument<T>(settings));
+        }
+
+        /// <summary>
+        /// Adds the specified object to the given IndexWriter.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the object to add.
+        /// </typeparam>
+        /// <param name="writer">
+        /// The IndexWriter to use.
+        /// </param>
+        /// <param name="objList">
+        /// The object list to write.
+        /// </param>
+        /// <param name="analyzer">
+        /// The Analyzer to use.
+        /// </param>
+        public static void Add<T>(this IndexWriter writer, List<T> objList, Analyzer analyzer)
+        {
+            Add<T>(writer, objList, MappingSettings.Default, analyzer);
         }
 
         /// <summary>
@@ -122,6 +198,51 @@ namespace Lucene.Net.Index
             }
 
             writer.AddDocument(obj.ToDocument<T>(settings), analyzer);
+        }
+
+        /// <summary>
+        /// Adds the specified object to the given IndexWriter.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the object to add.
+        /// </typeparam>
+        /// <param name="writer">
+        /// The IndexWriter to use.
+        /// </param>
+        /// <param name="objList">
+        /// The object list to write.
+        /// </param>
+        /// <param name="settings">
+        /// The MappingSettings to use when creating the Document to add to the index.
+        /// </param>
+        /// <param name="analyzer">
+        /// The Analyzer to use.
+        /// </param>
+        public static void Add<T>(this IndexWriter writer, List<T> objList, MappingSettings settings, Analyzer analyzer)
+        {
+            if (null == writer)
+            {
+                throw new ArgumentNullException("writer");
+            }
+            else if (null == objList)
+            {
+                throw new ArgumentNullException("objList");
+            }
+            else if (null == settings)
+            {
+                throw new ArgumentNullException("settings");
+            }
+            else if (null == analyzer)
+            {
+                throw new ArgumentNullException("analyzer");
+            }
+
+            var docList = new List<Document>();
+
+            foreach (var obj in objList)
+                docList.Add(obj.ToDocument<T>(settings));
+
+            writer.AddDocuments(docList, analyzer);
         }
 
         #endregion

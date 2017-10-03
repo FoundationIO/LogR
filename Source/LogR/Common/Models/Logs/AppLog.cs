@@ -7,13 +7,16 @@ namespace LogR.Common.Models.Logs
     public class AppLog
     {
         [JsonProperty("applog-id")]
-        public string AppLogId { get; set; }
+        public Guid AppLogId { get; set; }
 
         [JsonProperty("log-type")]
         public int LogType { get; set; }
 
         [JsonProperty("corelation-id")]
-        public string CorelationId { get; set; }
+        public Guid? CorelationId { get; set; }
+
+        [JsonProperty("function-id")]
+        public Guid? FunctionId { get; set; }
 
         [JsonProperty("long-date")]
         //[JsonConverter(typeof(LogDateConverter))]
@@ -32,13 +35,10 @@ namespace LogR.Common.Models.Logs
         public string MachineName { get; set; }
 
         [JsonProperty("process-id")]
-        public string ProcessId { get; set; }
+        public int ProcessId { get; set; }
 
         [JsonProperty("thread-id")]
-        public string ThreadId { get; set; }
-
-        [JsonProperty("current-tag")]
-        public string CurrentTag { get; set; }
+        public int ThreadId { get; set; }
 
         [JsonProperty("current-function")]
         public string CurrentFunction { get; set; }
@@ -47,7 +47,7 @@ namespace LogR.Common.Models.Logs
         public string CurrentSourceFilename { get; set; }
 
         [JsonProperty("current-source-line-number")]
-        public string CurrentSourceLineNumber { get; set; }
+        public int CurrentSourceLineNumber { get; set; }
 
         [JsonProperty("user-identity")]
         public string UserIdentity { get; set; }

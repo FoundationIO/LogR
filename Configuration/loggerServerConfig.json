@@ -34,7 +34,7 @@
       "serverPort": 9090,
       "batchSizeToIndex": 1,
 
-      "indexStoreType": "ElasticSearch",
+      "indexStoreType": "Lucene",
 
       "luceneIndexStoreSettings": {
         "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes\\LuceneLogStore"
@@ -71,7 +71,7 @@
   "Logging": {
     "IncludeScopes": false,
     "LogLevel": {
-      "Default": "Warning"
+      "Default": "Debug"
     }
   }
 }

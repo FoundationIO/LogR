@@ -34,7 +34,7 @@ namespace LogR.Repository
                 throw new Exception("Unable to deserialize the app log message -  " + message);
             }
 
-            item.AppLogId = Guid.NewGuid().ToString();
+            item.AppLogId = Guid.NewGuid();
             item.LogType = (int)LogType.AppLog;
             if (item.Longdate.IsInvalidDate())
                 item.Longdate = DateTime.UtcNow;
@@ -50,7 +50,7 @@ namespace LogR.Repository
                 throw new Exception("Unable to deserialize the performance log message -  " + message);
             }
 
-            item.AppLogId = Guid.NewGuid().ToString();
+            item.AppLogId = Guid.NewGuid();
             item.LogType = (int)LogType.PerformanceLog;
             if (item.Longdate.IsInvalidDate())
                 item.Longdate = DateTime.UtcNow;

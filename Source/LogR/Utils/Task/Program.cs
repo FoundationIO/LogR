@@ -20,6 +20,7 @@ namespace LogR.Task
             var configFileCreator = DISetup.ServiceProvider.GetService<ISampleAppConfigFileCreator>();
             var seedCreator = DISetup.ServiceProvider.GetService<ISeedService>();
             var loadTestGenerator = DISetup.ServiceProvider.GetService<ILoadTestService>();
+            var repo = DISetup.ServiceProvider.GetService<ILogRepository>();
 
             var servicename = args.GetParamValueAsString("/servicename", "LoggerService");
 
@@ -41,6 +42,11 @@ namespace LogR.Task
             else if (args.IsParamValueAvailable("loadtest"))
             {
                 loadTestGenerator.Run();
+            }
+            else if (args.IsParamValueAvailable("delete-all"))
+            {
+                repo.DeleteAllAppLogs();
+                repo.DeleteAllPerformanceLogs();
             }
             else
             {

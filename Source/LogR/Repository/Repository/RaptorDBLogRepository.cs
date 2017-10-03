@@ -430,6 +430,14 @@ namespace LogR.Repository
             return new ReturnModel<SystemStats>(stat);
         }
 
+        public void DeleteAllAppLogs()
+        {
+        }
+
+        public void DeleteAllPerformanceLogs()
+        {
+        }
+
         private void SavePerformanceLogX(string message)
         {
             try

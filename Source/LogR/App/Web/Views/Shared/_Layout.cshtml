@@ -48,10 +48,14 @@
                         <h4 class="whitetxt_h1">@config.AppName</h4>
                         <div id="main-menu">
                             <ul>
-                                <li><a href="/" class="overview @(Model.ActiveTab == 1 ? " selected" : "")">Dashboard</a></li>
+                                <li><a href="/dashboard" class="overview @(Model.ActiveTab == 1 ? " selected" : "")">Dashboard</a></li>
                                 <li><a href="/app-logs" class="issues @(Model.ActiveTab == 2 ? " selected" : "")">App Logs</a></li>
-                                <li><a href="/performance-logs" accesskey="7" class="new-issue @(Model.ActiveTab == 3 ? " selected" : "")">Performance Logs</a></li>
-                                <li><a href="/stats" accesskey="7" class="new-issue @(Model.ActiveTab == 4 ? " selected" : "")">Stats</a></li>
+                                <li><a href="/performance-logs" class="new-issue @(Model.ActiveTab == 3 ? " selected" : "")">Performance Logs</a></li>
+                                <li><a href="/web-logs" class="new-issue @(Model.ActiveTab == 4 ? " selected" : "")">Web Logs</a></li>
+                                <li><a href="/system-logs" class="new-issue @(Model.ActiveTab == 5 ? " selected" : "")">System Logs</a></li>
+                                <li><a href="/stats" class="new-issue @(Model.ActiveTab == 6 ? " selected" : "")">Stats</a></li>
+                                <li><a href="/admin" class="new-issue @(Model.ActiveTab == 7 ? " selected" : "")">Administration</a></li>
+                                <li><a href="/options" class="new-issue @(Model.ActiveTab == 8 ? " selected" : "")">Options</a></li>
                             </ul>
                         </div>
                     </div><!-- /.navbar-collapse -->

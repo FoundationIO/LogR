@@ -4,11 +4,11 @@ using Framework.Infrastructure.Exceptions;
 
 namespace Framework.Infrastructure.Models.Result
 {
-    public class ReturnModel<T>
+    public class ReturnModel<T> : IReturnModel
     {
         public ReturnModel(T result)
         {
-            Result = result;
+            Model = result;
             IsSuccess = true;
         }
 
@@ -30,12 +30,14 @@ namespace Framework.Infrastructure.Models.Result
             ErrorHolder = new Error(errorMsg, errorList);
         }
 
-        public T Result { get; set; }
+        public T Model { get; set; }
 
         public bool IsSuccess { get; set; }
 
         public Error ErrorHolder { get; set; }
 
         public int ActiveTab { get; set; }
+
+        public int HttpCode { get; set; }
     }
 }

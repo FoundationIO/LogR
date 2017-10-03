@@ -136,7 +136,7 @@ namespace LogR.Repository
         {
             try
             {
-                prefLogWriter.Delete<AppLog>(x => x.AppLogId == id);
+                prefLogWriter.Delete<AppLog>(x => x.AppLogId == SafeUtils.Guid(id));
                 prefLogWriter.Commit();
 
                 return new ReturnModel<bool>(true);
@@ -249,7 +249,7 @@ namespace LogR.Repository
         {
             try
             {
-                appLogWriter.Delete<AppLog>(x => x.AppLogId == id);
+                appLogWriter.Delete<AppLog>(x => x.AppLogId == SafeUtils.Guid(id));
                 return new ReturnModel<bool>(true);
             }
             catch (Exception ex)
@@ -435,16 +435,26 @@ namespace LogR.Repository
             return new ReturnModel<SystemStats>(stat);
         }
 
+        public void DeleteAllAppLogs()
+        {
+        }
+
+        public void DeleteAllPerformanceLogs()
+        {
+        }
+
         private void SavePerformanceLogX(List<string> messageList)
         {
             try
             {
+                var lst = new List<AppLog>();
                 foreach (var message in messageList)
                 {
                     var item = GetPerformanceLogFromRawLog(message);
-                    prefLogWriter.Add<AppLog>(item);
+                    lst.Add(item);
                 }
 
+                prefLogWriter.Add<AppLog>(lst);
                 prefLogWriter.Commit();
             }
             catch (Exception ex)
@@ -457,12 +467,14 @@ namespace LogR.Repository
         {
             try
             {
+                var lst = new List<AppLog>();
                 foreach (var message in messageList)
                 {
                     var item = GetAppLogFromRawLog(message);
-                    appLogWriter.Add(item);
+                    lst.Add(item);
                 }
 
+                appLogWriter.Add<AppLog>(lst);
                 appLogWriter.Commit();
             }
             catch (Exception ex)

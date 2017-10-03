@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{E679AA87-1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogR.Test", "..\Source\LogR\Test\LogR.Test.csproj", "{0E337D46-3BEA-4D96-B834-E706CE500D6E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{8E9A8350-4386-4BFC-80E0-F7246947CE67}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(Solution Items)", "(Solution Items)", "{8E9A8350-4386-4BFC-80E0-F7246947CE67}"
 	ProjectSection(SolutionItems) = preProject
 		..\ci.bat = ..\ci.bat
 		..\Configuration\loggerServerConfig.json = ..\Configuration\loggerServerConfig.json
@@ -40,7 +40,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configurat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{8D28F38A-3631-49ED-82CB-75D33D4C8B62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogR.Task", "..\Source\LogR\Utils\Task\LogR.Task.csproj", "{FDB6941D-3B07-4877-8C40-8B677E47C32D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogR.Task", "..\Source\LogR\Utils\Task\LogR.Task.csproj", "{FDB6941D-3B07-4877-8C40-8B677E47C32D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{796FCA5A-0AD7-4017-A857-C4DAFCF17AE5}"
+	ProjectSection(SolutionItems) = preProject
+		..\ci.bat = ..\ci.bat
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +116,7 @@ Global
 		{0E337D46-3BEA-4D96-B834-E706CE500D6E} = {E679AA87-1D2F-4CC3-9373-367B5826F880}
 		{8D28F38A-3631-49ED-82CB-75D33D4C8B62} = {29C57489-B5A9-4A7E-AC03-31F07A6554A0}
 		{FDB6941D-3B07-4877-8C40-8B677E47C32D} = {8D28F38A-3631-49ED-82CB-75D33D4C8B62}
+		{796FCA5A-0AD7-4017-A857-C4DAFCF17AE5} = {8E9A8350-4386-4BFC-80E0-F7246947CE67}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F8D4035-BF0A-4844-A268-AF0B2BB7A735}

@@ -77,6 +77,17 @@ namespace Framework.Infrastructure.Models.Search
             return Math.Max(pageCount, 1);
         }
 
+        public int GetSkipValue()
+        {
+            if (PageSize == 0)
+                PageSize = 100;
+
+            if (Page == 0)
+                return 0;
+            Page = Page - 1;
+            return PageSize * Page;
+        }
+
         private void ValidateMandatoryParams()
         {
             if (TotalRowCount == -1)

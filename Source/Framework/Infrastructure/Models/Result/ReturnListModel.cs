@@ -4,12 +4,12 @@ using Framework.Infrastructure.Exceptions;
 
 namespace Framework.Infrastructure.Models.Result
 {
-    public class ReturnListModel<TModel,TSearch>
+    public class ReturnListModel<TModel,TSearch> : IReturnModel
         where TSearch : class
     {
         public ReturnListModel(TSearch search, List<TModel> items, long totalItems)
         {
-            Result = items;
+            Model = items;
             TotalRecords = totalItems;
             IsSuccess = true;
             Search = search;
@@ -17,7 +17,7 @@ namespace Framework.Infrastructure.Models.Result
 
         public ReturnListModel(TSearch search, List<TModel> items)
         {
-            Result = items;
+            Model = items;
             TotalRecords = items.Count;
             IsSuccess = true;
             Search = search;
@@ -66,7 +66,7 @@ namespace Framework.Infrastructure.Models.Result
         {
         }
 
-        public List<TModel> Result { get; private set; }
+        public List<TModel> Model { get; private set; }
 
         public TSearch Search { get; private set; }
 
@@ -77,5 +77,7 @@ namespace Framework.Infrastructure.Models.Result
         public bool IsSuccess { get; set; }
 
         public Error ErrorHolder { get; set; }
+
+        public int HttpCode { get; set; }
     }
 }
