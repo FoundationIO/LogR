@@ -8,6 +8,7 @@ using FluentMigrator.Runner.Initialization;
 using Framework.Data.DbAccess;
 using Framework.Infrastructure.Config;
 using Framework.Infrastructure.Logging;
+using Framework.Infrastructure.Models.Config;
 
 namespace Framework.Data.Migrations
 {
@@ -15,26 +16,24 @@ namespace Framework.Data.Migrations
     {
         private ILog log;
         private IDBInfo dbInfo;
-        private string migrationNamespace;
-        private string migrationProfile;
+        private DbSettings dbSettings;
 
         public DBMigration(IBaseConfiguration config , ILog log, IDBInfo dbInfo)
         {
             this.log = log;
             this.dbInfo = dbInfo;
-            migrationNamespace = config.MigrationNamespace;
-            migrationProfile = config.MigrationProfile;
+            dbSettings = config.DbSettings;
         }
 
         public bool IsMigrationUptoDate()
         {
             var announcer = new TextWriterAnnouncer(s => System.Diagnostics.Debug.WriteLine(s));
-            var assembly = GetMigrationAssembly(migrationNamespace);
+            var assembly = GetMigrationAssembly(dbSettings.MigrationNamespace);
 
             var migrationContext = new RunnerContext(announcer)
             {
-                Namespace = migrationNamespace ,
-                Profile = migrationProfile
+                Namespace = dbSettings.MigrationNamespace,
+                Profile = dbSettings.MigrationProfile
             };
 
             var options = new MigrationOptions { PreviewOnly = false, Timeout = 60 };
@@ -55,11 +54,12 @@ namespace Framework.Data.Migrations
         public bool MigrateToLatestVersion()
         {
             var announcer = new TextWriterAnnouncer(s => log.Info(s));
-            var assembly = GetMigrationAssembly(migrationNamespace);
+            var assembly = GetMigrationAssembly(dbSettings.MigrationNamespace);
 
             var migrationContext = new RunnerContext(announcer)
             {
-                Namespace = migrationNamespace
+                Profile = dbSettings.MigrationProfile,
+                Namespace = dbSettings.MigrationNamespace
             };
 
             var options = new MigrationOptions { PreviewOnly = false, Timeout = 60 };

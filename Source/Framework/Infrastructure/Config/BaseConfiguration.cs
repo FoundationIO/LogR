@@ -19,13 +19,6 @@ namespace Framework.Infrastructure.Config
         //General App Related
         public string AppName { get; set; } = null;
 
-        //Migration related
-        public bool AutomaticMigration { get; private set; }
-
-        public string MigrationNamespace { get; set; } = null;
-
-        public string MigrationProfile { get; set; } = null;
-
         public DbSettings DbSettings { get; private set; }
 
         // log related
@@ -82,9 +75,6 @@ namespace Framework.Infrastructure.Config
                 }
                 return str;
             });
-            MigrationNamespace = appSettings[Strings.Config.MigrationNamespace] ?? string.Empty;
-            AutomaticMigration = SafeUtils.Bool(appSettings[Strings.Config.AutomaticMigration], false);
-            MigrationProfile = null; // Always null and if App wants to use any other profile, they are free to do so
             AppName = Path.GetFileNameWithoutExtension(GetType().GetTypeInfo().Assembly.Location);
         }
     }

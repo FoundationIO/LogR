@@ -55,7 +55,7 @@ namespace LogR.Service.Migration
         {
             if (migration.IsMigrationUptoDate() == false)
             {
-                if (config.AutomaticMigration == false)
+                if (config.DbSettings.AutomaticMigration == false)
                 {
                     throw new Exception("Database version is not upto date.Please run the application with the / migration option and make the database version upto date");
                 }

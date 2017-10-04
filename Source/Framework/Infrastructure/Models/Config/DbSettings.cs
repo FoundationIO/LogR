@@ -31,5 +31,12 @@ namespace Framework.Infrastructure.Models.Config
         public int MaxPoolSize { get; private set; } = 200;
 
         public List<KeyValuePair<string, Microsoft.Extensions.Logging.LogLevel>> OtherFrameworkLogSettings { get; private set; }
+
+        //Migration related
+        public bool AutomaticMigration { get; set; }
+
+        public string MigrationNamespace { get; set; } = null;
+
+        public string MigrationProfile { get; set; } = null;
     }
 }

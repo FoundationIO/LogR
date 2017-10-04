@@ -2,6 +2,10 @@
   "configuration": {
     "appSettings": {
 
+      "serverPort": 9090,
+      "batchSizeToIndex": 1,
+      "indexStoreType": "Lucene",
+
       "logSettings": {
         "logTrace": true,
         "logDebug": true,
@@ -12,10 +16,8 @@
         "logPerformance": true,
         "logToFile": true,
         "logLocation": "|ConfigPath|\\..\\Data\\Logs",
-
         "logToDebugger": true,
         "logToConsole": true
-
       },
 
       "dbSettings": {
@@ -25,16 +27,10 @@
         "databaseUserName": "",
         "databasePassword": "",
         "databaseCommandTimeout": 99,
-        "maxPoolSize": 99
+        "maxPoolSize": 99,
+        "automaticMigration": true,
+        "migrationNamespace": "LogR.Repository.Migration.Application"
       },
-
-      "automaticMigration": true,
-      "migrationNamespace": "LogR.Repository.Migration.Application",
-      "sqlBasedIndexStoreMigrationNamespace": "LogR.Repository.Migration.Application.SqlBasedIndexStore",
-      "serverPort": 9090,
-      "batchSizeToIndex": 1,
-
-      "indexStoreType": "Lucene",
 
       "luceneIndexStoreSettings": {
         "indexBaseFolder": "|ConfigPath|\\..\\Data\\Indexes\\LuceneLogStore"
@@ -47,15 +43,28 @@
         "databaseUserName": "",
         "databasePassword": "",
         "databaseCommandTimeout": 99,
-        "maxPoolSize": 99
+        "maxPoolSize": 99,
+        "sqlBasedIndexStoreMigrationNamespace": "LogR.Repository.Migration.Application.SqlBasedIndexStore"
       },
 
-      "MongoDBIndexStoreSettings": {
+      "mongoDBIndexStoreSettings": {
         "serverName": "http://localhost:9200",
         "userName": "",
         "password": "",
         "appLogIndex": "appLogIndex",
-        "performanceLogIndex": "performanceLogIndex"
+        "performanceLogIndex": "performanceLogIndex",
+        "webLogIndex": "webLogIndex",
+        "systemLogIndex": "systemLogIndex"
+      },
+
+      "raptorDBIndexStoreSettings": {
+        "serverName": "http://localhost:9200",
+        "userName": "",
+        "password": "",
+        "appLogIndex": "appLogIndex",
+        "performanceLogIndex": "performanceLogIndex",
+        "webLogIndex": "webLogIndex",
+        "systemLogIndex": "systemLogIndex"
       },
 
       "elasticSearchIndexStoreSettings": {
@@ -63,7 +72,9 @@
         "userName": "",
         "password": "",
         "appLogIndex": "appLogIndex",
-        "performanceLogIndex": "performanceLogIndex"
+        "performanceLogIndex": "performanceLogIndex",
+        "webLogIndex": "webLogIndex",
+        "systemLogIndex": "systemLogIndex"
       }
     }
   },

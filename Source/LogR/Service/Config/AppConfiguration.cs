@@ -34,8 +34,6 @@ namespace LogR.Service.Config
 
         public ElasticSearchIndexStoreSettings ElasticSearchIndexStoreSettings { get; private set; }
 
-        public EmbeddedElasticSearchIndexStoreSettings EmbeddedElasticSearchIndexStoreSettings { get; private set; }
-
         public RaptorDBIndexStoreSettings RaptorDBIndexStoreSettings { get; private set; }
 
         public MongoDBIndexStoreSettings MongoDBIndexStoreSettings { get; private set; }
@@ -90,7 +88,7 @@ namespace LogR.Service.Config
 
             PopulateFromConfigFile(appSettings, frameworkLogSettings, configLocation);
 
-            if (MigrationNamespace.IsTrimmedStringNullOrEmpty())
+            if (DbSettings.MigrationNamespace.IsTrimmedStringNullOrEmpty())
             {
                 throw new Exception(ErrorConstants.MigrationNamespaceIsEmpty);
             }
@@ -98,7 +96,6 @@ namespace LogR.Service.Config
             ServerPort = SafeUtils.Int(appSettings[Strings.Config.ServerPort], ServerPort);
             AppName = Path.GetFileNameWithoutExtension(this.GetType().GetTypeInfo().Assembly.Location);
             BatchSizeToIndex = SafeUtils.Int(appSettings[StringConstants.Config.BatchSizeToIndex], BatchSizeToIndex);
-
             this.IndexStoreType = SafeUtils.Enum<IndexStoreType>(appSettings[StringConstants.Config.IndexStoreType], IndexStoreType.None);
 
             if (IndexStoreType == IndexStoreType.Lucene)
@@ -142,19 +139,20 @@ namespace LogR.Service.Config
                 var configSettings = appSettings.GetSection("elasticSearchIndexStoreSettings");
                 this.ElasticSearchIndexStoreSettings = new ElasticSearchIndexStoreSettings(configSettings);
             }
-            else if (IndexStoreType == IndexStoreType.EmbbededElasticSearch)
-            {
-                var configSettings = appSettings.GetSection("embeddedElasticSearchIndexStoreSettings");
-                this.EmbeddedElasticSearchIndexStoreSettings = new EmbeddedElasticSearchIndexStoreSettings(configSettings, (str) =>
-                {
-                    if (str.IsTrimmedStringNotNullOrEmpty() && str.Contains(Strings.Config.ConfigPath))
-                    {
-                        str = str.Replace(Strings.Config.ConfigPath, FileUtils.GetFileDirectory(configLocation));
-                        str = Path.GetFullPath(new Uri(str).LocalPath);
-                    }
-                    return str;
-                });
-            }
+
+            //else if (IndexStoreType == IndexStoreType.EmbbededElasticSearch)
+            //{
+            //    var configSettings = appSettings.GetSection("embeddedElasticSearchIndexStoreSettings");
+            //    this.EmbeddedElasticSearchIndexStoreSettings = new EmbeddedElasticSearchIndexStoreSettings(configSettings, (str) =>
+            //    {
+            //        if (str.IsTrimmedStringNotNullOrEmpty() && str.Contains(Strings.Config.ConfigPath))
+            //        {
+            //            str = str.Replace(Strings.Config.ConfigPath, FileUtils.GetFileDirectory(configLocation));
+            //            str = Path.GetFullPath(new Uri(str).LocalPath);
+            //        }
+            //        return str;
+            //    });
+            //}
             else if (IndexStoreType == IndexStoreType.RaptorDB)
             {
                 var configSettings = appSettings.GetSection("raptorDBIndexStoreSettings");

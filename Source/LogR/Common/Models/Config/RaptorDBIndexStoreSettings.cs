@@ -15,6 +15,16 @@ namespace LogR.Common.Models.Config
         {
         }
 
-        public string IndexBaseFolder { get; internal set; }
+        public string ServerName { get; internal set; }
+
+        public int PortNumber { get; internal set; }
+
+        public string AppLogIndex { get; internal set; }
+
+        public string PerformanceLogIndex { get; internal set; }
+
+        public string WebLogIndex { get; internal set; }
+
+        public string SystemLogIndex { get; internal set; }
     }
 }

@@ -6,13 +6,6 @@ namespace Framework.Infrastructure.Config
     {
         string AppName { get; }
 
-        //Migration related
-        bool AutomaticMigration { get; }
-
-        string MigrationNamespace { get; }
-
-        string MigrationProfile { get; }
-
         LogSettings LogSettings { get; }
 
         DbSettings DbSettings { get; }

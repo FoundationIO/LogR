@@ -17,7 +17,7 @@ namespace LogR.Common.Interfaces.Service.Config
 
         ElasticSearchIndexStoreSettings ElasticSearchIndexStoreSettings { get; }
 
-        EmbeddedElasticSearchIndexStoreSettings EmbeddedElasticSearchIndexStoreSettings { get; }
+        //EmbeddedElasticSearchIndexStoreSettings EmbeddedElasticSearchIndexStoreSettings { get; }
 
         RaptorDBIndexStoreSettings RaptorDBIndexStoreSettings { get;  }
 

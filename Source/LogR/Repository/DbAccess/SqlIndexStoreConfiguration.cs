@@ -24,20 +24,17 @@ namespace LogR.Repository.DbAccess
 
             AppName = config.AppName;
 
-            MigrationNamespace = "LogR.Repository.Migration.Application";
+            if (DbSettings != null)
+            {
+                DbSettings.MigrationNamespace = "LogR.Repository.Migration.Application";
 
-            AutomaticMigration = true;
+                DbSettings.AutomaticMigration = true;
 
-            MigrationProfile = "LogIndexStore";
+                DbSettings.MigrationProfile = "LogIndexStore";
+            }
         }
 
         public string AppName { get; private set; }
-
-        public bool AutomaticMigration { get; private set; }
-
-        public string MigrationNamespace { get; private set; }
-
-        public string MigrationProfile { get; private set; }
 
         public LogSettings LogSettings { get; private set; }
 

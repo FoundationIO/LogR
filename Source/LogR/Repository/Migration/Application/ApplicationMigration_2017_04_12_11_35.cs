@@ -8,8 +8,8 @@ namespace LogR.Repository.Migration.Application
     {
         public override void Up()
         {
-            Create.Table("AppLog")
-                .WithColumn("AppLogID").AsInt64().PrimaryKey().Identity()
+            Create.Table("User")
+                .WithColumn("UserID").AsInt64().PrimaryKey().Identity()
                 .WithColumn("UserName").AsString(50).NotNullable().Indexed("Idx_User_UserName")
                 .WithColumn("Password").AsString().NotNullable()
                 .WithColumn("FirstName").AsString(100).NotNullable()
