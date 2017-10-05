@@ -20,7 +20,7 @@
                     <ul>
                         @{
                             // Create Previous link
-                            Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "<< Previous" }, { "PageIndex", Model.Page - 1 }, { "Selected", false }, { "Inactive", Model.Page == 1 } });
+                            @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "<< Previous" }, { "PageIndex", Model.Page - 1 }, { "Selected", false }, { "Inactive", Model.Page == 1 } });
 
 
                             // Create numeric links
@@ -32,22 +32,22 @@
                             {
                                 if (startPageIndex > 1)
                                 {
-                                    Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "1" }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", false } });
+                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "1" }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", false } });
                                 }
                                 if (startPageIndex > 2)
                                 {
-                                    Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "2" }, { "PageIndex", 2 }, { "Selected", false }, { "Inactive", false } });
+                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "2" }, { "PageIndex", 2 }, { "Selected", false }, { "Inactive", false } });
                                 }
                                 if (startPageIndex > 3)
                                 {
-                                    Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "..." }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", true } });
+                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "..." }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", true } });
                                 }
                             }
 
                             // Add in the numeric pages
                             for (var i = startPageIndex; i <= endPageIndex; i++)
                             {
-                                Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", i }, { "PageIndex", i }, { "Selected", i == Model.Page }, { "Inactive", false } });
+                                @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", i }, { "PageIndex", i }, { "Selected", i == Model.Page }, { "Inactive", false } });
                             }
 
 
@@ -56,21 +56,21 @@
                             {
                                 if (endPageIndex < Model.PageCount() - 2)
                                 {
-                                    Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "..." }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", true } });
+                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "..." }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", true } });
                                 }
                                 if (endPageIndex < Model.PageCount() - 1)
                                 {
-                                    Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", Model.PageCount() - 1 }, { "PageIndex", Model.PageCount() - 1 }, { "Selected", false }, { "Inactive", false } });
+                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", Model.PageCount() - 1 }, { "PageIndex", Model.PageCount() - 1 }, { "Selected", false }, { "Inactive", false } });
                                 }
                                 if (endPageIndex < Model.PageCount())
                                 {
-                                    Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", Model.PageCount() }, { "PageIndex", Model.PageCount() }, { "Selected", false }, { "Inactive", false } });
+                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", Model.PageCount() }, { "PageIndex", Model.PageCount() }, { "Selected", false }, { "Inactive", false } });
                                 }
                             }
 
 
                             // Create Next link
-                            Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "Next >>" }, { "PageIndex", Model.Page + 1 }, { "Selected", false }, { "Inactive", Model.Page == Model.PageCount() } });
+                            @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "Next >>" }, { "PageIndex", Model.Page + 1 }, { "Selected", false }, { "Inactive", Model.Page == Model.PageCount() } });
                         }
                     </ul>
                 </div>

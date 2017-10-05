@@ -16,14 +16,13 @@
     </div>
 *@
 
-
 @{
     var razorWriter = ViewContext.Writer;
 
     if ((bool)ViewData["Inactive"])
     {
 
-        razorWriter.Write(string.Format("<li class=\"disabled\"><a href=\"#\">{0}</a></li>", ViewData["Text"]));
+        <li class=\"disabled\"><a href=\"#\">@ViewData["Text"]</a></li>;
     }
     else
     {
@@ -35,7 +34,7 @@
         string classValue = "";
         if ((bool)ViewData["Selected"])
         {
-            classValue = " class=\"active\"";
+            classValue = "active";
         }
 
         var linkMarkup = Html.ActionLink(
@@ -46,7 +45,6 @@
                 null
             ).ToHtmlString();
 
-        razorWriter.Write(string.Format("<li{0}>{1}</li>", classValue, linkMarkup));
-
+        <li  class="@classValue">@Html.Raw(linkMarkup)</li>
     }
 }
