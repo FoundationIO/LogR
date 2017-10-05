@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "LogR.Utilities.PocoGenerator": {
-      "commandName": "Project",
-      "commandLineArgs": "-config .\\..\\PocoTemplate\\generator_settings.json",
-      "workingDirectory": "..\\..\\LogR\\Common\\Models\\DB\\DBFile"
-    }
-  }
-}
