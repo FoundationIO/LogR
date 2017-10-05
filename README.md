@@ -1,0 +1,2 @@
+# LogR
+Distributed Logging system
