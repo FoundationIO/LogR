@@ -24,6 +24,8 @@ namespace LogR.Service.Config
             PrepareFolders();
         }
 
+        public bool EnablePushToMasterIndexServer { get; internal set; }
+
         public int BatchSizeToIndex { get; private set; } = 1;
 
         public IndexStoreType IndexStoreType { get; private set; }
@@ -37,6 +39,8 @@ namespace LogR.Service.Config
         public RaptorDBIndexStoreSettings RaptorDBIndexStoreSettings { get; private set; }
 
         public MongoDBIndexStoreSettings MongoDBIndexStoreSettings { get; private set; }
+
+        public MasterIndexStoreSettings MasterIndexStoreSettings { get; private set; }
 
         public int ServerPort { get; private set; }
 
@@ -96,11 +100,19 @@ namespace LogR.Service.Config
             ServerPort = SafeUtils.Int(appSettings[Strings.Config.ServerPort], ServerPort);
             AppName = Path.GetFileNameWithoutExtension(this.GetType().GetTypeInfo().Assembly.Location);
             BatchSizeToIndex = SafeUtils.Int(appSettings[StringConstants.Config.BatchSizeToIndex], BatchSizeToIndex);
+
+            EnablePushToMasterIndexServer = SafeUtils.Bool(appSettings[StringConstants.Config.EnablePushToMasterIndexServer], false);
+            if (EnablePushToMasterIndexServer)
+            {
+                var masterIndexServerSettings = appSettings.GetSection(StringConstants.Config.MasterIndexStoreSettings);
+                MasterIndexStoreSettings = new MasterIndexStoreSettings(masterIndexServerSettings);
+            }
+
             this.IndexStoreType = SafeUtils.Enum<IndexStoreType>(appSettings[StringConstants.Config.IndexStoreType], IndexStoreType.None);
 
             if (IndexStoreType == IndexStoreType.Lucene)
             {
-                var luceneSettings = appSettings.GetSection("luceneIndexStoreSettings");
+                var luceneSettings = appSettings.GetSection(StringConstants.Config.LuceneIndexStoreSettings);
                 LuceneIndexStoreSettings = new LuceneIndexStoreSettings(luceneSettings, (str) =>
                 {
                     if (str.IsTrimmedStringNotNullOrEmpty() && str.Contains(Strings.Config.ConfigPath))
@@ -123,7 +135,7 @@ namespace LogR.Service.Config
             }
             else if (IndexStoreType == IndexStoreType.Sqlite3 || IndexStoreType == IndexStoreType.SqlServer || IndexStoreType == IndexStoreType.Postgresql || IndexStoreType == IndexStoreType.MySql)
             {
-                var configSettings = appSettings.GetSection("sqlIndexStoreSettings");
+                var configSettings = appSettings.GetSection(StringConstants.Config.SqlIndexStoreSettings);
                 this.SqlIndexStoreSettings = new DbSettings(configSettings, (str) =>
                 {
                     if (str.IsTrimmedStringNotNullOrEmpty() && str.Contains(Strings.Config.ConfigPath))
@@ -136,7 +148,7 @@ namespace LogR.Service.Config
             }
             else if (IndexStoreType == IndexStoreType.ElasticSearch)
             {
-                var configSettings = appSettings.GetSection("elasticSearchIndexStoreSettings");
+                var configSettings = appSettings.GetSection(StringConstants.Config.EmbbededElasticSearchIndexStoreSettings);
                 this.ElasticSearchIndexStoreSettings = new ElasticSearchIndexStoreSettings(configSettings);
             }
 
@@ -155,7 +167,7 @@ namespace LogR.Service.Config
             //}
             else if (IndexStoreType == IndexStoreType.RaptorDB)
             {
-                var configSettings = appSettings.GetSection("raptorDBIndexStoreSettings");
+                var configSettings = appSettings.GetSection(StringConstants.Config.RaptorDBIndexStoreSettings);
                 this.RaptorDBIndexStoreSettings = new RaptorDBIndexStoreSettings(configSettings, (str) =>
                 {
                     if (str.IsTrimmedStringNotNullOrEmpty() && str.Contains(Strings.Config.ConfigPath))
@@ -170,6 +182,10 @@ namespace LogR.Service.Config
             {
                 var configSettings = appSettings.GetSection("mongoDBIndexStoreSettings");
                 this.MongoDBIndexStoreSettings = new MongoDBIndexStoreSettings(configSettings);
+            }
+            else
+            {
+                throw new Exception("Index Store Type is not configured");
             }
         }
     }

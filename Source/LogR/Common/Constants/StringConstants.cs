@@ -13,7 +13,11 @@ namespace LogR.Common.Constants
             public const string IndexBaseFolder = "indexBaseFolder";
             public const string SqlBasedIndexStoreMigrationNamespace = "sqlBasedIndexStoreMigrationNamespace";
             public const string BatchSizeToIndex = "batchSizeToIndex";
+            public const string EnablePushToMasterIndexServer = "enablePushToMasterIndexServer";
+            public const string MasterIndexStoreSettings = "masterIndexStoreSettings";
             public const string IndexStoreType = "indexStoreType";
+            public const string SqlIndexStoreSettings = "sqlIndexStoreSettings";
+            public const string RaptorDBIndexStoreSettings = "raptorDBIndexStoreSettings";
             public const string LuceneIndexStoreSettings = "luceneIndexStoreSettings";
             public const string Sqlite3IndexStoreSettings = "sqlite3IndexStoreSettings";
             public const string DbLocation = "dbLocation";

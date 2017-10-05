@@ -23,6 +23,7 @@ namespace Framework.Data.DbAccess
         private IDataProvider dbProvider;
         private DataConnection connection = null;
         private DataConnectionTransaction commonTransaction = null;
+        private int currentTransactionCount = 0;
 
         public DBManager(IBaseConfiguration config, ILog log, IDBInfo dbInfo)
         {
@@ -53,23 +54,46 @@ namespace Framework.Data.DbAccess
             connection.Dispose();
         }
 
-        public void BeginTransaction()
+        public int BeginTransaction()
         {
-            log.SqlBeginTransaction(0, true);
-            commonTransaction = connection.BeginTransaction();
+            if (currentTransactionCount == 0)
+                commonTransaction = Connection.BeginTransaction();
+
+            currentTransactionCount++;
+            log.SqlBeginTransaction(currentTransactionCount, currentTransactionCount == 0);
+            return currentTransactionCount;
         }
 
-        public void RollbackTransaction()
+        public int RollbackTransaction()
         {
-            log.SqlRollbackTransaction(0, true);
-            commonTransaction.Rollback();
+            if (currentTransactionCount == 0)
+                throw new Exception("Begin Transaction should be called before Rollback Transaction.");
+
+            currentTransactionCount--;
+            log.SqlRollbackTransaction(currentTransactionCount, currentTransactionCount == 0);
+            if (currentTransactionCount == 0)
+            {
+                commonTransaction.Rollback();
+            }
+
+            return currentTransactionCount;
         }
 
-        public void CommitTransaction()
+        public int CommitTransaction()
         {
-            log.SqlCommitTransaction(0, true);
-            commonTransaction.Commit();
-            commonTransaction.Dispose();
+            if (currentTransactionCount == 0)
+                throw new Exception("Begin Transaction should be called before Commit Transaction.");
+
+            currentTransactionCount--;
+            log.SqlCommitTransaction(currentTransactionCount, currentTransactionCount == 0);
+            if (currentTransactionCount == 0)
+            {
+                commonTransaction.Commit();
+                commonTransaction.Dispose();
+                commonTransaction = null;
+            }
+
+            return currentTransactionCount;
         }
 
         public int Delete<T>(Expression<Func<T, bool>> where)

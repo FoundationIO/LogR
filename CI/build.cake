@@ -4,16 +4,26 @@
 
 
 //////////////////////////////////////////////////////////////////////
-// ARGUMENTS
+// CONSTANTS
 //////////////////////////////////////////////////////////////////////
+const string appNameStr = "LogR";
 const string commandStr = "command";
 const string buildStr = "build";
 const string publishStr = "publish";
 const string testStr = "test";
 const string pocoGeneratorStr = "pocogenerator";
-
-
+const string cleanStr = "clean";
+const string appPoolNameStr = "NetCoreAppApool";
 const string customCommandStr = "Command";
+const string webAppCodePathStr = "../Source/LogR/App/Web";
+const string iisPublishFolderStr = "..//..//IISPublishedFiles";
+const string iisApplicationPathStr = "/logr";
+const string iisVirtualPathStr = "/";
+const string sourcePathStr = "../Source";
+const string stopIISStr = "stopIIS";
+const string publishToIISStr = "iis";
+const string servernameStr = "localhost";
+var currentWebsiteNameStr = "Default Web Site";
 
 class CommandProcess
 {
@@ -43,10 +53,12 @@ class CommandProcess
 
 List<CommandProcess> commandList = new List<CommandProcess>()
 {
-    new CommandProcess(buildStr,"b", "01" , "1","build the API project"),
-    new CommandProcess(publishStr,"p", "02" , "2","publish the API project"),
-    new CommandProcess(testStr,"t", "03" , "3","test the API project"),
+    new CommandProcess(buildStr,"b", "01" , "1","build the project"),
+    new CommandProcess(publishStr,"p", "02" , "2","publish the project"),
+    new CommandProcess(testStr,"t", "03" , "3","test the project"),
+	new CommandProcess(cleanStr,"c", "" , "","clean obj/bin file of the project"),
     new CommandProcess(pocoGeneratorStr,"pg", "" , "","generate pocos and sp function"),
+	new CommandProcess(publishToIISStr,"", "" , "","publish to IIS"),
 };
 
 var target = Argument("target", "Default");
@@ -64,23 +76,22 @@ Task("Default")
 Task(buildStr)
     .Does(() =>
 {
-    Warning("Restoring LogR:");
-    DotNetCoreRestore("../Source/LogR/App/Web");
-    Warning("Building LogR:");
-    DotNetCoreBuild("../Source/LogR/App/Web");
+    Warning($"Restoring {appNameStr}:");
+    DotNetCoreRestore(webAppCodePathStr);
+    Warning($"Building {appNameStr}:");
+    DotNetCoreBuild(webAppCodePathStr);
 });
 
 Task(publishStr)
-    //.IsDependentOn(testStr)
+	.IsDependentOn(stopIISStr)
     .Does(() =>
 {
-
-    Warning("Publishing LogR:");
-    DotNetCorePublish("../Source/LogR/App/Web", new DotNetCorePublishSettings
+    Warning($"Publishing {appNameStr}:");
+    DotNetCorePublish(webAppCodePathStr, new DotNetCorePublishSettings
      {
          Configuration = "Debug",
-         OutputDirectory = "..//..//PublishedIISFiles",
-         Framework = "netcoreapp2.0",
+         OutputDirectory = iisPublishFolderStr,
+         Framework = "net461",
      });
 
 });
@@ -89,9 +100,103 @@ Task(testStr)
     .IsDependentOn(buildStr)
     .Does(() =>
 {
-    Warning("Running LogR Tests:");
+    Warning($"Running {appNameStr} Tests:");
     DotNetCoreTest("../Source/LogR/Test");
 });
+
+Task(cleanStr)
+    .Does(() =>
+{
+   
+    var path = MakeAbsolute(Directory(sourcePathStr)).FullPath;
+    Warning("Cleaning bin/obj folders from Path " + path);
+    CleanDirectories(path + "/**/bin/" + "Debug");
+    CleanDirectories(path + "/**/bin/" + "Release");
+    CleanDirectories(path + "/**/obj/" + "Debug");   
+    CleanDirectories(path + "/**/obj/" + "Release");
+});
+
+Task(stopIISStr)
+    .Does(() =>
+{
+    if (PoolExists(appPoolNameStr))
+    {
+        Warning("Stopping IIS App Pool ...");
+        StopPool(appPoolNameStr);
+    }
+});
+
+
+Task(publishToIISStr)
+    .IsDependentOn(publishStr)
+    .IsDependentOn(stopIISStr)    
+    .Does(() =>
+{
+    try
+    {
+        Warning("Publishing to  IIS :");
+
+        Warning("Checking IIS Configuration ...");
+
+        Warning("Checking if App Pool with the Name "+appPoolNameStr+" exists :");
+        if (PoolExists(appPoolNameStr) == false)
+        {
+            Warning("App Pool "+appPoolNameStr+" does not exists. Creating..");
+
+            CreatePool(servernameStr, new ApplicationPoolSettings()
+            {
+                Name = appPoolNameStr,
+                Autostart = true,
+                ManagedRuntimeVersion = "",
+            });
+        }
+        else
+        {
+            Warning("App Pool " +appPoolNameStr+ " already exists.");
+        }
+
+        StartPool(servernameStr, appPoolNameStr);
+        
+        var path = MakeAbsolute(Directory(iisPublishFolderStr)).FullPath;
+        Warning("Site will be mapped to Path " + path);
+
+		Warning("Checking if Virtual Directory exists in IIS..");
+
+        var appSetings = new ApplicationSettings(){
+            SiteName = currentWebsiteNameStr,
+            ApplicationPath = iisApplicationPathStr,
+            ApplicationPool = appPoolNameStr,
+            PhysicalDirectory = path,
+            VirtualDirectory = iisVirtualPathStr
+        };
+
+        if (SiteApplicationExists(servernameStr,appSetings ) == false)
+        {
+            Warning("Application does not exists in IIS.");
+        }
+        else
+        {
+            Warning("Application exists in IIS..");
+            Warning("Removing before creating a new one..");
+            RemoveSiteApplication(appSetings);
+        }
+
+        Warning("Creating a new Application");
+        AddSiteApplication(appSetings);
+        Warning("Application created");
+    }
+    catch(AggregateException aex)
+    {
+        Warning("Error when creating Application");
+        aex.Handle(ex => { Warning(ex.ToString()); return false; });
+    }
+    catch(Exception ex)
+    {
+        Warning("Error when creating Application");
+        Warning(" Exception - " + ex.ToString());
+    }
+});
+
 
 
 //////////////////////////////////////////////////////////////////////
@@ -101,9 +206,8 @@ Task(testStr)
 Task(pocoGeneratorStr)
     .Does(() =>
 {
-
-    Warning("Generating LogR Pocos...");
-    DotNetCoreExecute(".\\PocoGenerator\\PocoGenerator.dll", "-config ..\\Source\\LogR\\Common\Models\\DB\\PocoTemplate\\generator_settings.json");    
+    Warning($"Generating {appNameStr} Pocos...");
+    //DotNetCoreExecute(".\\PocoGenerator\\PocoGenerator.dll", "-config ..\\Source\\LogR\\Common\Models\\DB\\PocoTemplate\\generator_settings.json");    
 });
 
 
@@ -141,6 +245,7 @@ Task(customCommandStr)
     RunTarget(item.CommandName);
 
 });
+
 
 void ShowUsage()
 {

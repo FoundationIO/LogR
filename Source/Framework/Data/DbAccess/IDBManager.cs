@@ -12,13 +12,13 @@ namespace Framework.Data.DbAccess
 
         DataConnection Connection { get; }
 
-        void BeginTransaction();
+        int BeginTransaction();
 
-        void CommitTransaction();
+        int CommitTransaction();
 
         void Dispose();
 
-        void RollbackTransaction();
+        int RollbackTransaction();
 
         long Count<T>()
             where T : class;

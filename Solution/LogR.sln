@@ -33,7 +33,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogR.Test", "..\Source\LogR
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(Solution Items)", "(Solution Items)", "{8E9A8350-4386-4BFC-80E0-F7246947CE67}"
 	ProjectSection(SolutionItems) = preProject
-		..\ci.bat = ..\ci.bat
 		..\Configuration\loggerServerConfig.json = ..\Configuration\loggerServerConfig.json
 		..\Source\LogR\LogR.ruleset = ..\Source\LogR\LogR.ruleset
 	EndProjectSection
@@ -44,6 +43,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogR.Task", "..\Source\LogR
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{796FCA5A-0AD7-4017-A857-C4DAFCF17AE5}"
 	ProjectSection(SolutionItems) = preProject
+		..\CI\build.cake = ..\CI\build.cake
+		..\CI\build.ps1 = ..\CI\build.ps1
+		..\CI\build.sh = ..\CI\build.sh
 		..\ci.bat = ..\ci.bat
 	EndProjectSection
 EndProject

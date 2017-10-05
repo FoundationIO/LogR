@@ -7,6 +7,10 @@ namespace LogR.Common.Interfaces.Service.Config
 {
     public interface IAppConfiguration : IBaseConfiguration
     {
+        bool EnablePushToMasterIndexServer { get; }
+
+        MasterIndexStoreSettings MasterIndexStoreSettings { get; }
+
         int BatchSizeToIndex { get; }
 
         IndexStoreType IndexStoreType { get; }
