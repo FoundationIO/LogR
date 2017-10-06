@@ -226,7 +226,110 @@ namespace LogR.Repository
                         lst = lst.Where(x => x.Severity == search.LogType);
                     }
 
-                    lst = lst.OrderByDescending(x => x.Longdate);
+                    if (search.SortBy == "AppLogId")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.AppLogId) : lst.OrderByDescending(x => x.AppLogId);
+                    }
+                    else if (search.SortBy == "LogType")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.LogType) : lst.OrderByDescending(x => x.LogType);
+                    }
+                    else if (search.SortBy == "CorelationId")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.CorelationId) : lst.OrderByDescending(x => x.CorelationId);
+                    }
+                    else if (search.SortBy == "FunctionId")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.FunctionId) : lst.OrderByDescending(x => x.FunctionId);
+                    }
+                    else if (search.SortBy == "Severity")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.Severity) : lst.OrderByDescending(x => x.Severity);
+                    }
+                    else if (search.SortBy == "App")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.App) : lst.OrderByDescending(x => x.App);
+                    }
+                    else if (search.SortBy == "MachineName")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.MachineName) : lst.OrderByDescending(x => x.MachineName);
+                    }
+                    else if (search.SortBy == "ProcessId")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.ProcessId) : lst.OrderByDescending(x => x.ProcessId);
+                    }
+                    else if (search.SortBy == "ThreadId")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.ThreadId) : lst.OrderByDescending(x => x.ThreadId);
+                    }
+                    else if (search.SortBy == "CurrentFunction")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.CurrentFunction) : lst.OrderByDescending(x => x.CurrentFunction);
+                    }
+                    else if (search.SortBy == "CurrentSourceFilename")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.CurrentSourceFilename) : lst.OrderByDescending(x => x.CurrentSourceFilename);
+                    }
+                    else if (search.SortBy == "CurrentSourceLineNumber")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.CurrentSourceLineNumber) : lst.OrderByDescending(x => x.CurrentSourceLineNumber);
+                    }
+                    else if (search.SortBy == "UserIdentity")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.UserIdentity) : lst.OrderByDescending(x => x.UserIdentity);
+                    }
+                    else if (search.SortBy == "RemoteAddress")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.RemoteAddress) : lst.OrderByDescending(x => x.RemoteAddress);
+                    }
+                    else if (search.SortBy == "UserAgent")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.UserAgent) : lst.OrderByDescending(x => x.UserAgent);
+                    }
+                    else if (search.SortBy == "Result")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.Result) : lst.OrderByDescending(x => x.Result);
+                    }
+                    else if (search.SortBy == "ResultCode")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.ResultCode) : lst.OrderByDescending(x => x.ResultCode);
+                    }
+                    else if (search.SortBy == "Message")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.Message) : lst.OrderByDescending(x => x.Message);
+                    }
+                    else if (search.SortBy == "PerfModule")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.PerfModule) : lst.OrderByDescending(x => x.PerfModule);
+                    }
+                    else if (search.SortBy == "PerfFunctionName")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.PerfFunctionName) : lst.OrderByDescending(x => x.PerfFunctionName);
+                    }
+                    else if (search.SortBy == "StartTime")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.StartTime) : lst.OrderByDescending(x => x.StartTime);
+                    }
+                    else if (search.SortBy == "ElapsedTime")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.ElapsedTime) : lst.OrderByDescending(x => x.ElapsedTime);
+                    }
+                    else if (search.SortBy == "PerfStatus")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.PerfStatus) : lst.OrderByDescending(x => x.PerfStatus);
+                    }
+                    else if (search.SortBy == "Request")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.Request) : lst.OrderByDescending(x => x.Request);
+                    }
+                    else if (search.SortBy == "Response")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.Response) : lst.OrderByDescending(x => x.Response);
+                    }
+                    else
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.LongdateAsTicks) : lst.OrderByDescending(x => x.LongdateAsTicks);
+                    }
 
                     var totalRows = lst.AsQueryable().Count();
 

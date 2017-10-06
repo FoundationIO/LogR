@@ -2,82 +2,80 @@
 @model Framework.Infrastructure.Models.Search.BaseSearchCriteria
 @using Framework.Web.HtmlHelpers
 
-<table class="table table-bordered datagrid datagrid-stretch-footer">
-    <tfoot>
-        <tr>
-            <th colspan="4">
-                <div class="datagrid-footer-left">
-                    <div class="grid-controls">
-                        <span>
-                            <span class="grid-start">@(Model.CurrentPageStartRow())</span> - <span class="grid-end">@(Model.CurrentPageEndRow())</span> of <span class="grid-count">@Model.TotalRowCount items</span>
-                        </span>
-                        @Html.PageDropDownList("myflag",Model.PageSize.ToString(), "select grid-pagesize", "RefreshPageSize")
-                        <span>Per Page</span>
-                    </div>
-                </div>
+<div class="box">
+    <div class="box-header">
 
-                <div class="pagination datagrid-footer-right">
-                    <ul>
-                        @{
-                            // Create Previous link
-                            @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "<< Previous" }, { "PageIndex", Model.Page - 1 }, { "Selected", false }, { "Inactive", Model.Page == 1 } });
+        <div class="datagrid-footer-left">
+            <div class="grid-controls">
+                <span>
+                    <span class="grid-start">@(Model.CurrentPageStartRow())</span> - <span class="grid-end">@(Model.CurrentPageEndRow())</span> of <span class="grid-count">@Model.TotalRowCount items</span>
+                </span>
+                @Html.PageDropDownList("myflag", Model.PageSize.ToString(), "select grid-pagesize", "", "RefreshPageSize")
+                <span>Per Page</span>
+            </div>
+        </div>
 
-
-                            // Create numeric links
-                            var startPageIndex = Math.Max(1, Model.Page - Model.NumericPageCount / 2);
-                            var endPageIndex = Math.Min(Model.PageCount(), Model.Page + Model.NumericPageCount / 2);
-
-                            // Add in initial page numbers, if needed
-                            if (Model.PageCount() > Model.NumericPageCount / 2)
-                            {
-                                if (startPageIndex > 1)
-                                {
-                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "1" }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", false } });
-                                }
-                                if (startPageIndex > 2)
-                                {
-                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "2" }, { "PageIndex", 2 }, { "Selected", false }, { "Inactive", false } });
-                                }
-                                if (startPageIndex > 3)
-                                {
-                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "..." }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", true } });
-                                }
-                            }
-
-                            // Add in the numeric pages
-                            for (var i = startPageIndex; i <= endPageIndex; i++)
-                            {
-                                @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", i }, { "PageIndex", i }, { "Selected", i == Model.Page }, { "Inactive", false } });
-                            }
+        <div class="box-tools">
+            <ul class="pagination pagination-flat no-margin pull-right">
+                @{
+// Create Previous link
+                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "<< Previous" }, { "PageIndex", Model.Page - 1 }, { "Selected", false }, { "Inactive", Model.Page == 1 } });
 
 
-                            // Add in trailing page numbers, if needed
-                            if (Model.PageCount() > Model.NumericPageCount / 2)
-                            {
-                                if (endPageIndex < Model.PageCount() - 2)
-                                {
-                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "..." }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", true } });
-                                }
-                                if (endPageIndex < Model.PageCount() - 1)
-                                {
-                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", Model.PageCount() - 1 }, { "PageIndex", Model.PageCount() - 1 }, { "Selected", false }, { "Inactive", false } });
-                                }
-                                if (endPageIndex < Model.PageCount())
-                                {
-                                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", Model.PageCount() }, { "PageIndex", Model.PageCount() }, { "Selected", false }, { "Inactive", false } });
-                                }
-                            }
+                    // Create numeric links
+                    var startPageIndex = Math.Max(1, Model.Page - Model.NumericPageCount / 2);
+                    var endPageIndex = Math.Min(Model.PageCount(), Model.Page + Model.NumericPageCount / 2);
 
-
-                            // Create Next link
-                            @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "Next >>" }, { "PageIndex", Model.Page + 1 }, { "Selected", false }, { "Inactive", Model.Page == Model.PageCount() } });
+                    // Add in initial page numbers, if needed
+                    if (Model.PageCount() > Model.NumericPageCount / 2)
+                    {
+                        if (startPageIndex > 1)
+                        {
+                            @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "1" }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", false } });
                         }
-                    </ul>
-                </div>
-            </th>
-        </tr>
-    </tfoot>
-</table>
+                        if (startPageIndex > 2)
+                        {
+                            @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "2" }, { "PageIndex", 2 }, { "Selected", false }, { "Inactive", false } });
+                        }
+                        if (startPageIndex > 3)
+                        {
+                            @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "..." }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", true } });
+                        }
+                    }
+
+                    // Add in the numeric pages
+                    for (var i = startPageIndex; i <= endPageIndex; i++)
+                    {
+                        @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", i }, { "PageIndex", i }, { "Selected", i == Model.Page }, { "Inactive", false } });
+                    }
+
+
+                    // Add in trailing page numbers, if needed
+                    if (Model.PageCount() > Model.NumericPageCount / 2)
+                    {
+                        if (endPageIndex < Model.PageCount() - 2)
+                        {
+                            @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "..." }, { "PageIndex", 1 }, { "Selected", false }, { "Inactive", true } });
+                        }
+                        if (endPageIndex < Model.PageCount() - 1)
+                        {
+                            @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", Model.PageCount() - 1 }, { "PageIndex", Model.PageCount() - 1 }, { "Selected", false }, { "Inactive", false } });
+                        }
+                        if (endPageIndex < Model.PageCount())
+                        {
+                            @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", Model.PageCount() }, { "PageIndex", Model.PageCount() }, { "Selected", false }, { "Inactive", false } });
+                        }
+                    }
+
+
+                    // Create Next link
+                    @Html.Partial("_PagerLink", Model, new ViewDataDictionary(ViewData) { { "Text", "Next >>" }, { "PageIndex", Model.Page + 1 }, { "Selected", false }, { "Inactive", Model.Page == Model.PageCount() } });
+                }
+            </ul>
+        </div>
+    </div>    
+</div>
+
 <script type="text/javascript">
     function updateQueryStringParameter(uri, key, value) {
         var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
@@ -92,7 +90,10 @@
 
     function RefreshPageSize(dropdown)
     {
-        var url = updateQueryStringParameter(window.location.href, "pagesize", $(dropdown).select('selectedItem').value);
+        var selectedOption = dropdown.options[dropdown.selectedIndex];
+        alert("The selected option is " + selectedOption.value);
+
+        var url = updateQueryStringParameter(window.location.href, "pagesize", selectedOption.value);
         url = updateQueryStringParameter(url, "page", '1');
         window.location.href = url;
     }

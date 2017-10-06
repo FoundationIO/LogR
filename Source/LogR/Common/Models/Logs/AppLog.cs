@@ -6,89 +6,89 @@ namespace LogR.Common.Models.Logs
 {
     public class AppLog
     {
-        [JsonProperty("applog-id")]
+        //[JsonProperty("applog-id")]
         public Guid AppLogId { get; set; }
 
-        [JsonProperty("log-type")]
+        //[JsonProperty("log-type")]
         public int LogType { get; set; }
 
-        [JsonProperty("corelation-id")]
+        //[JsonProperty("corelation-id")]
         public Guid? CorelationId { get; set; }
 
-        [JsonProperty("function-id")]
+        //[JsonProperty("function-id")]
         public Guid? FunctionId { get; set; }
 
-        [JsonProperty("long-date")]
+        //[JsonProperty("long-date")]
         //[JsonConverter(typeof(LogDateConverter))]
         public DateTime Longdate { get; set; }
 
-        [JsonProperty("longdate-as-ticks")]
+        //[JsonProperty("longdate-as-ticks")]
         public long LongdateAsTicks { get; set; }
 
-        [JsonProperty("severity")]
+        //[JsonProperty("severity")]
         public string Severity { get; set; }
 
-        [JsonProperty("app")]
+        //[JsonProperty("app")]
         public string App { get; set; }
 
-        [JsonProperty("machine-name")]
+        //[JsonProperty("machine-name")]
         public string MachineName { get; set; }
 
-        [JsonProperty("process-id")]
+        //[JsonProperty("process-id")]
         public int ProcessId { get; set; }
 
-        [JsonProperty("thread-id")]
+        //[JsonProperty("thread-id")]
         public int ThreadId { get; set; }
 
-        [JsonProperty("current-function")]
+        //[JsonProperty("current-function")]
         public string CurrentFunction { get; set; }
 
-        [JsonProperty("current-source-file-name")]
+        //[JsonProperty("current-source-file-name")]
         public string CurrentSourceFilename { get; set; }
 
-        [JsonProperty("current-source-line-number")]
+        //[JsonProperty("current-source-line-number")]
         public int CurrentSourceLineNumber { get; set; }
 
-        [JsonProperty("user-identity")]
+        //[JsonProperty("user-identity")]
         public string UserIdentity { get; set; }
 
-        [JsonProperty("remote-addrress")]
+        //[JsonProperty("remote-addrress")]
         public string RemoteAddress { get; set; }
 
-        [JsonProperty("user-agent")]
+        //[JsonProperty("user-agent")]
         public string UserAgent { get; set; }
 
-        [JsonProperty("result")]
+        //[JsonProperty("result")]
         public string Result { get; set; }
 
-        [JsonProperty("result-code")]
+        //[JsonProperty("result-code")]
         public int ResultCode { get; set; }
 
-        [JsonProperty("message")]
+        //[JsonProperty("message")]
         public string Message { get; set; }
 
-        [JsonProperty("perf-module")]
+        //[JsonProperty("perf-module")]
         public string PerfModule { get; set; }
 
-        [JsonProperty("perf-function-name")]
+        //[JsonProperty("perf-function-name")]
         public string PerfFunctionName { get; set; }
 
-        [JsonProperty("start-time")]
+        //[JsonProperty("start-time")]
         public DateTime StartTime { get; set; }
 
-        [JsonProperty("elapsed-time")]
+        //[JsonProperty("elapsed-time")]
         public double ElapsedTime { get; set; }
 
-        [JsonProperty("perf-status")]
+        //[JsonProperty("perf-status")]
         public string PerfStatus { get; set; }
 
-        [JsonProperty("request")]
+        //[JsonProperty("request")]
         public string Request { get; set; }
 
-        [JsonProperty("response")]
+        //[JsonProperty("response")]
         public string Response { get; set; }
 
-        [JsonProperty("additional-properties")]
+        //[JsonProperty("additional-properties")]
         public List<KeyValuePair<string, string>> AdditionalProperties { get; set; }
     }
 }

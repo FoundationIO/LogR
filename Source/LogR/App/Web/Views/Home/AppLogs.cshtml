@@ -168,20 +168,16 @@
         ///////////////////////SelectAll///////////////////////
 
         $(document).ready(function () {
-            $('#JobStatusIds').selectpicker({
-                tickIcon: 'icon-ok',
-                noneSelectedText: 'All States'
-            });
-            var FromDate = $('#FromDate').datepicker({
+            var FromDate = $('#FromDate').datetimepicker({
                 format: "mm/dd/yyyy",
             }).on('changeDate', function (ev) {
                 FromDate.hide();
-            }).data('datepicker');
-            var ToDate = $('#ToDate').datepicker({
+                }).data('datetimepicker');
+            var ToDate = $('#ToDate').datetimepicker({
                 format: "mm/dd/yyyy"
             }).on('changeDate', function (ev) {
                 ToDate.hide();
-            }).data('datepicker');
+                }).data('datetimepicker');
             //Generate Date//
             LoadDefaultStatusDate($('#ToDate'), $('#FromDate'));
             //Generte Graph//
