@@ -13,10 +13,10 @@ namespace LogR.Common.Models.Logs
         public int LogType { get; set; }
 
         //[JsonProperty("corelation-id")]
-        public Guid? CorelationId { get; set; }
+        public string CorelationId { get; set; }
 
         //[JsonProperty("function-id")]
-        public Guid? FunctionId { get; set; }
+        public string FunctionId { get; set; }
 
         //[JsonProperty("long-date")]
         //[JsonConverter(typeof(LogDateConverter))]

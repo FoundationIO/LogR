@@ -27,8 +27,8 @@ namespace LogR.Service.Task
             fakeAppLogs = new Faker<AppLog>()
                 .RuleFor(u => u.AppLogId, f => f.Random.Uuid())
                 .RuleFor(p => p.LogType, f => f.Random.Number(0,4))
-                .RuleFor(p => p.CorelationId, f => Guid.NewGuid())
-                .RuleFor(p => p.FunctionId, f => Guid.NewGuid())
+                .RuleFor(p => p.CorelationId, f => Guid.NewGuid().ToString())
+                .RuleFor(p => p.FunctionId, f => Guid.NewGuid().ToString())
                 .RuleFor(p => p.Longdate, f => f.Date.Past())
                 .RuleFor(p => p.LongdateAsTicks, (f,u) => u.Longdate.Ticks) //).Value((p) => p.Longdate.Ticks);
                 .RuleFor(p => p.Severity, f => f.PickRandom(new[]
