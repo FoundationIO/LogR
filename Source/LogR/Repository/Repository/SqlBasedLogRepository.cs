@@ -101,7 +101,7 @@ namespace LogR.Repository
         {
             try
             {
-                dbManager.Connection.GetTable<AppLog>().Where(x => x.AppLogId == SafeUtils.Guid(id)).Delete();
+                dbManager.Connection.GetTable<AppLog>().Where(x => x.Id == SafeUtils.Guid(id)).Delete();
                 return new ReturnModel<bool>(true);
             }
             catch (Exception ex)
@@ -208,7 +208,7 @@ namespace LogR.Repository
         {
             try
             {
-                var lst = dbManager.Connection.GetTable<AppLog>().Where(x => x.AppLogId == SafeUtils.Guid(id));
+                var lst = dbManager.Connection.GetTable<AppLog>().Where(x => x.Id == SafeUtils.Guid(id));
                 return new ReturnModel<bool>(true);
             }
             catch (Exception ex)

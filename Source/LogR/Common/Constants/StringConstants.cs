@@ -32,6 +32,14 @@ namespace LogR.Common.Constants
 
             public const string AppLogIndex = "app_log_index";
             public const string PerformanceLogIndex = "performance_log_index";
+            public const string WebLogIndex = "web_log_index";
+            public const string EventLogIndex = "event_log_index";
+        }
+
+        public class SqlIndexStore
+        {
+            public const string MigrationNamespace = "LogR.Repository.Migration.Application";
+            public const string MigrationProfile = "LogIndexStore";
         }
     }
 }

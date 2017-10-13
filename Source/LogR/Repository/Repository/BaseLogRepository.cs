@@ -6,6 +6,7 @@ using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
 using Framework.Infrastructure.Models.Search;
 using Framework.Infrastructure.Utils;
+using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
@@ -26,32 +27,17 @@ namespace LogR.Repository
             this.config = config;
         }
 
-        protected AppLog GetAppLogFromRawLog(string message)
+        protected T GetLogFromRawLog<T>(StoredLogType logType, string message)
+            where T : AppLog
         {
-            var item = JsonUtils.Deserialize<AppLog>(message);
+            var item = JsonUtils.Deserialize<T>(message);
             if (item == null)
             {
-                throw new Exception("Unable to deserialize the app log message -  " + message);
+                throw new Exception("Unable to deserialize the log message -  " + message);
             }
 
-            item.AppLogId = Guid.NewGuid();
-            item.LogType = (int)LogType.AppLog;
-            if (item.Longdate.IsInvalidDate())
-                item.Longdate = DateTime.UtcNow;
-            item.LongdateAsTicks = item.Longdate.Ticks;
-            return item;
-        }
-
-        protected AppLog GetPerformanceLogFromRawLog(string message)
-        {
-            var item = JsonUtils.Deserialize<AppLog>(message);
-            if (item == null)
-            {
-                throw new Exception("Unable to deserialize the performance log message -  " + message);
-            }
-
-            item.AppLogId = Guid.NewGuid();
-            item.LogType = (int)LogType.PerformanceLog;
+            item.LogId = Guid.NewGuid();
+            item.LogType = (int)logType;
             if (item.Longdate.IsInvalidDate())
                 item.Longdate = DateTime.UtcNow;
             item.LongdateAsTicks = item.Longdate.Ticks;

@@ -6,87 +6,87 @@ namespace LogR.Common.Models.Logs
 {
     public class AppLog
     {
-        //[JsonProperty("applog-id")]
-        public Guid AppLogId { get; set; }
+        //[JsonProperty("log-id")]
+        public virtual Guid LogId { get; set; }
 
         //[JsonProperty("log-type")]
         public int LogType { get; set; }
 
         //[JsonProperty("corelation-id")]
-        public string CorelationId { get; set; }
+        public virtual string CorelationId { get; set; }
 
         //[JsonProperty("function-id")]
-        public string FunctionId { get; set; }
+        public virtual string FunctionId { get; set; }
 
         //[JsonProperty("long-date")]
         //[JsonConverter(typeof(LogDateConverter))]
-        public DateTime Longdate { get; set; }
+        public virtual DateTime Longdate { get; set; }
 
         //[JsonProperty("longdate-as-ticks")]
-        public long LongdateAsTicks { get; set; }
+        public virtual long LongdateAsTicks { get; set; }
 
         //[JsonProperty("severity")]
-        public string Severity { get; set; }
+        public virtual string Severity { get; set; }
 
         //[JsonProperty("app")]
-        public string App { get; set; }
+        public virtual string App { get; set; }
 
         //[JsonProperty("machine-name")]
-        public string MachineName { get; set; }
+        public virtual string MachineName { get; set; }
 
         //[JsonProperty("process-id")]
-        public int ProcessId { get; set; }
+        public virtual int ProcessId { get; set; }
 
         //[JsonProperty("thread-id")]
-        public int ThreadId { get; set; }
+        public virtual int ThreadId { get; set; }
 
         //[JsonProperty("current-function")]
-        public string CurrentFunction { get; set; }
+        public virtual string CurrentFunction { get; set; }
 
         //[JsonProperty("current-source-file-name")]
-        public string CurrentSourceFilename { get; set; }
+        public virtual string CurrentSourceFilename { get; set; }
 
         //[JsonProperty("current-source-line-number")]
-        public int CurrentSourceLineNumber { get; set; }
+        public virtual int CurrentSourceLineNumber { get; set; }
 
         //[JsonProperty("user-identity")]
-        public string UserIdentity { get; set; }
+        public virtual string UserIdentity { get; set; }
 
         //[JsonProperty("remote-addrress")]
-        public string RemoteAddress { get; set; }
+        public virtual string RemoteAddress { get; set; }
 
         //[JsonProperty("user-agent")]
-        public string UserAgent { get; set; }
+        public virtual string UserAgent { get; set; }
 
         //[JsonProperty("result")]
-        public string Result { get; set; }
+        public virtual string Result { get; set; }
 
         //[JsonProperty("result-code")]
-        public int ResultCode { get; set; }
+        public virtual int ResultCode { get; set; }
 
         //[JsonProperty("message")]
-        public string Message { get; set; }
+        public virtual string Message { get; set; }
 
         //[JsonProperty("perf-module")]
-        public string PerfModule { get; set; }
+        public virtual string PerfModule { get; set; }
 
         //[JsonProperty("perf-function-name")]
-        public string PerfFunctionName { get; set; }
+        public virtual string PerfFunctionName { get; set; }
 
         //[JsonProperty("start-time")]
-        public DateTime StartTime { get; set; }
+        public virtual DateTime StartTime { get; set; }
 
         //[JsonProperty("elapsed-time")]
-        public double ElapsedTime { get; set; }
+        public virtual double ElapsedTime { get; set; }
 
         //[JsonProperty("perf-status")]
-        public string PerfStatus { get; set; }
+        public virtual string PerfStatus { get; set; }
 
         //[JsonProperty("request")]
-        public string Request { get; set; }
+        public virtual string Request { get; set; }
 
         //[JsonProperty("response")]
-        public string Response { get; set; }
+        public virtual string Response { get; set; }
 
         //[JsonProperty("additional-properties")]
         public List<KeyValuePair<string, string>> AdditionalProperties { get; set; }

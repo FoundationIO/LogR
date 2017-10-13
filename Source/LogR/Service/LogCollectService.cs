@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Framework.Infrastructure.Constants;
+using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Service;
 using LogR.Common.Interfaces.Service.Config;
@@ -50,13 +51,13 @@ namespace LogR.Service
             poller.RunAsync();
         }
 
-        public void AddToQue(LogType logType, string logString, DateTime date)
+        public void AddToQue(StoredLogType logType, string logString, DateTime date)
         {
             if (string.IsNullOrEmpty(logString) == false)
                 queue.Enqueue(new RawLogData { Type = logType, Data = logString , ReceiveDate = date });
         }
 
-        public void AddToDb(LogType logType, string logString, DateTime date)
+        public void AddToDb(StoredLogType logType, string logString, DateTime date)
         {
             if (string.IsNullOrEmpty(logString) == false)
                 logRepository.SaveLog(new RawLogData { Type = logType, Data = logString, ReceiveDate = date });

@@ -63,7 +63,7 @@ namespace LogR.DI
                     {
                         case IndexStoreType.Lucene:
                             return new LuceneLogRepository(log, config);
-
+                    /*
                         case IndexStoreType.MySql:
                         case IndexStoreType.Sqlite3:
                         case IndexStoreType.Postgresql:
@@ -82,7 +82,7 @@ namespace LogR.DI
 
                         //case IndexStoreType.EmbbededElasticSearch:
                         //    return new EmbbededElasticSearchLogRepository(log, config);
-
+                     */
                         default:
                             throw new Exception("Index store is not configured");
                     }

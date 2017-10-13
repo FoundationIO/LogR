@@ -8,6 +8,7 @@ using Bogus.DataSets;
 using Bogus.Extensions;
 using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Utils;
+using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Interfaces.Service.Task;
@@ -25,7 +26,7 @@ namespace LogR.Service.Task
             Randomizer.Seed = new Random(3897235);
 
             fakeAppLogs = new Faker<AppLog>()
-                .RuleFor(u => u.AppLogId, f => f.Random.Uuid())
+                .RuleFor(u => u.LogId, f => f.Random.Uuid())
                 .RuleFor(p => p.LogType, f => f.Random.Number(0,4))
                 .RuleFor(p => p.CorelationId, f => Guid.NewGuid().ToString())
                 .RuleFor(p => p.FunctionId, f => Guid.NewGuid().ToString())
@@ -341,7 +342,7 @@ namespace LogR.Service.Task
                 var lst = new List<RawLogData>();
                 GetAppLogs(20).ForEach(appItem =>
                 {
-                    lst.Add(new RawLogData() { Type = LogType.AppLog, Data = JsonUtils.Serialize(appItem), ReceiveDate = DateTime.UtcNow });
+                    lst.Add(new RawLogData() { Type = StoredLogType.AppLog, Data = JsonUtils.Serialize(appItem), ReceiveDate = DateTime.UtcNow });
                 });
                 logRepository.SaveLog(lst);
             });

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Models.Config;
+using LogR.Common.Constants;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Service.Config;
 
@@ -26,11 +27,11 @@ namespace LogR.Repository.DbAccess
 
             if (DbSettings != null)
             {
-                DbSettings.MigrationNamespace = "LogR.Repository.Migration.Application";
+                DbSettings.MigrationNamespace = StringConstants.SqlIndexStore.MigrationNamespace;
 
                 DbSettings.AutomaticMigration = true;
 
-                DbSettings.MigrationProfile = "LogIndexStore";
+                DbSettings.MigrationProfile = StringConstants.SqlIndexStore.MigrationProfile;
             }
         }
 

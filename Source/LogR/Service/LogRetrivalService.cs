@@ -1,6 +1,7 @@
 ﻿using System;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
+using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Service;
 using LogR.Common.Models.Logs;
@@ -26,7 +27,7 @@ namespace LogR.Service
             return result;
         }
 
-        public ReturnListModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search)
+        public ReturnListWithSearchModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search)
         {
             try
             {
@@ -37,11 +38,11 @@ namespace LogR.Service
                 log.Error(ex, "Error when getting App Log  List ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, ex);
+                return new ReturnListWithSearchModel<AppLog, AppLogSearchCriteria>(search, ex);
             }
         }
 
-        public ReturnListModel<AppLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
+        public ReturnListWithSearchModel<PerfLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
         {
             try
             {
@@ -52,7 +53,7 @@ namespace LogR.Service
                 log.Error(ex, "Error when getting Performance Log  List ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<AppLog, PerformanceLogSearchCriteria>(search, ex);
+                return new ReturnListWithSearchModel<PerfLog, PerformanceLogSearchCriteria>(search, ex);
             }
         }
 
@@ -60,11 +61,24 @@ namespace LogR.Service
         {
             try
             {
-                return logRepository.DeleteAppLog(id);
+                return logRepository.DeleteLog(StoredLogType.AppLog, id);
             }
             catch (Exception ex)
             {
                 log.Error(ex, "Error when getting Deleting App Log  - id = " + id);
+                return new ReturnModel<bool>(ex);
+            }
+        }
+
+        public ReturnModel<bool> DeletePerformanceLog(string id)
+        {
+            try
+            {
+                return logRepository.DeleteLog(StoredLogType.PerfLog, id);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting Deleting Performance Log  - id = " + id);
                 return new ReturnModel<bool>(ex);
             }
         }

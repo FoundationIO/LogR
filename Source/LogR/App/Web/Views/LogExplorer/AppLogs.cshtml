@@ -1,5 +1,5 @@
 ﻿@using Framework.Web.HtmlHelpers
-@model Framework.Infrastructure.Models.Result.ReturnListModel<LogR.Common.Models.Logs.AppLog, LogR.Common.Models.Search.AppLogSearchCriteria>
+@model Framework.Infrastructure.Models.Result.ReturnListWithSearchModel<LogR.Common.Models.Logs.AppLog, LogR.Common.Models.Search.AppLogSearchCriteria>
 
 <!-- Full Width Column -->
 <div class="content-wrapper">
@@ -93,7 +93,7 @@
                                     @foreach (var Current in Model.Model)
                                     {
                                     <tr>
-                                        <td class="action-cell"><input id="selectID" name="selectID" type="checkbox" value="@Current.AppLogId"  data-json='{"IngestJobId": "@Current.AppLogId"}' /></td>
+                                        <td class="action-cell"><input id="selectID" name="selectID" type="checkbox" value="@Current.LogId"  data-json='{"IngestJobId": "@Current.LogId"}' /></td>
                                             <td>@Current.Longdate.ToLocalTime()</td>
                                             <td><span class="label @Html.Partial("_logtypeclass",Current.Severity)">@Current.Severity</span></td>
                                             <td>@Current.MachineName</td>

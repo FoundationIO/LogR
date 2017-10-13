@@ -5,6 +5,7 @@ using Framework.Infrastructure.Constants;
 using LogR.Common.Interfaces.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using LogR.Common.Enums;
 
 namespace LogR.Web.Controllers
 {
@@ -24,22 +25,22 @@ namespace LogR.Web.Controllers
         {
             if (context.Request.Path.StartsWithSegments("/queue/app-log"))
             {
-                service.AddToQue(LogType.AppLog, ReadBody(context), DateTime.UtcNow);
+                service.AddToQue(StoredLogType.AppLog, ReadBody(context), DateTime.UtcNow);
                 await context.Response.WriteAsync("OK");
             }
             else if (context.Request.Path.StartsWithSegments("/queue/performance-log"))
             {
-                service.AddToQue(LogType.PerformanceLog, ReadBody(context), DateTime.UtcNow);
+                service.AddToQue(StoredLogType.PerfLog, ReadBody(context), DateTime.UtcNow);
                 await context.Response.WriteAsync("OK");
             }
             else if (context.Request.Path.StartsWithSegments("/add/app-log"))
             {
-                service.AddToDb(LogType.AppLog, ReadBody(context), DateTime.UtcNow);
+                service.AddToDb(StoredLogType.AppLog, ReadBody(context), DateTime.UtcNow);
                 await context.Response.WriteAsync("OK");
             }
             else if (context.Request.Path.StartsWithSegments("/add/performance-log"))
             {
-                service.AddToDb(LogType.PerformanceLog, ReadBody(context), DateTime.UtcNow);
+                service.AddToDb(StoredLogType.PerfLog, ReadBody(context), DateTime.UtcNow);
                 await context.Response.WriteAsync("OK");
             }
             else

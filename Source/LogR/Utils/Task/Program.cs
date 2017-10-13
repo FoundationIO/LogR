@@ -45,8 +45,7 @@ namespace LogR.Task
             }
             else if (args.IsParamValueAvailable("delete-all"))
             {
-                repo.DeleteAllAppLogs();
-                repo.DeleteAllPerformanceLogs();
+                repo.DeleteAllLogs();
             }
             else
             {

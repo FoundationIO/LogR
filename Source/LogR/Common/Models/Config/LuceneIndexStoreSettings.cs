@@ -34,5 +34,21 @@ namespace LogR.Common.Models.Config
                 return IndexBaseFolder + "\\" + StringConstants.Config.PerformanceLogIndex + "\\";
             }
         }
+
+        public string WebLogIndexFolder
+        {
+            get
+            {
+                return IndexBaseFolder + "\\" + StringConstants.Config.WebLogIndex + "\\";
+            }
+        }
+
+        public string EventLogIndexFolder
+        {
+            get
+            {
+                return IndexBaseFolder + "\\" + StringConstants.Config.EventLogIndex + "\\";
+            }
+        }
     }
 }

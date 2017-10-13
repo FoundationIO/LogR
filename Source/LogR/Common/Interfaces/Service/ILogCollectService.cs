@@ -1,12 +1,13 @@
 ﻿using System;
 using Framework.Infrastructure.Constants;
+using LogR.Common.Enums;
 
 namespace LogR.Common.Interfaces.Service
 {
     public interface ILogCollectService
     {
-        void AddToQue(LogType logType, string logString, DateTime date);
+        void AddToQue(StoredLogType logType, string logString, DateTime date);
 
-        void AddToDb(LogType logType, string logString, DateTime date);
+        void AddToDb(StoredLogType logType, string logString, DateTime date);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Framework.Infrastructure.Models.Result;
 using Framework.Infrastructure.Models.Search;
+using LogR.Common.Enums;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;
 using LogR.Common.Models.Stats;
@@ -10,38 +11,45 @@ namespace LogR.Common.Interfaces.Repository
 {
     public interface ILogRepository
     {
-        void DeleteAllAppLogs();
-
-        void DeleteAllPerformanceLogs();
-
-        ReturnModel<bool> DeleteAppLog(string id);
-
-        Tuple<long, long> DeleteOldLogs(DateTime pastDate);
-
-        ReturnModel<bool> DeletePerformanceLog(string id);
-
-        ReturnListModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search);
-
-        Dictionary<DateTime, long> GetAppLogsStatsByDay();
-
-        ReturnListModel<string, BaseSearchCriteria> GetAppNames(BaseSearchCriteria search);
-
-        ReturnModel<DashboardSummary> GetDashboardSummary();
-
-        ReturnListModel<string, BaseSearchCriteria> GetMachineNames(BaseSearchCriteria search);
-
-        ReturnListModel<AppLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search);
-
-        void GetPerformanceLogsStatsByDay();
-
-        ReturnListModel<string, BaseSearchCriteria> GetSeverityNames(BaseSearchCriteria search);
-
-        ReturnModel<SystemStats> GetStats();
-
-        ReturnListModel<string, BaseSearchCriteria> GetUserNames(BaseSearchCriteria search);
-
+        //Save Log
         void SaveLog(List<RawLogData> data);
 
         void SaveLog(RawLogData data);
+
+        //Delete Log
+        ReturnModel<bool> DeleteAllLogs();
+
+        ReturnModel<bool> DeleteAllLogs(StoredLogType logType);
+
+        ReturnModel<bool> DeleteLog(StoredLogType logType, string id);
+
+        Tuple<long, long> DeleteOldLogs(StoredLogType logType, DateTime pastDate);
+
+        //API for getting logs
+        ReturnListWithSearchModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search);
+
+        ReturnListWithSearchModel<PerfLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search);
+
+        ReturnListWithSearchModel<WebLog, WebLogSearchCriteria> GetWebLogs(WebLogSearchCriteria search);
+
+        ReturnListWithSearchModel<EventLog, EventLogSearchCriteria> GetEventLogs(EventLogSearchCriteria search);
+
+        // Parameters
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetAppNames(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetMachineNames(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetUserNames(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetSeverityNames(StoredLogType logType, BaseSearchCriteria search);
+
+        //Stats API
+        Dictionary<DateTime, long> GetAppLogsStatsByDay();
+
+        ReturnModel<DashboardSummary> GetDashboardSummary();
+
+        void GetPerformanceLogsStatsByDay();
+
+        ReturnModel<SystemStats> GetStats();
     }
 }

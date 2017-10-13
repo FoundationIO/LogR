@@ -9,11 +9,11 @@ namespace LogR.Common.Interfaces.Service
     {
         ReturnModel<bool> DeleteAppLog(string id);
 
-        ReturnListModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search);
+        ReturnListWithSearchModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search);
 
         ReturnModel<DashboardSummary> GetDashboardSummary();
 
-        ReturnListModel<AppLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search);
+        ReturnListWithSearchModel<PerfLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search);
 
         ReturnModel<SystemStats> GetStats();
     }

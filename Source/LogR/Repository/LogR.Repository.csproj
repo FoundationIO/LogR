@@ -60,10 +60,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Repository\ElasticSearchLogRepository.cs" />
     <Compile Remove="Repository\EmbbededElasticSearchLogRepository.cs" />
     <Compile Remove="Repository\MongoDBLogRepository.cs" />
     <Compile Remove="Repository\MysqlLogRepository.cs" />
     <Compile Remove="Repository\PostgresqlLogRepository.cs" />
+    <Compile Remove="Repository\RaptorDBLogRepository.cs" />
+    <Compile Remove="Repository\SqlBasedLogRepository.cs" />
     <Compile Remove="Repository\SqlServerLogRepository.cs" />
   </ItemGroup>
 

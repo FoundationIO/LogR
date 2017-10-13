@@ -29,7 +29,9 @@ namespace LogR.Repository.Migration.Application
             Create.Table("AccessKey")
                 .WithColumn("AccessKeyID").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Key").AsString().NotNullable()
+                .WithColumn("Active").AsBoolean().NotNullable().WithDefaultValue(false)
                 .WithColumn("AssignedTo").AsString().NotNullable()
+                .WithColumn("Notes").AsString().Nullable()
                 .WithColumn("CreatedDate").AsDateTime().NotNullable()
                 .WithColumn("ModifiedDate").AsDateTime().NotNullable();
 
@@ -60,6 +62,8 @@ namespace LogR.Repository.Migration.Application
                 {
                     Key = "205e9001-bcbb-4321-b3ab-c6ec7e9a707b",
                     AssignedTo = "All",
+                    Notes = "Auto Generated Key",
+                    Active = false,
                     CreatedDate = DateTime.UtcNow,
                     ModifiedDate = DateTime.UtcNow
                 });
