@@ -8,6 +8,7 @@ using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
 using Framework.Infrastructure.Models.Search;
 using Framework.Infrastructure.Utils;
+using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
@@ -17,7 +18,7 @@ using Nest;
 
 namespace LogR.Repository
 {
-    public class ElasticSearchLogRepository : BaseLogRepository, ILogRepository
+    public class ElasticSearchLogReadRepository : BaseLogRepository, ILogReadRepository
     {
         //private static bool isAppIndexCreated = false;
         //private static bool isPerfIndexCreated = false;
@@ -26,7 +27,7 @@ namespace LogR.Repository
         private string appLogIndexName;
         private string perfLogIndexName;
 
-        public ElasticSearchLogRepository(ILog log, IAppConfiguration config)
+        public ElasticSearchLogReadRepository(ILog log, IAppConfiguration config)
             : base(log, config)
         {
             var node = new Uri(config.ElasticSearchIndexStoreSettings.ServerName);
@@ -54,7 +55,7 @@ namespace LogR.Repository
             }
         }
 
-        public ReturnListModel<AppLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
+        public ReturnListWithSearchModel<PerfLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
         {
             throw new NotImplementedException();
             /*
@@ -100,119 +101,7 @@ namespace LogR.Repository
             */
         }
 
-        public Tuple<long, long> DeleteOldLogs(DateTime pastDate)
-        {
-            throw new NotImplementedException();
-            /*
-
-            long appLogCount = 0, perfLogCount = 0;
-            try
-            {
-                log.Info("Deleting Performance Log  for days less than " + pastDate);
-
-                using (var writer = GetNewPerfWriter())
-                {
-                    writer.Delete<PerformanceLog>(x => x.Longdate < pastDate);
-                    writer.Commit();
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when getting Deleting Performance Log  for days less than " + pastDate);
-            }
-
-            try
-            {
-                log.Info("Deleting App Log  for days less than " + pastDate);
-
-                using (var writer = GetNewAppWriter())
-                {
-                    writer.Delete<AppLog>(x => x.Longdate < pastDate);
-                    writer.Commit();
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when getting Deleting App Log  for days less than " + pastDate);
-            }
-
-            var result = new Tuple<long, long>(appLogCount, perfLogCount);
-            return result;
-            */
-        }
-
-        public ReturnModel<bool> DeletePerformanceLog(string id)
-        {
-            throw new NotImplementedException();
-            /*
-            try
-            {
-                using (var writer = GetNewPerfWriter())
-                {
-                    writer.Delete<PerformanceLog>(x => x.Id == id);
-                    writer.Commit();
-                }
-
-                return new ReturnModel<bool>(true);
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when getting Deleting Performance Log  - id = " + id);
-                return new ReturnModel<bool>(ex);
-            }
-            */
-        }
-
-        public void SaveLog(RawLogData data)
-        {
-            if (data == null)
-            {
-                log.Error("Error ");
-                return;
-            }
-
-            try
-            {
-                List<string> lst = new List<string>
-                    {
-                        data.Data
-                    };
-
-                if (data.Type == LogType.PerformanceLog)
-                {
-                    SavePerformanceLogX(lst);
-                }
-                else
-                {
-                    SaveAppLogX(lst);
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when processing Base Log - Message = " + data?.Data);
-            }
-        }
-
-        public void SaveLog(List<RawLogData> data)
-        {
-            if (data == null)
-            {
-                log.Error("Error ");
-                return;
-            }
-
-            try
-            {
-                SaveAppLogX(data.Where(x1 => x1.Type == LogType.AppLog).Select(x2 => x2.Data).ToList());
-                SavePerformanceLogX(data.Where(x1 => x1.Type == LogType.PerformanceLog).Select(x2 => x2.Data).ToList());
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when processing Base Log - Message");
-            }
-        }
-
-        public ReturnListModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search)
+        public ReturnListWithSearchModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search)
         {
             try
             {
@@ -249,36 +138,46 @@ namespace LogR.Repository
                 search.TotalRowCount = totalRows;
                 var resultList = result.Documents.ToList();
                 search.CurrentRows = result.Documents.Count;
-                return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, resultList, totalRows);
+                return new ReturnListWithSearchModel<AppLog, AppLogSearchCriteria>(search, resultList, totalRows);
             }
             catch (Exception ex)
             {
                 log.Error(ex, "Error when getting App Log  List ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListModel<AppLog, AppLogSearchCriteria>(search, ex);
+                return new ReturnListWithSearchModel<AppLog, AppLogSearchCriteria>(search, ex);
             }
         }
 
-        public ReturnModel<bool> DeleteAppLog(string id)
+        public ReturnListWithSearchModel<WebLog, WebLogSearchCriteria> GetWebLogs(WebLogSearchCriteria search)
         {
-            throw new NotImplementedException();
-            /*
-            try
-            {
-                using (var writer = GetNewAppWriter())
-                {
-                    writer.Delete<AppLog>(x => x.Id == id);
-                }
+            throw new Exception();
+        }
 
-                return new ReturnModel<bool>(true);
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when getting Deleting App Log  - id = " + id);
-                return new ReturnModel<bool>(ex);
-            }
-            */
+        public ReturnListWithSearchModel<EventLog, EventLogSearchCriteria> GetEventLogs(EventLogSearchCriteria search)
+        {
+            throw new Exception();
+        }
+
+        // Parameters
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetAppNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            throw new Exception();
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetMachineNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            throw new Exception();
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetUserNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            throw new Exception();
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetSeverityNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            throw new Exception();
         }
 
         public ReturnModel<DashboardSummary> GetDashboardSummary()
@@ -323,7 +222,7 @@ namespace LogR.Repository
             */
         }
 
-        public ReturnListModel<string, BaseSearchCriteria> GetMachineNames(BaseSearchCriteria search)
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetMachineNames(BaseSearchCriteria search)
         {
             throw new NotImplementedException();
             /*
@@ -346,7 +245,7 @@ namespace LogR.Repository
             */
         }
 
-        public ReturnListModel<string, BaseSearchCriteria> GetAppNames(BaseSearchCriteria search)
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetAppNames(BaseSearchCriteria search)
         {
             throw new NotImplementedException();
             /*
@@ -369,7 +268,7 @@ namespace LogR.Repository
             */
         }
 
-        public ReturnListModel<string, BaseSearchCriteria> GetSeverityNames(BaseSearchCriteria search)
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetSeverityNames(BaseSearchCriteria search)
         {
             throw new NotImplementedException();
             /*
@@ -392,7 +291,7 @@ namespace LogR.Repository
             */
         }
 
-        public ReturnListModel<string, BaseSearchCriteria> GetUserNames(BaseSearchCriteria search)
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetUserNames(BaseSearchCriteria search)
         {
             throw new NotImplementedException();
             /*
@@ -473,63 +372,6 @@ namespace LogR.Repository
                 LogFileCount = GetLogFileCount()
             };
             return new ReturnModel<SystemStats>(stat);
-        }
-
-        public void DeleteAllAppLogs()
-        {
-            if (client.IndexExists(appLogIndexName).Exists)
-                client.DeleteIndex(appLogIndexName);
-        }
-
-        public void DeleteAllPerformanceLogs()
-        {
-            if (client.IndexExists(perfLogIndexName).Exists)
-                client.DeleteIndex(perfLogIndexName);
-        }
-
-        private void SavePerformanceLogX(List<string> messageList)
-        {
-            try
-            {
-                var lst = new List<AppLog>();
-                foreach (var message in messageList)
-                {
-                    var item = GetPerformanceLogFromRawLog(message);
-                    if (item == null)
-                        continue;
-                    lst.Add(item);
-                }
-
-                client.Bulk(x => x.CreateMany(lst).Index(perfLogIndexName));
-                client.Flush(perfLogIndexName);
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when saving Performance Log - Message = " + messageList.ToString(","));
-            }
-        }
-
-        private void SaveAppLogX(List<string> messageList)
-        {
-            try
-            {
-                var lst = new List<AppLog>();
-                foreach (var message in messageList)
-                {
-                    var item = GetAppLogFromRawLog(message);
-                    if (item == null)
-                        continue;
-                    lst.Add(item);
-                    client.Index<AppLog>(item, idx => idx.Index(appLogIndexName));
-                }
-
-                //client.Bulk(x => x.CreateMany(lst).Index(appLogIndexName));
-                //client.Flush(appLogIndexName);
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when saving App Log - Message = " + messageList.ToString(","));
-            }
         }
 
         private ulong GetAppDataFolderSize()

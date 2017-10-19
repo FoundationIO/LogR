@@ -12,9 +12,9 @@ namespace LogR.Common.Interfaces.Repository
     public interface ILogWriteRepository
     {
         //Save Log
-        void SaveLog(List<RawLogData> data);
+        void SaveLog(List<RawLogData> data, int applicationId);
 
-        void SaveLog(RawLogData data);
+        void SaveLog(RawLogData data, int applicationId);
 
         //Delete Log
         ReturnModel<bool> DeleteAllLogs();

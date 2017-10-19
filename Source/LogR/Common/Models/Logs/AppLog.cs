@@ -12,6 +12,8 @@ namespace LogR.Common.Models.Logs
         //[JsonProperty("log-type")]
         public int LogType { get; set; }
 
+        public int ApplicationId { get; set; }
+
         //[JsonProperty("corelation-id")]
         public virtual string CorelationId { get; set; }
 

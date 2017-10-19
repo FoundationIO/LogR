@@ -47,7 +47,7 @@ namespace LogR.Repository
         }
 
         //Save Log
-        public void SaveLog(List<RawLogData> data)
+        public void SaveLog(List<RawLogData> data, int applicationId)
         {
             if (data == null)
             {
@@ -60,7 +60,7 @@ namespace LogR.Repository
                 var lst = new List<AppLog>();
                 foreach (var message in data)
                 {
-                    var item = this.GetLogFromRawLog<AppLog>(message.Type, message.Data);
+                    var item = this.GetLogFromRawLog<AppLog>(message.Type, applicationId, message.Data);
                     lst.Add(item);
                 }
 
@@ -73,7 +73,7 @@ namespace LogR.Repository
             }
         }
 
-        public void SaveLog(RawLogData data)
+        public void SaveLog(RawLogData data, int applicationId)
         {
             if (data == null)
             {
@@ -81,7 +81,7 @@ namespace LogR.Repository
                 return;
             }
 
-            SaveLog(new List<RawLogData> { data });
+            SaveLog(new List<RawLogData> { data }, applicationId);
         }
 
         //Delete Log

@@ -27,7 +27,7 @@ namespace LogR.Repository
             this.config = config;
         }
 
-        protected T GetLogFromRawLog<T>(StoredLogType logType, string message)
+        protected T GetLogFromRawLog<T>(StoredLogType logType, int applicationId, string message)
             where T : AppLog
         {
             var item = JsonUtils.Deserialize<T>(message);
@@ -38,6 +38,7 @@ namespace LogR.Repository
 
             item.LogId = Guid.NewGuid();
             item.LogType = (int)logType;
+            item.ApplicationId = applicationId;
             if (item.Longdate.IsInvalidDate())
                 item.Longdate = DateTime.UtcNow;
             item.LongdateAsTicks = item.Longdate.Ticks;

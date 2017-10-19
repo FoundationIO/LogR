@@ -7,6 +7,7 @@ using Framework.Infrastructure.Models.Result;
 using Framework.Infrastructure.Models.Search;
 using Framework.Infrastructure.Utils;
 using LinqToDB;
+using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
@@ -15,16 +16,47 @@ using LogR.Common.Models.Stats;
 
 namespace LogR.Repository
 {
-    public class SqlBasedLogRepository : BaseLogRepository, ILogRepository
+    public class SqlBasedLogWriteRepository : BaseLogRepository, ILogWriteRepository
     {
         private ISqlIndexStoreDBManager dbManager;
 
-        public SqlBasedLogRepository(ILog log, IAppConfiguration config, ISqlIndexStoreDBManager dbManager)
+        public SqlBasedLogWriteRepository(ILog log, IAppConfiguration config, ISqlIndexStoreDBManager dbManager)
             : base(log, config)
         {
             this.dbManager = dbManager;
         }
 
+        public ReturnModel<bool> DeleteAllLogs()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ReturnModel<bool> DeleteAllLogs(StoredLogType logType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ReturnModel<bool> DeleteLog(StoredLogType logType, string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Tuple<long, long> DeleteOldLogs(StoredLogType logType, DateTime pastDate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveLog(List<RawLogData> data, int applicationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveLog(RawLogData data, int applicationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /*
         public ReturnListModel<AppLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
         {
             try
@@ -324,32 +356,6 @@ namespace LogR.Repository
         public Dictionary<DateTime, long> GetAppLogsStatsByDay()
         {
             throw new NotImplementedException();
-            /*
-            Dictionary<DateTime, long> result = new Dictionary<DateTime, long>();
-            try
-            {
-                //using (var session = appLogProvider.OpenSession<AppLog>())
-                {
-                    throw new NotImplementedException();
-
-                    //var lst = session.Query().Select(x => x.LongdateAsTicks).Distinct();
-                    ////var lst = session.Query().Select(x=> new StatDate { Day = x.Longdate.Day, Month = x.Longdate.Month , Year = x.Longdate.Year } ).Distinct();
-                    //var items = lst.ToList();
-                    //foreach (var item in items)
-                    //{
-                    //    //var count = session.Query().Where(x => x.Longdate.Day == item.Day && x.Longdate.Month == item.Month && x.Longdate.Year == item.Year).LongCount();
-                    //    //result.Add(new DateTime(item.Year, item.Month, item.Day), count);
-                    //}
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when getting GetStatsByDay");
-                return null;
-            }
-
-            //return result;
-            */
         }
 
         public void GetPerformanceLogsStatsByDay()
@@ -447,5 +453,6 @@ namespace LogR.Repository
             var filenameList = System.IO.Directory.GetFiles(config.LogSettings.LogLocation, "*.*");
             return filenameList.LongCount();
         }
+        */
     }
 }
