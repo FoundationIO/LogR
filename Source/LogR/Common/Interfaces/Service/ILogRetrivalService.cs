@@ -7,8 +7,6 @@ namespace LogR.Common.Interfaces.Service
 {
     public interface ILogRetrivalService
     {
-        ReturnModel<bool> DeleteAppLog(string id);
-
         ReturnListWithSearchModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search);
 
         ReturnModel<DashboardSummary> GetDashboardSummary();

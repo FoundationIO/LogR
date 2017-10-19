@@ -20,7 +20,7 @@ namespace LogR.Task
             var configFileCreator = DISetup.ServiceProvider.GetService<ISampleAppConfigFileCreator>();
             var seedCreator = DISetup.ServiceProvider.GetService<ISeedService>();
             var loadTestGenerator = DISetup.ServiceProvider.GetService<ILoadTestService>();
-            var repo = DISetup.ServiceProvider.GetService<ILogRepository>();
+            var repo = DISetup.ServiceProvider.GetService<ILogWriteRepository>();
 
             var servicename = args.GetParamValueAsString("/servicename", "LoggerService");
 

@@ -25,22 +25,25 @@ namespace LogR.Web
             migration.MigrateSqlBasedIndexStore();
                 migration.MigrateLocalDatastoreConditionally();
 
-                var host = new WebHostBuilder()
-                    .UseKestrel()
-                    .UseUrls($"http://0.0.0.0:{config.ServerPort}")
-                    .UseContentRoot(Directory.GetCurrentDirectory())
-                    .UseIISIntegration()
-                    .UseStartup<Startup>()
-                    .Build();
+            var hostBuilder = (new WebHostBuilder()).UseKestrel();
 
-                if (args.IsParamValueAvailable("/C") || Environment.UserInteractive)
-                {
-                    host.Run();
-                }
-                else
-                {
-                    host.RunAsService();
-                }
+            if (config.ServerPort > 0 )
+                hostBuilder = hostBuilder.UseUrls($"http://0.0.0.0:{config.ServerPort}");
+
+            hostBuilder = hostBuilder.UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
+                .UseStartup<Startup>();
+
+            var host = hostBuilder.Build();
+
+            if (args.IsParamValueAvailable("/C") || Environment.UserInteractive)
+            {
+                host.Run();
+            }
+            else
+            {
+                host.RunAsService();
+            }
         }
 
     }

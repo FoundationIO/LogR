@@ -37,7 +37,6 @@ namespace LogR.DI
                 .AddSingleton<IBaseConfiguration, AppConfiguration>()
                 .AddSingleton<IAppConfiguration, AppConfiguration>()
                 .AddSingleton<ILog, Log>()
-                .AddScoped<ILogRepository, LuceneLogRepository>()
                 .AddScoped<ILogCollectService, LogCollectService>()
                 .AddScoped<ILogRetrivalService, LogRetrivalService>()
                 .AddSingleton<IDBInfo, DBInfo>()
@@ -52,7 +51,7 @@ namespace LogR.DI
                 .AddSingleton<ISeedService, SeedService>()
                 .AddSingleton<ILoadTestService, LoadTestService>()
                 .AddSingleton<IAppConfigurationFile, AppConfigurationFile>()
-                .AddSingleton<ILogRepository>(serviceProvider =>
+                .AddSingleton<ILogWriteRepository>(serviceProvider =>
                 {
                     var config = serviceProvider.GetRequiredService<IAppConfiguration>();
                     var log = serviceProvider.GetRequiredService<ILog>();
@@ -62,7 +61,7 @@ namespace LogR.DI
                     switch (storeType)
                     {
                         case IndexStoreType.Lucene:
-                            return new LuceneLogRepository(log, config);
+                            return new LuceneLogWriteRepository(log, config);
                     /*
                         case IndexStoreType.MySql:
                         case IndexStoreType.Sqlite3:
@@ -83,6 +82,41 @@ namespace LogR.DI
                         //case IndexStoreType.EmbbededElasticSearch:
                         //    return new EmbbededElasticSearchLogRepository(log, config);
                      */
+                        default:
+                            throw new Exception("Index store is not configured");
+                    }
+                })
+                .AddSingleton<ILogReadRepository>(serviceProvider =>
+                {
+                    var config = serviceProvider.GetRequiredService<IAppConfiguration>();
+                    var log = serviceProvider.GetRequiredService<ILog>();
+
+                    var storeType = config.IndexStoreType;
+
+                    switch (storeType)
+                    {
+                        case IndexStoreType.Lucene:
+                            return new LuceneLogReadRepository(log, config);
+                        /*
+                            case IndexStoreType.MySql:
+                            case IndexStoreType.Sqlite3:
+                            case IndexStoreType.Postgresql:
+                            case IndexStoreType.SqlServer:
+                                var dbManager = serviceProvider.GetRequiredService<ISqlIndexStoreDBManager>();
+                                return new SqlBasedLogRepository(log, config, dbManager);
+
+                            //case IndexStoreType.MongoDB:
+                            //    return new MongoDBLogRepository(log, config);
+
+                            //case IndexStoreType.RaptorDB:
+                            //    return new RaptorDBLogRepository(log, config);
+
+                            case IndexStoreType.ElasticSearch:
+                                return new ElasticSearchLogRepository(log, config);
+
+                            //case IndexStoreType.EmbbededElasticSearch:
+                            //    return new EmbbededElasticSearchLogRepository(log, config);
+                         */
                         default:
                             throw new Exception("Index store is not configured");
                     }

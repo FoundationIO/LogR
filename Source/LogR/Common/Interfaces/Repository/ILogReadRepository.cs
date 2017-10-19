@@ -9,22 +9,8 @@ using LogR.Common.Models.Stats;
 
 namespace LogR.Common.Interfaces.Repository
 {
-    public interface ILogRepository
+    public interface ILogReadRepository
     {
-        //Save Log
-        void SaveLog(List<RawLogData> data);
-
-        void SaveLog(RawLogData data);
-
-        //Delete Log
-        ReturnModel<bool> DeleteAllLogs();
-
-        ReturnModel<bool> DeleteAllLogs(StoredLogType logType);
-
-        ReturnModel<bool> DeleteLog(StoredLogType logType, string id);
-
-        Tuple<long, long> DeleteOldLogs(StoredLogType logType, DateTime pastDate);
-
         //API for getting logs
         ReturnListWithSearchModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search);
 

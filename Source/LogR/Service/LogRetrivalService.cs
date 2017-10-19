@@ -13,17 +13,17 @@ namespace LogR.Service
     public class LogRetrivalService : ILogRetrivalService
     {
         private ILog log;
-        private ILogRepository logRepository;
+        private ILogReadRepository logReadRepository;
 
-        public LogRetrivalService(ILog log, ILogRepository logRepository)
+        public LogRetrivalService(ILog log, ILogReadRepository logReadRepository)
         {
             this.log = log;
-            this.logRepository = logRepository;
+            this.logReadRepository = logReadRepository;
         }
 
         public ReturnModel<DashboardSummary> GetDashboardSummary()
         {
-            var result = logRepository.GetDashboardSummary();
+            var result = logReadRepository.GetDashboardSummary();
             return result;
         }
 
@@ -31,7 +31,7 @@ namespace LogR.Service
         {
             try
             {
-                return logRepository.GetAppLogs(search);
+                return logReadRepository.GetAppLogs(search);
             }
             catch (Exception ex)
             {
@@ -46,7 +46,7 @@ namespace LogR.Service
         {
             try
             {
-                return logRepository.GetPerformanceLogs(search);
+                return logReadRepository.GetPerformanceLogs(search);
             }
             catch (Exception ex)
             {
@@ -57,37 +57,11 @@ namespace LogR.Service
             }
         }
 
-        public ReturnModel<bool> DeleteAppLog(string id)
-        {
-            try
-            {
-                return logRepository.DeleteLog(StoredLogType.AppLog, id);
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when getting Deleting App Log  - id = " + id);
-                return new ReturnModel<bool>(ex);
-            }
-        }
-
-        public ReturnModel<bool> DeletePerformanceLog(string id)
-        {
-            try
-            {
-                return logRepository.DeleteLog(StoredLogType.PerfLog, id);
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when getting Deleting Performance Log  - id = " + id);
-                return new ReturnModel<bool>(ex);
-            }
-        }
-
         public ReturnModel<SystemStats> GetStats()
         {
             try
             {
-                return logRepository.GetStats();
+                return logReadRepository.GetStats();
             }
             catch (Exception ex)
             {

@@ -15,11 +15,11 @@ namespace LogR.Service
     {
         private NetMQQueue<RawLogData> queue;
         private NetMQPoller poller;
-        private ILogRepository logRepository;
+        private ILogWriteRepository logWriteRepository;
 
-        public LogCollectService(ILogRepository logRepository, IAppConfiguration config)
+        public LogCollectService(ILogWriteRepository logWriteRepository, IAppConfiguration config)
         {
-            this.logRepository = logRepository;
+            this.logWriteRepository = logWriteRepository;
             queue = new NetMQQueue<RawLogData>();
             poller = new NetMQPoller
             {
@@ -60,12 +60,12 @@ namespace LogR.Service
         public void AddToDb(StoredLogType logType, string logString, DateTime date)
         {
             if (string.IsNullOrEmpty(logString) == false)
-                logRepository.SaveLog(new RawLogData { Type = logType, Data = logString, ReceiveDate = date });
+                logWriteRepository.SaveLog(new RawLogData { Type = logType, Data = logString, ReceiveDate = date });
         }
 
         public void ProcessLogFromQueue(List<RawLogData> logDataLst)
         {
-            logRepository.SaveLog(logDataLst);
+            logWriteRepository.SaveLog(logDataLst);
         }
     }
 }
