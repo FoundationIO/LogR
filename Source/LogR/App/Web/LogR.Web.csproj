@@ -108,11 +108,6 @@
     <ProjectReference Include="..\..\DI\LogR.DI.csproj" />
     <ProjectReference Include="..\..\Service\LogR.Service.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Update="LoggerWindowsService.cs">
-      <SubType>Component</SubType>
-    </Compile>
-  </ItemGroup>
   
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />

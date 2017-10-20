@@ -14,8 +14,6 @@ namespace LogR.Web
 {
     public class Program
     {
-        //for simplified service check - http://dotnetthoughts.net/how-to-host-your-aspnet-core-in-a-windows-service/
-
         public static void Main(string[] args)
         {
 
@@ -36,14 +34,7 @@ namespace LogR.Web
 
             var host = hostBuilder.Build();
 
-            if (args.IsParamValueAvailable("/C") || Environment.UserInteractive)
-            {
-                host.Run();
-            }
-            else
-            {
-                host.RunAsService();
-            }
+            host.Run();
         }
 
     }
