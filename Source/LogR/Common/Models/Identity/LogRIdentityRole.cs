@@ -3,32 +3,37 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogR.Web.Identity
+namespace LogR.Common.Models.Identity
 {
     public class LogRIdentityRole
     {
-        private readonly List<SimplifiedClaim> _claims;
+        private readonly List<LogRUserClaim> _claims;
 
         public LogRIdentityRole()
         {
-            _claims = new List<SimplifiedClaim>();
+            _claims = new List<LogRUserClaim>();
         }
 
-
         public string Id { get; internal set; }
+
         public string Name { get; set; }
+
         public string NormalizedName { get; set; }
 
-        public IEnumerable<SimplifiedClaim> Claims
+        public IEnumerable<LogRUserClaim> Claims
         {
             get => _claims;
             internal set
             {
-                if (value != null) _claims.AddRange(value);
+                if (value != null)
+                    _claims.AddRange(value);
             }
         }
 
-        internal void AddClaim(SimplifiedClaim claim)
+        public static implicit operator LogRIdentityRole(string input) =>
+            input == null ? null : new LogRIdentityRole { Name = input };
+
+        public void AddClaim(LogRUserClaim claim)
         {
             if (claim == null)
             {
@@ -38,12 +43,9 @@ namespace LogR.Web.Identity
             _claims.Add(claim);
         }
 
-        internal void RemoveClaim(SimplifiedClaim claim)
+        public void RemoveClaim(LogRUserClaim claim)
         {
             _claims.Remove(claim);
         }
-
-        public static implicit operator LogRIdentityRole(string input) => 
-            input == null ? null : new LogRIdentityRole {Name = input};
     }
 }

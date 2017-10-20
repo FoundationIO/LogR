@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Framework.Data.Migrations;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.Log;
 using LogR.Common.Interfaces.Service.Config;
-using LogR.Repository.Migration;
 
 namespace LogR.Service.Migration
 {

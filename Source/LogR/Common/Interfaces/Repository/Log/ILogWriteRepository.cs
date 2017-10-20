@@ -7,14 +7,14 @@ using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;
 using LogR.Common.Models.Stats;
 
-namespace LogR.Common.Interfaces.Repository
+namespace LogR.Common.Interfaces.Repository.Log
 {
     public interface ILogWriteRepository
     {
         //Save Log
-        void SaveLog(List<RawLogData> data, int applicationId);
+        void SaveLog(List<RawLogData> data);
 
-        void SaveLog(RawLogData data, int applicationId);
+        void SaveLog(RawLogData data);
 
         //Delete Log
         ReturnModel<bool> DeleteAllLogs();

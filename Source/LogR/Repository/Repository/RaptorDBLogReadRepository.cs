@@ -9,6 +9,7 @@ using Framework.Infrastructure.Utils;
 using LinqToDB;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.Log;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;

@@ -7,7 +7,7 @@ using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;
 using LogR.Common.Models.Stats;
 
-namespace LogR.Common.Interfaces.Repository
+namespace LogR.Common.Interfaces.Repository.Log
 {
     public interface ILogReadRepository
     {

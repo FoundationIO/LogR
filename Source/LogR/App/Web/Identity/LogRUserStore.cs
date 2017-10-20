@@ -6,12 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Identity;
-using Raven.Abstractions.Exceptions;
-using Raven.Client;
+using LogR.Common.Interfaces.Service.App;
+using LogR.Common.Models.Identity;
 
 namespace LogR.Web.Identity
 {
-    public class LogRUserStore<TUser, TDocumentStore> :
+    public class LogRUserStore<TUser> :
         //IUserStore<TUser>,
         IUserLoginStore<TUser>,
         IUserPasswordStore<TUser>,
@@ -22,35 +22,18 @@ namespace LogR.Web.Identity
         IUserLockoutStore<TUser> ,
         IUserPhoneNumberStore<TUser> 
         where TUser : LogRIdentityUser
-        where TDocumentStore: class, IDocumentStore
     {
         public IdentityErrorDescriber ErrorDescriber { get; }
-        public TDocumentStore Context { get; }
-
-        private readonly Lazy<IAsyncDocumentSession> _session;
+        public IAccountService Context { get; }
 
         public LogRUserStore(
-            TDocumentStore context,
+            IAccountService context,
             IdentityErrorDescriber errorDescriber = null
         )
         {
             ErrorDescriber = errorDescriber;
             Context = context ?? throw new ArgumentNullException(nameof(context));
-
-            _session = new Lazy<IAsyncDocumentSession>(() =>
-            {
-                var session = Context.OpenAsyncSession();
-                session.Advanced.UseOptimisticConcurrency = true;
-                return session;
-            }, true);
         }
-
-        public IAsyncDocumentSession Session 
-            => _session.Value;
-
-        public Task SaveChanges(
-            CancellationToken cancellationToken = default(CancellationToken)
-            ) => Session.SaveChangesAsync(cancellationToken);
 
         #region IUserStore
         public Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
@@ -146,8 +129,7 @@ namespace LogR.Web.Identity
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            await Session.StoreAsync(user, cancellationToken);
-            await SaveChanges(cancellationToken);
+            Context.CreateUserAsync(user);
 
             return IdentityResult.Success;
         }
@@ -164,16 +146,13 @@ namespace LogR.Web.Identity
 
             user.CleanUp();
 
-            var stored = await Session.LoadAsync<TUser>(user.Id, cancellationToken);
-            var etag = Session.Advanced.GetEtagFor(stored);
 
-            await Session.StoreAsync(user, etag, cancellationToken);
 
             try
             {
-                await SaveChanges(cancellationToken);
+                Context.UpdateUserAsync(user);
             }
-            catch (ConcurrencyException)
+            catch (Exception ex)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }
@@ -194,13 +173,13 @@ namespace LogR.Web.Identity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            Session.Delete(user.Id);
+            
 
             try
             {
-                await SaveChanges(cancellationToken);
+                Context.DeleteUserAsync(user.Id);
             }
-            catch (ConcurrencyException)
+            catch (Exception ex)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }
@@ -214,7 +193,7 @@ namespace LogR.Web.Identity
             ThrowIfDisposed();
 
             cancellationToken.ThrowIfCancellationRequested();
-            return Session.LoadAsync<TUser>(userId, cancellationToken);
+            return Context.FindUserByIdAsync(userId);
         }
 
         public Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default(CancellationToken))
@@ -222,9 +201,7 @@ namespace LogR.Web.Identity
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
 
-            return Session.Query<TUser>().FirstOrDefaultAsync(
-                u => u.NormalizedUserName == normalizedUserName, cancellationToken
-            );
+            return Context.GetUserByNameAsync(normalizedUserName);
         }
         #endregion
 
@@ -302,12 +279,7 @@ namespace LogR.Web.Identity
                 throw new ArgumentNullException(nameof(providerKey));
             }
 
-            var query =
-                from user in Session.Query<TUser>()
-                where user.Logins.Any(l => l.LoginProvider == loginProvider && l.ProviderKey == providerKey)
-                select user;
-
-            return query.FirstOrDefaultAsync(cancellationToken);
+            return Context.GetUserByLoginProviderAndProviderKeyAsync(loginProvider, providerKey);
         }
         #endregion
 
@@ -450,13 +422,10 @@ namespace LogR.Web.Identity
                 throw new ArgumentNullException(nameof(claim));
             }
 
-            var query =
-                from user in Session.Query<TUser>()
-                where user.Claims.Any(c => c.Type == claim.Type && c.Value == claim.Value)
-                select user;
+            return Context.GetUsersWithClaimTypeAndValueAsync(claim.Type, claim.Value);
 
             // LIMIT TO 128 RESULTS
-            return query.ToListAsync(cancellationToken);
+            //return query.ToListAsync(cancellationToken);
         }
         #endregion
 
@@ -607,9 +576,7 @@ namespace LogR.Web.Identity
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
 
-            return Session.Query<TUser>().FirstOrDefaultAsync(
-                user => (user.Email != null && user.Email.NormalizedAddress == normalizedEmail), 
-                token: cancellationToken);
+            return Context.FindUserByEmailAsync(normalizedEmail);
 
         }
         public Task<string> GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
@@ -671,7 +638,7 @@ namespace LogR.Web.Identity
 
             if (user.Lockout == null)
             {
-                user.Lockout = new LockoutInfo();
+                user.Lockout = new LogRUserLockoutInfo();
             }
 
             user.Lockout.EndDate = lockoutEnd;
@@ -690,7 +657,7 @@ namespace LogR.Web.Identity
 
             if (user.Lockout == null)
             {
-                user.Lockout = new LockoutInfo();
+                user.Lockout = new LogRUserLockoutInfo();
             }
 
             var newAccessFailedCount = ++user.Lockout.AccessFailedCount;
@@ -753,7 +720,7 @@ namespace LogR.Web.Identity
 
             if (user.Lockout == null)
             {
-                user.Lockout = new LockoutInfo();
+                user.Lockout = new LogRUserLockoutInfo();
             }
 
             user.Lockout.Enabled = enabled;
@@ -849,9 +816,9 @@ namespace LogR.Web.Identity
 
     }
 
-    public class LogRUserStore : LogRUserStore<LogRIdentityUser, IDocumentStore>
+    public class LogRUserStore : LogRUserStore<LogRIdentityUser>
     {
-        public LogRUserStore(IDocumentStore context)
+        public LogRUserStore(IAccountService context)
             : base(context)
         {
         }

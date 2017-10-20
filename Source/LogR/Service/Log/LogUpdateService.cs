@@ -3,12 +3,12 @@ using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.Log;
 using LogR.Common.Interfaces.Service;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;
-using LogR.Common.Models.Stats;
 
-namespace LogR.Service
+namespace LogR.Service.Log
 {
     public class LogUpdateService : ILogUpdateService
     {

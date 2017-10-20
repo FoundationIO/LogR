@@ -21,26 +21,33 @@ namespace LogR.Web.Controllers
             this.service = service;
         }
 
+        int GetApplicationId()
+        {
+            return 0;
+        }
+
         public async Task Invoke(HttpContext context)
         {
+            int applicationId = GetApplicationId();
+
             if (context.Request.Path.StartsWithSegments("/queue/app-log"))
             {
-                service.AddToQue(StoredLogType.AppLog, ReadBody(context), DateTime.UtcNow);
+                service.AddToQue(StoredLogType.AppLog, ReadBody(context), DateTime.UtcNow, applicationId);
                 await context.Response.WriteAsync("OK");
             }
             else if (context.Request.Path.StartsWithSegments("/queue/performance-log"))
             {
-                service.AddToQue(StoredLogType.PerfLog, ReadBody(context), DateTime.UtcNow);
+                service.AddToQue(StoredLogType.PerfLog, ReadBody(context), DateTime.UtcNow, applicationId);
                 await context.Response.WriteAsync("OK");
             }
             else if (context.Request.Path.StartsWithSegments("/add/app-log"))
             {
-                service.AddToDb(StoredLogType.AppLog, ReadBody(context), DateTime.UtcNow);
+                service.AddToDb(StoredLogType.AppLog, ReadBody(context), DateTime.UtcNow, applicationId);
                 await context.Response.WriteAsync("OK");
             }
             else if (context.Request.Path.StartsWithSegments("/add/performance-log"))
             {
-                service.AddToDb(StoredLogType.PerfLog, ReadBody(context), DateTime.UtcNow);
+                service.AddToDb(StoredLogType.PerfLog, ReadBody(context), DateTime.UtcNow, applicationId);
                 await context.Response.WriteAsync("OK");
             }
             else
@@ -51,8 +58,8 @@ namespace LogR.Web.Controllers
 
         public string ReadBody(HttpContext context)
         {
-            var initialBody = context.Request.Body; // Workaround
-            var buffer = new byte[Convert.ToInt32(context.Request.ContentLength)];
+            var initialBody = context.Request.Body;
+            var buffer = new byte[Convert.ToInt64(context.Request.ContentLength)];
             context.Request.Body.ReadAsync(buffer, 0, buffer.Length);
             return Encoding.UTF8.GetString(buffer);
         }

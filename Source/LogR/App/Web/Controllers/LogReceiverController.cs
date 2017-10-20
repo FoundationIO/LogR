@@ -21,52 +21,57 @@ namespace LogR.Web.Controllers
             this.service = service;
         }
 
+        private int GetApplicationId()
+        {
+            return 0;
+        }
+
         [Route("/queue/app-log")]
         public async void QueueAppLog()
         {
-            service.AddToQue(StoredLogType.AppLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow);
+            service.AddToQue(StoredLogType.AppLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
         [Route("/queue/performance-log")]
         public async void QueuePerformanceLog()
         {
-            service.AddToQue(StoredLogType.PerfLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow);
+            service.AddToQue(StoredLogType.PerfLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
         [Route("/queue/web-log")]
         public async void QueueWebLog()
         {
-            service.AddToQue(StoredLogType.WebLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow);
+            service.AddToQue(StoredLogType.WebLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
         [Route("/queue/event-log")]
         public async void QueueEventLog()
         {
-            service.AddToQue(StoredLogType.WebLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow);
+            service.AddToQue(StoredLogType.WebLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
         [Route("/add/app-log")]
         public async void AddAppLog()
         {
-            service.AddToDb(StoredLogType.AppLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow);
+            service.AddToDb(StoredLogType.AppLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
         [Route("/add/performance-log")]
         public async void AddPerformanceLog()
         {
-            service.AddToDb(StoredLogType.PerfLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow);
+            service.AddToDb(StoredLogType.PerfLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
         [Route("/add/web-log")]
         public async void AddWebLog()
         {
-            service.AddToDb(StoredLogType.WebLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow);
+            service.AddToDb(StoredLogType.WebLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
         [Route("/add/event-log")]
         public async void AddEventLog()
         {
-            service.AddToDb(StoredLogType.EventLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow);
+            service.AddToDb(StoredLogType.EventLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
     }
 }

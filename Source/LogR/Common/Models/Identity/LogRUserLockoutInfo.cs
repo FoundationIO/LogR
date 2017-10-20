@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
 
-namespace LogR.Web.Identity
+namespace LogR.Common.Models.Identity
 {
-    public class LockoutInfo
+    public class LogRUserLockoutInfo
     {
         public DateTimeOffset? EndDate { get; internal set; }
+
         public bool Enabled { get; internal set; }
+
         public int AccessFailedCount { get; internal set; }
 
         public bool AllPropertiesAreSetToDefaults =>

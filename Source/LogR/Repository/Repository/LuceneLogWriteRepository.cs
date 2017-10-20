@@ -10,6 +10,7 @@ using Framework.Infrastructure.Models.Search;
 using Framework.Infrastructure.Utils;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.Log;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Mapper;
@@ -47,7 +48,7 @@ namespace LogR.Repository
         }
 
         //Save Log
-        public void SaveLog(List<RawLogData> data, int applicationId)
+        public void SaveLog(List<RawLogData> data)
         {
             if (data == null)
             {
@@ -60,7 +61,7 @@ namespace LogR.Repository
                 var lst = new List<AppLog>();
                 foreach (var message in data)
                 {
-                    var item = this.GetLogFromRawLog<AppLog>(message.Type, applicationId, message.Data);
+                    var item = this.GetLogFromRawLog<AppLog>(message.Type, message.ApplicationId, message.Data);
                     lst.Add(item);
                 }
 
@@ -73,7 +74,7 @@ namespace LogR.Repository
             }
         }
 
-        public void SaveLog(RawLogData data, int applicationId)
+        public void SaveLog(RawLogData data)
         {
             if (data == null)
             {
@@ -81,7 +82,7 @@ namespace LogR.Repository
                 return;
             }
 
-            SaveLog(new List<RawLogData> { data }, applicationId);
+            SaveLog(new List<RawLogData> { data });
         }
 
         //Delete Log

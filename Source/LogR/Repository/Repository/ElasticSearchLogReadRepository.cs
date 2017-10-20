@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Elasticsearch.Net;
-using FluentNest;
-using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
 using Framework.Infrastructure.Models.Search;
 using Framework.Infrastructure.Utils;
 using LogR.Common.Enums;
-using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.Log;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;

@@ -9,6 +9,7 @@ using Framework.Infrastructure.Utils;
 using LinqToDB;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.Log;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;
@@ -46,12 +47,12 @@ namespace LogR.Repository
             throw new NotImplementedException();
         }
 
-        public void SaveLog(List<RawLogData> data, int applicationId)
+        public void SaveLog(List<RawLogData> data)
         {
             throw new NotImplementedException();
         }
 
-        public void SaveLog(RawLogData data, int applicationId)
+        public void SaveLog(RawLogData data)
         {
             throw new NotImplementedException();
         }

@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using Framework.Infrastructure.Constants;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.Log;
 using LogR.Common.Interfaces.Service;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
 using NetMQ;
 
-namespace LogR.Service
+namespace LogR.Service.Log
 {
     public class LogCollectService : ILogCollectService
     {
@@ -51,16 +52,16 @@ namespace LogR.Service
             poller.RunAsync();
         }
 
-        public void AddToQue(StoredLogType logType, string logString, DateTime date)
+        public void AddToQue(StoredLogType logType, string logString, DateTime date, int applicationId)
         {
             if (string.IsNullOrEmpty(logString) == false)
-                queue.Enqueue(new RawLogData { Type = logType, Data = logString , ReceiveDate = date });
+                queue.Enqueue(new RawLogData { Type = logType, Data = logString , ReceiveDate = date, ApplicationId = applicationId });
         }
 
-        public void AddToDb(StoredLogType logType, string logString, DateTime date)
+        public void AddToDb(StoredLogType logType, string logString, DateTime date, int applicationId)
         {
             if (string.IsNullOrEmpty(logString) == false)
-                logWriteRepository.SaveLog(new RawLogData { Type = logType, Data = logString, ReceiveDate = date });
+                logWriteRepository.SaveLog(new RawLogData { Type = logType, Data = logString, ReceiveDate = date , ApplicationId = applicationId });
         }
 
         public void ProcessLogFromQueue(List<RawLogData> logDataLst)

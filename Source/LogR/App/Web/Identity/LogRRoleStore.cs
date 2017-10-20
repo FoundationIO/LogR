@@ -5,46 +5,29 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Raven.Abstractions.Exceptions;
-using Raven.Client;
+using LogR.Common.Interfaces.Service.App;
+using LogR.Common.Models.Identity;
 
 namespace LogR.Web.Identity
 {
-    public class LogRRoleStore<TRole, TDocumentStore> :
+    public class LogRRoleStore<TRole> :
         IQueryableRoleStore<TRole>,
         IRoleClaimStore<TRole>
         where TRole : LogRIdentityRole
-        where TDocumentStore : class, IDocumentStore
     {
         public IdentityErrorDescriber ErrorDescriber { get; }
-        public TDocumentStore Context { get; }
-
-        private readonly Lazy<IAsyncDocumentSession> _session;
+        public IAccountService Context { get; }
 
         public LogRRoleStore(
-            TDocumentStore context,
+            IAccountService context,
             IdentityErrorDescriber errorDescriber = null
         )
         {
             ErrorDescriber = errorDescriber;
             Context = context ?? throw new ArgumentNullException(nameof(context));
-
-            _session = new Lazy<IAsyncDocumentSession>(() =>
-            {
-                var session = Context.OpenAsyncSession();
-                session.Advanced.UseOptimisticConcurrency = true;
-                return session;
-            }, true);
         }
 
-        public IAsyncDocumentSession Session
-            => _session.Value;
-
         public IQueryable<TRole> Roles => throw new NotSupportedException();
-
-        public Task SaveChanges(
-            CancellationToken cancellationToken = default(CancellationToken)
-        ) => Session.SaveChangesAsync(cancellationToken);
 
 
         #region IDisposable
@@ -74,8 +57,7 @@ namespace LogR.Web.Identity
                 throw new ArgumentNullException(nameof(role));
             }
 
-            await Session.StoreAsync(role, cancellationToken);
-            await SaveChanges(cancellationToken);
+            await Context.CreateRoleAsync(role);
 
             return IdentityResult.Success;
         }
@@ -89,16 +71,11 @@ namespace LogR.Web.Identity
                 throw new ArgumentNullException(nameof(role));
             }
 
-            var stored = await Session.LoadAsync<TRole>(role.Id, cancellationToken);
-            var etag = Session.Advanced.GetEtagFor(stored);
-
-            await Session.StoreAsync(role, etag, role.Id, cancellationToken);
-
             try
             {
-                await SaveChanges(cancellationToken);
+                await Context.UpdateRoleAsync(role);
             }
-            catch (ConcurrencyException)
+            catch (Exception ex)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }
@@ -115,13 +92,13 @@ namespace LogR.Web.Identity
                 throw new ArgumentNullException(nameof(role));
             }
 
-            Session.Delete(role.Id);
+            
 
             try
             {
-                await SaveChanges(cancellationToken);
+                await Context.DeleteRoleAsync(role.Id);
             }
-            catch (ConcurrencyException)
+            catch (Exception ex)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }
@@ -197,7 +174,7 @@ namespace LogR.Web.Identity
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
 
-            return Session.LoadAsync<TRole>(roleId, cancellationToken);
+            return Context.FindRoleByIdAsync(roleId);
         }
 
         public Task<TRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
@@ -205,9 +182,7 @@ namespace LogR.Web.Identity
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
 
-            return Session.Query<TRole>().FirstOrDefaultAsync(
-                role => role.NormalizedName == normalizedRoleName, token: cancellationToken
-                );
+            return Context.FindRoleByNameAsync(normalizedRoleName);
         }
         #endregion
 
