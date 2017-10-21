@@ -52,6 +52,11 @@ namespace LogR.Service.App
             throw new NotImplementedException();
         }
 
+        public Task<bool> DeleteUserAsync(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<TRole> GetRoleByNameAsync<TRole>(string normalizedRoleName)
             where TRole : LogRIdentityRole
         {

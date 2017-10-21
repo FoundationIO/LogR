@@ -25,13 +25,13 @@ namespace LogR.Common.Models.Identity
 
         public string UserName { get; set; }
 
-        public string NormalizedUserName { get; internal set; }
+        public string NormalizedUserName { get; set; }
 
         public LogRUserEmailInfo Email { get; set; }
 
-        public string PasswordHash { get; internal set; }
+        public string PasswordHash { get; set; }
 
-        public bool UsesTwoFactorAuthentication { get; internal set; }
+        public bool UsesTwoFactorAuthentication { get; set; }
 
         public IEnumerable<LogRUserLoginInfo> Logins
         {
@@ -53,13 +53,13 @@ namespace LogR.Common.Models.Identity
             }
         }
 
-        public string SecurityStamp { get; internal set; }
+        public string SecurityStamp { get; set; }
 
-        public LogRUserLockoutInfo Lockout { get; internal set; }
+        public LogRUserLockoutInfo Lockout { get; set; }
 
-        public LogRUserPhoneInfo Phone { get; internal set; }
+        public LogRUserPhoneInfo Phone { get; set; }
 
-        internal void AddLogin(LogRUserLoginInfo login)
+        public void AddLogin(LogRUserLoginInfo login)
         {
             if (login == null)
             {
@@ -74,7 +74,7 @@ namespace LogR.Common.Models.Identity
             _logins.Add(login);
         }
 
-        internal void RemoveLogin(string loginProvider, string providerKey)
+        public void RemoveLogin(string loginProvider, string providerKey)
         {
             var loginToRemove = _logins.FirstOrDefault(l => l.LoginProvider == loginProvider && l.ProviderKey == providerKey);
 
@@ -84,7 +84,7 @@ namespace LogR.Common.Models.Identity
             _logins.Remove(loginToRemove);
         }
 
-        internal void AddClaim(LogRUserClaim claim)
+        public void AddClaim(LogRUserClaim claim)
         {
             if (claim == null)
             {
@@ -94,12 +94,12 @@ namespace LogR.Common.Models.Identity
             _claims.Add(claim);
         }
 
-        internal void RemoveClaim(LogRUserClaim claim)
+        public void RemoveClaim(LogRUserClaim claim)
         {
             _claims.Remove(claim);
         }
 
-        internal void CleanUp()
+        public void CleanUp()
         {
             if (Lockout != null && Lockout.AllPropertiesAreSetToDefaults)
             {

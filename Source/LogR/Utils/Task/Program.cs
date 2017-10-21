@@ -5,6 +5,7 @@ using Framework.Infrastructure.DI;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Utils;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.Log;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Interfaces.Service.Task;
 using LogR.DI;

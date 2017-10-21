@@ -171,13 +171,11 @@ namespace LogR.Web.Identity
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
-            }
-
-            
+            }            
 
             try
             {
-                Context.DeleteUserAsync(user.Id);
+                await Context.DeleteUserAsync(user.Id);
             }
             catch (Exception ex)
             {
@@ -193,7 +191,7 @@ namespace LogR.Web.Identity
             ThrowIfDisposed();
 
             cancellationToken.ThrowIfCancellationRequested();
-            return Context.FindUserByIdAsync(userId);
+            return Context.GetUserByIdAsync<TUser>(userId);
         }
 
         public Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default(CancellationToken))
@@ -201,7 +199,7 @@ namespace LogR.Web.Identity
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
 
-            return Context.GetUserByNameAsync(normalizedUserName);
+            return Context.GetUserByNameAsync<TUser>(normalizedUserName);
         }
         #endregion
 
@@ -221,7 +219,7 @@ namespace LogR.Web.Identity
                 throw new ArgumentNullException(nameof(login));
             }
 
-            user.AddLogin(login);
+            user.AddLogin(ToLogRUserLoginInfo(login));
 
             return Task.CompletedTask;
         }
@@ -251,6 +249,7 @@ namespace LogR.Web.Identity
             return Task.CompletedTask;
         }
 
+
         public Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -261,7 +260,7 @@ namespace LogR.Web.Identity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            return Task.FromResult<IList<UserLoginInfo>>(user.Logins.ToList());
+            return Task.FromResult<IList<UserLoginInfo>>(ToUserLoginInfoList(user.Logins));
         }
 
         public Task<TUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken = default(CancellationToken))
@@ -279,7 +278,7 @@ namespace LogR.Web.Identity
                 throw new ArgumentNullException(nameof(providerKey));
             }
 
-            return Context.GetUserByLoginProviderAndProviderKeyAsync(loginProvider, providerKey);
+            return Context.GetUserByLoginProviderAndProviderKeyAsync<TUser>(loginProvider, providerKey);
         }
         #endregion
 
@@ -422,7 +421,7 @@ namespace LogR.Web.Identity
                 throw new ArgumentNullException(nameof(claim));
             }
 
-            return Context.GetUsersWithClaimTypeAndValueAsync(claim.Type, claim.Value);
+            return Context.GetUsersWithClaimTypeAndValueAsync<TUser>(claim.Type, claim.Value);
 
             // LIMIT TO 128 RESULTS
             //return query.ToListAsync(cancellationToken);
@@ -576,7 +575,7 @@ namespace LogR.Web.Identity
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
 
-            return Context.FindUserByEmailAsync(normalizedEmail);
+            return Context.GetUserByEmailAsync<TUser>(normalizedEmail);
 
         }
         public Task<string> GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
@@ -813,6 +812,24 @@ namespace LogR.Web.Identity
             _disposed = true;
         }
         #endregion
+
+        private UserLoginInfo FromLogRUserLoginInfo(LogRUserLoginInfo linfo)
+        {
+            return new UserLoginInfo(linfo.LoginProvider, linfo.ProviderKey, linfo.ProviderDisplayName);
+        }
+
+        private LogRUserLoginInfo ToLogRUserLoginInfo(UserLoginInfo info)
+        {
+            return new LogRUserLoginInfo(info.LoginProvider, info.ProviderKey, info.ProviderDisplayName);
+        }
+
+        private IList<UserLoginInfo> ToUserLoginInfoList(IEnumerable<LogRUserLoginInfo> logins)
+        {
+            var result = new List<UserLoginInfo>();
+            foreach (var item in logins)
+                result.Add(FromLogRUserLoginInfo(item));
+            return result;
+        }
 
     }
 

@@ -6,9 +6,9 @@ namespace LogR.Common.Models.Identity
 {
     public class LogRUserPhoneInfo
     {
-        public string Number { get; internal set; }
+        public string Number { get; set; }
 
-        public DateTime? ConfirmationTime { get; internal set; }
+        public DateTime? ConfirmationTime { get; set; }
 
         public bool IsConfirmed => ConfirmationTime != null;
 

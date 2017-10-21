@@ -6,11 +6,11 @@ namespace LogR.Common.Models.Identity
 {
     public class LogRUserEmailInfo
     {
-        public string Address { get; internal set; }
+        public string Address { get; set; }
 
-        public string NormalizedAddress { get; internal set; }
+        public string NormalizedAddress { get; set; }
 
-        public DateTime? ConfirmationTime { get; internal set; }
+        public DateTime? ConfirmationTime { get; set; }
 
         public bool IsConfirmed => ConfirmationTime != null;
 

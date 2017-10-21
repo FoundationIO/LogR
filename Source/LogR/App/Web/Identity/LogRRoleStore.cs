@@ -96,7 +96,7 @@ namespace LogR.Web.Identity
 
             try
             {
-                await Context.DeleteRoleAsync(role.Id);
+                await Context.DeleteRoleAsync<TRole>(role.Id);
             }
             catch (Exception ex)
             {
@@ -174,7 +174,7 @@ namespace LogR.Web.Identity
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
 
-            return Context.FindRoleByIdAsync(roleId);
+            return Context.GetRoleByIdAsync<TRole>(roleId);
         }
 
         public Task<TRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
@@ -182,7 +182,7 @@ namespace LogR.Web.Identity
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
 
-            return Context.FindRoleByNameAsync(normalizedRoleName);
+            return Context.GetRoleByNameAsync<TRole>(normalizedRoleName);
         }
         #endregion
 

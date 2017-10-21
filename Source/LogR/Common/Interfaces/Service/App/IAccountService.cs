@@ -30,6 +30,8 @@ namespace LogR.Common.Interfaces.Service.App
         Task<TUser> GetUserByLoginProviderAndProviderKeyAsync<TUser>(string loginProvider, string providerKey)
             where TUser : LogRIdentityUser;
 
+        Task<bool> DeleteUserAsync(string userId);
+
         Task<TRole> GetRoleByNameAsync<TRole>(string normalizedRoleName)
             where TRole : LogRIdentityRole;
 

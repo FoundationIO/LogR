@@ -7,11 +7,11 @@ namespace LogR.Common.Models.Identity
 {
     public class LogRUserLockoutInfo
     {
-        public DateTimeOffset? EndDate { get; internal set; }
+        public DateTimeOffset? EndDate { get; set; }
 
-        public bool Enabled { get; internal set; }
+        public bool Enabled { get; set; }
 
-        public int AccessFailedCount { get; internal set; }
+        public int AccessFailedCount { get; set; }
 
         public bool AllPropertiesAreSetToDefaults =>
             EndDate == null &&
