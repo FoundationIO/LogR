@@ -59,9 +59,9 @@ namespace LogR.Repository
                         lst = lst.Where(x => x.Longdate <= search.ToDate.Value.EndOfDay());
                     }
 
-                    if (search.LogType != null)
+                    if (search.Severity != null)
                     {
-                        lst = lst.Where(x => x.Severity == search.LogType);
+                        lst = lst.Where(x => x.Severity == search.Severity);
                     }
 
                     if (search.SortBy == "AppLogId")
