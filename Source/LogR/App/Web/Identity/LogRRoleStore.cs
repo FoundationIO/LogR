@@ -4,9 +4,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+using Framework.Infrastructure.Logging;
 using LogR.Common.Interfaces.Service.App;
 using LogR.Common.Models.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace LogR.Web.Identity
 {
@@ -15,38 +16,28 @@ namespace LogR.Web.Identity
         IRoleClaimStore<TRole>
         where TRole : LogRIdentityRole
     {
-        public IdentityErrorDescriber ErrorDescriber { get; }
-        public IAccountService Context { get; }
+        private ILog log;
 
-        public LogRRoleStore(
-            IAccountService context,
-            IdentityErrorDescriber errorDescriber = null
-        )
+        private bool _disposed;
+
+        public LogRRoleStore(ILog log, IAccountService context, IdentityErrorDescriber errorDescriber = null)
         {
+            this.log = log;
             ErrorDescriber = errorDescriber;
             Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public IdentityErrorDescriber ErrorDescriber { get; }
+
+        public IAccountService Context { get; }
+
         public IQueryable<TRole> Roles => throw new NotSupportedException();
 
-
-        #region IDisposable
-        private void ThrowIfDisposed()
-        {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
-        }
-
-        private bool _disposed;
         public void Dispose()
         {
             _disposed = true;
         }
-        #endregion
 
-        #region IQueryableRoleStore
         public async Task<IdentityResult> CreateAsync(TRole role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -77,6 +68,7 @@ namespace LogR.Web.Identity
             }
             catch (Exception ex)
             {
+                log.Error(ex, "Error when updating User Role");
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }
 
@@ -92,14 +84,13 @@ namespace LogR.Web.Identity
                 throw new ArgumentNullException(nameof(role));
             }
 
-            
-
             try
             {
                 await Context.DeleteRoleAsync<TRole>(role.Id);
             }
             catch (Exception ex)
             {
+                log.Error(ex, "Error when deleting User Role");
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }
 
@@ -137,9 +128,8 @@ namespace LogR.Web.Identity
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             if (role == null)
-            {
                 throw new ArgumentNullException(nameof(role));
-            }
+
             role.Name = roleName;
             return Task.CompletedTask;
         }
@@ -165,6 +155,7 @@ namespace LogR.Web.Identity
             {
                 throw new ArgumentNullException(nameof(role));
             }
+
             role.NormalizedName = normalizedName;
             return Task.CompletedTask;
         }
@@ -184,10 +175,8 @@ namespace LogR.Web.Identity
 
             return Context.GetRoleByNameAsync<TRole>(normalizedRoleName);
         }
-        #endregion
 
-        #region IRoleClaimStore
-        public Task<IList<Claim>> GetClaimsAsync(TRole role, CancellationToken cancellationToken = new CancellationToken())
+        public Task<IList<Claim>> GetClaimsAsync(TRole role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -198,10 +187,9 @@ namespace LogR.Web.Identity
             }
 
             return Task.FromResult<IList<Claim>>(role.Claims.Select(c => new Claim(c.Type, c.Value)).ToList());
-
         }
 
-        public Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = new CancellationToken())
+        public Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -221,7 +209,7 @@ namespace LogR.Web.Identity
             return Task.CompletedTask;
         }
 
-        public Task RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = new CancellationToken())
+        public Task RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -237,9 +225,15 @@ namespace LogR.Web.Identity
             }
 
             role.RemoveClaim(claim);
-            
             return Task.CompletedTask;
         }
-        #endregion
+
+        private void ThrowIfDisposed()
+        {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
+        }
     }
 }

@@ -4,11 +4,11 @@ using Framework.Data.Migrations;
 using Framework.Infrastructure.DI;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Utils;
+using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.DI;
-using Microsoft.AspNetCore.Hosting;
 using LogR.Repository.Migration;
-using LogR.Common.Interfaces.Repository;
+using Microsoft.AspNetCore.Hosting;
 
 namespace LogR.Web
 {
@@ -16,17 +16,18 @@ namespace LogR.Web
     {
         public static void Main(string[] args)
         {
-
             var config = DISetup.ServiceProvider.GetService<IAppConfiguration>();
             var migration = DISetup.ServiceProvider.GetService<IMigrationService>();
 
             migration.MigrateSqlBasedIndexStore();
-                migration.MigrateLocalDatastoreConditionally();
+            migration.MigrateLocalDatastoreConditionally();
 
-            var hostBuilder = (new WebHostBuilder()).UseKestrel();
+            var hostBuilder = new WebHostBuilder().UseKestrel();
 
-            if (config.ServerPort > 0 )
+            if (config.ServerPort > 0)
+            {
                 hostBuilder = hostBuilder.UseUrls($"http://0.0.0.0:{config.ServerPort}");
+            }
 
             hostBuilder = hostBuilder.UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
@@ -36,6 +37,5 @@ namespace LogR.Web
 
             host.Run();
         }
-
     }
 }

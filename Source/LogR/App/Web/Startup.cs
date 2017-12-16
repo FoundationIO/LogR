@@ -82,7 +82,7 @@ namespace LogR.Web
 
             app.UseStaticFiles();
 
-            app.UseLogReceiverMiddleware();
+            //app.UseLogReceiverMiddleware();
 
             app.UseMvc(routes =>
             {

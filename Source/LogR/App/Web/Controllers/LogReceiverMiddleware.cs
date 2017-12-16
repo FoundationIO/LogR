@@ -2,10 +2,10 @@
 using System.Text;
 using System.Threading.Tasks;
 using Framework.Infrastructure.Constants;
+using LogR.Common.Enums;
 using LogR.Common.Interfaces.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using LogR.Common.Enums;
 
 namespace LogR.Web.Controllers
 {
