@@ -22,138 +22,7 @@
                     @Html.Partial("_NewMessage", @Model)
                     <div class="well clearfix">
                         <form id="frmFilter" action="/app-logs" method="get" onkeypress="return submitForm(event)">
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="FromDate">Start Date</label>
-                                <div class="controls">
-                                    <input class="date row form-control" id="FromDate" name="FromDate" placeholder="Start Date" value="@Model.Search?.FromDate?.ToShortDateString()" type="text">
-                                </div>
-                            </div>
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="ToDate">End Date</label>
-                                <div class="controls">
-                                    <input class="date row form-control" id="ToDate" name="ToDate" placeholder="End Date" value="@Model.Search?.ToDate?.ToShortDateString()" type="text">
-                                </div>
-                            </div>
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">Search Word</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="Keyword" name="Keyword" placeholder="Search Word" value="@Model.Search.Keyword" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">Application Id</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="ApplicationId" name="ApplicationId" placeholder="Application Id" value="@Model.Search.ApplicationId" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">Corelation Id</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="CorelationId" name="CorelationId" placeholder="Corelation Id" value="@Model.Search.CorelationId" type="text">
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">Function Id</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="FunctionId" name="FunctionId" placeholder="Function Id" value="@Model.Search.FunctionId" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">App Name</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="App" name="App" placeholder="App" value="@Model.Search.App" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">Severity</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="Severity" name="Severity" placeholder="Severity" value="@Model.Search.Severity" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">Machine Name</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="MachineName" name="MachineName" placeholder="Machine Name" value="@Model.Search.MachineName" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">Process Id</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="ProcessId" name="ProcessId" placeholder="Process Id" value="@Model.Search.ProcessId" type="text">
-                                </div>
-                            </div>
-
-                            
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">Thread Id</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="ThreadId" name="ThreadId" placeholder="Thread Id" value="@Model.Search.ThreadId" type="text">
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-2 form-group">
-                                <div class="controls">
-                                    <input class="row form-control" id="CurrentFunction" name="CurrentFunction" placeholder="Current Function" value="@Model.Search.CurrentFunction" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <div class="controls">
-                                    <input class="row form-control" id="CurrentSourceFilename" name="CurrentSourceFilename" placeholder="Current Source Filename" value="@Model.Search.CurrentSourceFilename" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <div class="controls">
-                                    <input class="row form-control" id="CurrentSourceLineNumber" name="CurrentSourceLineNumber" placeholder="Current Source Line Number" value="@Model.Search.CurrentSourceLineNumber" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">User Identity</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="UserIdentity" name="UserIdentity" placeholder="User Identity" value="@Model.Search.UserIdentity" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">Remote Address</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="RemoteAddress" name="RemoteAddress" placeholder="Remote Address" value="@Model.Search.RemoteAddress" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">User Agent</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="UserAgent" name="UserAgent" placeholder="User Agent" value="@Model.Search.UserAgent" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">Result</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="Result" name="Result" placeholder="Result" value="@Model.Search.Result" type="text">
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 form-group">
-                                <label class="control-label" for="Keyword">Result Code</label>
-                                <div class="controls">
-                                    <input class="row form-control" id="ResultCode" name="ResultCode" placeholder="Result Code" value="@Model.Search.ResultCode" type="text">
-                                </div>
-                            </div>
-
+                            <div id="search_box_container"></div>
                             <div class="col-md-2 pull-right form-group">
                                 <input id="sortby" name="sortby" value="@Model.Search.SortBy" class="form-control" type="hidden">
                                 <input id="sortascending" name="sortascending" value="@Model.Search.SortAscending" class="form-control" type="hidden">
@@ -163,6 +32,7 @@
                                     <input id="reset" value="Reset" class="btn btn-default form-control" type="reset">
                                 </div>
                             </div>
+                            <div id="search_query">&nbsp;</div>
                         </form>
                     </div>
                 </div>
@@ -184,22 +54,15 @@
                                 <table class="table table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th scope="col" style="width:50px" class="action-cell">
+                                        <th scope="col" style="width:20px" class="action-cell">
                                             <input class="sr-only" type="checkbox" id="selectIDAll">
                                         </th>
 
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Longdate" }, { "DisplayName", "Date" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Severity" }, { "DisplayName", "Severity" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "MachineName" }, { "DisplayName", "MachineName" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "App" }, { "DisplayName", "App" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "ProcessId" }, { "DisplayName", "ProcessId" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "ThreadId" }, { "DisplayName", "ThreadId" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "CurrentFunction" }, { "DisplayName", "Function" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "FunctionId" }, { "DisplayName", "FunctionId" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "UserIdentity" }, { "DisplayName", "User" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "RemoteAddress" }, { "DisplayName", "Ip" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Result" }, { "DisplayName", "Result" } })</th>
-                                        <th>@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "ElapsedTime" }, { "DisplayName", "ElapsedTime" } })</th>
+                                        <th style="width:90px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Longdate" }, { "DisplayName", "Date" } })</th>
+                                        <th style="width:75px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Severity" }, { "DisplayName", "Severity" } })</thstyle="width:100px">
+                                        <th style="width:50px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "MachineName" }, { "DisplayName", "MachineName" } })</thstyle="width:50px">
+                                        <th style="width:50px" >@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "App" }, { "DisplayName", "App" } })</thstyle="width:50px">
+                                        <th style="width:50px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "RemoteAddress" }, { "DisplayName", "Ip" } })</th>
                                         <th>Message</th>
                                     </tr>
                                 </thead>
@@ -212,16 +75,8 @@
                                             <td><span class="label @Html.Partial("_logtypeclass",Current.Severity)">@Current.Severity</span></td>
                                             <td>@Current.MachineName</td>
                                             <td>@Current.App</td>
-                                            <td>@Current.ProcessId</td>
-                                            <td>@Current.ThreadId</td>
-                                            <td>@Current.CurrentFunction</td>
-                                            <td>@Current.FunctionId</td>
-                                            <td>@Current.UserIdentity</td>
-                                            <td>@Current.RemoteAddress</td>
-                                            <td>@Current.Result</td>
-                                            <td>@Current.ElapsedTime</td>
-                                            <td>@Current.Message</td>
-
+                                            <td>@Current.RemoteAddress <br><span class="label label-success"> @Current.UserIdentity </span></td>
+                                            <td>@Current.Message <br/> <p><small>Time : <span class="label label-info"> @Current.ElapsedTime </span> Process : <span class="label label-success"> @Current.ProcessId </span> Thread : <span class="label label-info"> @Current.ThreadId </span> Function : <span class="label label-success"> @Current.CurrentFunction </span></small></p></td>
                                     </tr>
                                     }
                                 </tbody>
@@ -245,64 +100,137 @@
 
 <script type="text/javascript">
 
-        ///////////////////////SelectAll///////////////////////
-        var setCustomActionStatus = function (status) {
-            $('#custom-action-btn').prop('disabled', status);
-            var _isDisable = true;
-            if (status) {
-                $('input[name=selectID]').each(function () {
-                    if (this.checked) {
-                        _isDisable = false;
-                        return;
-                    }
-                });
-                if (_isDisable) {
-                    $("#custom-action-btn").attr("disabled", 'disabled');
-                    $("#custom-action-btn").removeClass('btn-blue').addClass('btn-black');
+    ///////////////////////SelectAll///////////////////////
+    var setCustomActionStatus = function (status) {
+        $('#custom-action-btn').prop('disabled', status);
+        var _isDisable = true;
+        if (status) {
+            $('input[name=selectID]').each(function () {
+                if (this.checked) {
+                    _isDisable = false;
+                    return;
                 }
+            });
+            if (_isDisable) {
+                $("#custom-action-btn").attr("disabled", 'disabled');
+                $("#custom-action-btn").removeClass('btn-blue').addClass('btn-black');
             }
-            else {
-                $('#custom-action-btn').attr('disabled', false);
-                $("#custom-action-btn").removeClass('btn-black').addClass('btn-blue');
-            }
-        };
+        }
+        else {
+            $('#custom-action-btn').attr('disabled', false);
+            $("#custom-action-btn").removeClass('btn-black').addClass('btn-blue');
+        }
+    };
 
-        $("#selectIDAll").on("change", function () {
-            var status = $(this).is(':checked');
-            $('#custom-action-btn .dropdown-toggle').prop('disabled', !status);
-            $('input[name=selectID]').each(function () {
-                this.checked = status;
-            });
-            setCustomActionStatus(!status);
+    $("#selectIDAll").on("change", function () {
+        var status = $(this).is(':checked');
+        $('#custom-action-btn .dropdown-toggle').prop('disabled', !status);
+        $('input[name=selectID]').each(function () {
+            this.checked = status;
         });
-        $("input[name=selectID]").on("change", function () {
-            var status = $(this).is(":checked");
-            setCustomActionStatus(!status);
+        setCustomActionStatus(!status);
+    });
+    $("input[name=selectID]").on("change", function () {
+        var status = $(this).is(":checked");
+        setCustomActionStatus(!status);
+    });
+    ///////////////////////SelectAll///////////////////////
+
+    $(document).ready(function () {
+        var FromDate = $('#FromDate').datetimepicker({
+            format: "mm/dd/yyyy",
+        }).on('changeDate', function (ev) {
+            FromDate.hide();
+        }).data('datetimepicker');
+        var ToDate = $('#ToDate').datetimepicker({
+            format: "mm/dd/yyyy"
+        }).on('changeDate', function (ev) {
+            ToDate.hide();
+        }).data('datetimepicker');
+
+        $('input[name=selectID]').each(function () {
+            this.checked = false;
         });
-        ///////////////////////SelectAll///////////////////////
-
-        $(document).ready(function () {
-            var FromDate = $('#FromDate').datetimepicker({
-                format: "mm/dd/yyyy",
-            }).on('changeDate', function (ev) {
-                FromDate.hide();
-                }).data('datetimepicker');
-            var ToDate = $('#ToDate').datetimepicker({
-                format: "mm/dd/yyyy"
-            }).on('changeDate', function (ev) {
-                ToDate.hide();
-                }).data('datetimepicker');
-
-            $('input[name=selectID]').each(function () {
-                this.checked = false;
-            });
-            $('input[name=selectIDAll]').each(function () {
-                this.checked = false;
-            });
-            //
-            $('#selectIDAll').prop("checked", false);
-            setCustomActionStatus(true);
+        $('input[name=selectIDAll]').each(function () {
+            this.checked = false;
         });
+        //
+        $('#selectIDAll').prop("checked", false);
+        setCustomActionStatus(true);
+    });
+</script>
 
+<script type="text/javascript" charset="utf-8">
+        $(function () {
+            window.visualSearch = new VisualSearch({
+                el: $('#search_box_container'),
+                placeholder: "Customizable Placeholder!",
+                strict: true,	//Strict Parameters, strict values?
+                search: function (json) {
+                    $("div#search_query").html(json);
+                },
+                parameters: [
+                    {
+                        key: "Date",
+                        placeholder: "Log Date",
+                        type: "date",
+                        min: 1,
+                        max: 10
+                    },
+                    {
+                        key: "LogLevel",
+                        placeholder: "Log Level",
+                        values: ['INFO', 'ERROR', 'WARNING', 'DEBUG', 'TRACE', 'CRITICAL', 'SQL', 'SQL-BEGIN', 'SQL-ROLLBACK', 'SQL-COMMIT']
+                    },
+                    {
+                        key: "Machine",
+                        placeholder: "Machine",
+                        values: ['Machine-1', 'Machine-1']
+                    },
+                    {
+                        key: "App",
+                        placeholder: "App",
+                        values: ['App-1', 'App-2']
+                    },
+                    {
+                        key: "Ip",
+                        placeholder: "IP Address",
+                        values: ['Machine-1', 'Machine-1']
+                    },
+                    {
+                        key: "Username",
+                        placeholder: "User Name",
+                        values: ['Machine-1', 'Machine-1']
+                    },
+                    {
+                        key: "ElapsedTime",
+                        placeholder: "Elapsed Time",
+                        values: ['Machine-1', 'Machine-1']
+                    },
+                    {
+                        key: "ThreadId",
+                        placeholder: "Thread Id",
+                        values: ['Machine-1', 'Machine-1']
+                    },
+                    {
+                        key: "ProcessId",
+                        placeholder: "Process Id",
+                        values: ['Machine-1', 'Machine-1']
+                    },
+                    {
+                        key: "FileName",
+                        placeholder: "File Name",
+                        values: ['Machine-1', 'Machine-1']
+                    },
+                    {
+                        key: "FunctionName",
+                        placeholder: "Function Name",
+                        values: ['Machine-1', 'Machine-1']
+                    },
+                ],
+                defaultquery: [
+                ]
 
+            });
+        });
 </script>

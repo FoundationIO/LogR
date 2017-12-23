@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FDB6941D-3B07-4877-8C40-8B677E47C32D}</ProjectGuid>
+    <ProjectGuid>{341E352D-BE3E-4CDE-A021-C1C7D7C412DA}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>LogR.Task</RootNamespace>
-    <AssemblyName>LogR.Task</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <RootNamespace>LogR.LogShipper</RootNamespace>
+    <AssemblyName>LogR.LogShipper</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -42,6 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\Framework\Infrastructure\Utils\CmdLineUtils.cs">
+      <Link>CmdLineUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Framework\Infrastructure\Utils\PositionableStreamReader.cs">
+      <Link>PositionableStreamReader.cs</Link>
+    </Compile>
+    <Compile Include="FileParserInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

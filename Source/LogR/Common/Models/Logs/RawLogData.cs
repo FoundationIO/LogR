@@ -10,8 +10,10 @@ namespace LogR.Common.Models.Logs
 
         public string Data { get; set; }
 
+        public bool IsListData { get; set; }
+
         public DateTime ReceiveDate { get; set; }
 
-        public int ApplicationId { get; set; }
+        public string ApplicationId { get; set; }
     }
 }

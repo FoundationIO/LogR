@@ -3,7 +3,7 @@
     "appSettings": {
 
       "serverPort": 9090,
-      "batchSizeToIndex": 1,
+      "batchSizeToIndex": 10,
       "indexStoreType": "Lucene",
 
       "logSettings": {
@@ -82,7 +82,7 @@
   "Logging": {
     "IncludeScopes": false,
     "LogLevel": {
-      "Default": "Debug"
+      "Default": "Error"
     }
   }
 }

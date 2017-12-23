@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<title>Search.js</title>
+<style>
+	body {
+		font-size: 16px;
+		line-height: 24px;
+		background: #eee;
+		color: #022;
+		height: 100%;
+		font-family: "Palatino Linotype", "Book Antiqua", Palatino, FreeSerif, serif;
+	}
+	div.container {
+		width: 720px;
+		margin: 50px auto;
+	}
+	p, li {
+		margin: 16px 0 16px 0;
+		width: 550px;
+	}
+	p.break {
+		margin-top: 35px;
+	}
+	a, a:visited {
+		padding: 0 2px;
+		text-decoration: none;
+		background: #f0c095;
+		color: #252519;
+	}
+	a:active, a:hover {
+		color: #FFF;
+		background: #C25D00;
+	}
+	h1, h2, h3, h4, h5, h6 {
+		margin-top: 40px;
+	}
+	b.header {
+		font-size: 18px;
+	}
+	span.alias {
+		font-size: 14px;
+		font-style: italic;
+		margin-left: 20px;
+	}
+	div#search_query{
+		font-size: 11px;
+	}
+
+</style>
+
+<link rel="stylesheet" href="lib/css/reset.css" type="text/css" media="screen" charset="utf-8">
+<link rel="stylesheet" href="lib/css/icons.css" type="text/css" media="screen" charset="utf-8">
+<link rel="stylesheet" href="lib/css/workspace.css" type="text/css" media="screen" charset="utf-8">
+
+<script src="vendor/jquery-1.9.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="vendor/jquery.ui.core.js" type="text/javascript" charset="utf-8"></script>
+<script src="vendor/jquery.ui.widget.js" type="text/javascript" charset="utf-8"></script>
+<script src="vendor/jquery.ui.position.js" type="text/javascript" charset="utf-8"></script>
+<script src="vendor/jquery.ui.menu.js" type="text/javascript" charset="utf-8"></script>
+<script src="vendor/jquery.ui.autocomplete.js" type="text/javascript" charset="utf-8"></script>
+<script src="vendor/underscore-1.4.3.js" type="text/javascript" charset="utf-8"></script>
+<script src="vendor/backbone.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="lib/js/search.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+
+<div class="container" id="VS">
+	<h1><a href="index.html">Search.js</a></h1>
+
+	<p>
+		The project is a fork of 
+		<a href="http://github.com/documentcloud/visualsearch/">VisualSearch.js</a>, which enhances ordinary search boxes with the ability to autocomplete faceted search queries. In this fork, VisualSearch has been rewritten to become lighter with support for dynamic operators, HTML5 input types(numbers and dates), and JSON output for flexible data interchange.
+	</p>
+
+	<p>
+		<i>VisualSearch.js is an open-source component of <a href="http://documentcloud.org/">DocumentCloud</a>.</i>
+	</p>
+
+	<div id="search_box_container"></div>
+
+	<p>
+		JSON Data:
+	</p>
+	<div id="search_query">&nbsp;</div>
+
+	<script type="text/javascript" charset="utf-8">
+		$(function(){
+			window.visualSearch = new VisualSearch({
+				el		: $('#search_box_container'),
+				placeholder: "Customizable Placeholder!",
+				strict: true,	//Strict Parameters, strict values?
+				search: function(json){
+					$("div#search_query").html(json);
+				},
+				parameters: [
+					{
+						key: "City",
+						category: "Location",
+						placeholder: "",
+						operators: [
+							"is",
+							"is not"
+						],
+						values: [
+							'Cleveland',
+							'New York City',
+							'Brooklyn',
+							'Manhattan',
+							'Queens',
+							'The Bronx',
+							'Staten Island',
+							'San Francisco',
+							'Los Angeles',
+							'Seattle',
+							'London',
+							'Portland',
+							'Chicago',
+							'Boston'
+						]
+					},
+					{
+						key: "U.S. State",
+						category: "Location",
+						placeholder: "",
+						values: [
+							"Alabama", "Alaska", "Arizona", "Arkansas", "California",
+							"Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida",
+							"Georgia", "Guam", "Hawaii", "Idaho", "Illinois",
+							"Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+							"Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+							"Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
+							"New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina",
+							"North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
+							"Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+							"Texas", "Utah", "Vermont", "Virginia", "Virgin Islands",
+							"Washington", "West Virginia", "Wisconsin", "Wyoming"
+						]
+					},
+					{
+						key: "Filter",
+						placeholder: "Status",
+						values: ['published', 'unpublished', 'draft']
+					},
+					{
+						key: "Number",
+						placeholder: "Between 1 and 10",
+						type: "number",
+						min: 1,
+						max: 10
+					},
+					{
+						key: "Date",
+						placeholder: "Any",
+						type: "date",
+						min: 1,
+						max: 10
+					},
+				],
+				defaultquery	: [
+					{
+						key: "Date",
+						operator: "==",
+						value: "1993-03-02"
+					},
+					{
+						key: "Number",
+						operator: "==",
+						value: "5"
+					},
+					{
+						key: "Filter",
+						operator: "==",
+						value: "published"
+					},
+				]
+				
+			});
+		});
+	</script>
+</div>
+</body>
+</html>

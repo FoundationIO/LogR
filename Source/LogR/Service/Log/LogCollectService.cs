@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Framework.Infrastructure.Constants;
 using LogR.Common.Enums;
@@ -47,18 +48,25 @@ namespace LogR.Service.Log
                     }
                 }
 
+                Thread.Sleep(1000);
                 ProcessLogFromQueue(lst);
             };
             poller.RunAsync();
         }
 
-        public void AddToQue(StoredLogType logType, string logString, DateTime date, int applicationId)
+        public void AddToQue(StoredLogType logType, string logString, DateTime date, string applicationId)
         {
             if (string.IsNullOrEmpty(logString) == false)
-                queue.Enqueue(new RawLogData { Type = logType, Data = logString , ReceiveDate = date, ApplicationId = applicationId });
+                queue.Enqueue(new RawLogData { Type = logType, Data = logString , IsListData = false, ReceiveDate = date, ApplicationId = applicationId });
         }
 
-        public void AddToDb(StoredLogType logType, string logString, DateTime date, int applicationId)
+        public void AddListToQue(StoredLogType logType, string logListString, DateTime date, string applicationId)
+        {
+            if (string.IsNullOrEmpty(logListString) == false)
+                queue.Enqueue(new RawLogData { Type = logType, Data = logListString, IsListData = true,  ReceiveDate = date, ApplicationId = applicationId });
+        }
+
+        public void AddToDb(StoredLogType logType, string logString, DateTime date, string applicationId)
         {
             if (string.IsNullOrEmpty(logString) == false)
                 logWriteRepository.SaveLog(new RawLogData { Type = logType, Data = logString, ReceiveDate = date , ApplicationId = applicationId });

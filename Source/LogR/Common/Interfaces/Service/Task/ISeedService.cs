@@ -12,5 +12,7 @@ namespace LogR.Common.Interfaces.Service.Task
         List<AppLog> GetAppLogs(int numberOfLogs);
 
         void GenerateLogs(int numberOfLogs);
+
+        void SendLogsToRemote(int numberOfLogs, string serverUrl);
     }
 }

@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Bogus;
 using Bogus.DataSets;
 using Bogus.Extensions;
+using Flurl;
+using Flurl.Http;
 using Framework.Infrastructure.Constants;
+using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Utils;
+using LogR.Common.Constants;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Repository.Log;
@@ -20,7 +27,8 @@ namespace LogR.Service.Task
     public class SeedService : ISeedService
     {
         private static Faker<AppLog> fakeAppLogs;
-        private ILogWriteRepository logWriteRepository;
+        private ILog log;
+        private Lazy<ILogWriteRepository> logWriteRepository;
 
         static SeedService()
         {
@@ -134,7 +142,7 @@ namespace LogR.Service.Task
                         404,
                         404
                     }))
-                .RuleFor(p => p.Message, f => f.Lorem.Sentence())
+                .RuleFor(p => p.Message, f => f.Lorem.Sentence(300))
                 .RuleFor(p => p.PerfModule, f => f.PickRandom(new[]
                     {
                         "Log",
@@ -178,8 +186,9 @@ namespace LogR.Service.Task
                 .RuleFor(p => p.Response, f => f.Lorem.Sentence());
         }
 
-        public SeedService(ILogWriteRepository logWriteRepository)
+        public SeedService(ILog log, Lazy<ILogWriteRepository> logWriteRepository)
         {
+            this.log = log;
             this.logWriteRepository = logWriteRepository;
         }
 
@@ -188,16 +197,59 @@ namespace LogR.Service.Task
             return fakeAppLogs.Generate(numberOfLogs).ToList();
         }
 
+        public void SendLogsToRemote(int numberOfLogs, string serverUrl)
+        {
+            FlurlHttp.Configure(settings => settings.OnErrorAsync = HandleFlurlErrorAsync);
+
+            GenerateLogsInternal(numberOfLogs, actionToSend: null, actionToAdd: (entry) =>
+            {
+                var result = (serverUrl + ControllerConstants.QueueAppLogUrl.AddFirstChar('/'))
+                    .WithHeader(HeaderContants.AppId, "APPID_1")
+                    .PostJsonAsync(entry).Result;
+            });
+        }
+
         public void GenerateLogs(int numberOfLogs)
         {
-            Parallel.For(0, numberOfLogs / 20, item =>
+            GenerateLogsInternal(numberOfLogs, null, (entryList) =>
             {
+                logWriteRepository.Value.SaveLog(entryList);
+            });
+        }
+
+        private async System.Threading.Tasks.Task HandleFlurlErrorAsync(HttpCall call)
+        {
+            log.Error("Unable to send log to server - status code = " + call.HttpStatus);
+            call.ExceptionHandled = true;
+            await System.Threading.Tasks.Task.Run(() => { Thread.Sleep(1); });
+        }
+
+        private void GenerateLogsInternal(int numberOfLogs, Action<RawLogData> actionToAdd, Action<List<RawLogData>> actionToSend)
+        {
+            var logsToCreate = 20;
+            var numberOfThreads = numberOfLogs / 20;
+            if (numberOfLogs < logsToCreate)
+            {
+                logsToCreate = numberOfLogs;
+                numberOfThreads = 1;
+            }
+
+            Parallel.For(0, numberOfThreads, item =>
+            {
+                log.Error($"Sending batch - {item} of {numberOfLogs / 20}");
                 var lst = new List<RawLogData>();
-                GetAppLogs(20).ForEach(appItem =>
+                GetAppLogs(logsToCreate).ForEach(appItem =>
                 {
-                    lst.Add(new RawLogData() { Type = StoredLogType.AppLog, Data = JsonUtils.Serialize(appItem), ReceiveDate = DateTime.UtcNow });
+                    var entry = new RawLogData() { Type = StoredLogType.AppLog, Data = JsonUtils.Serialize(appItem), ReceiveDate = DateTime.UtcNow };
+                    if (actionToAdd != null)
+                        actionToAdd(entry);
+                    lst.Add(entry);
                 });
-                logWriteRepository.SaveLog(lst);
+
+                if (actionToSend != null)
+                {
+                    actionToSend(lst);
+                }
             });
         }
     }

@@ -10,5 +10,7 @@ namespace LogR.Common.Interfaces.Service
         ReturnModel<bool> DeleteAppLog(string id);
 
         ReturnModel<bool> DeletePerformanceLog(string id);
+
+        ReturnModel<bool> DeleteAllLogs(int logType);
     }
 }

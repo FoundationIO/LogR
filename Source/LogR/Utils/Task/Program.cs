@@ -21,7 +21,6 @@ namespace LogR.Task
             var configFileCreator = DISetup.ServiceProvider.GetService<ISampleAppConfigFileCreator>();
             var seedCreator = DISetup.ServiceProvider.GetService<ISeedService>();
             var loadTestGenerator = DISetup.ServiceProvider.GetService<ILoadTestService>();
-            var repo = DISetup.ServiceProvider.GetService<ILogWriteRepository>();
 
             var servicename = args.GetParamValueAsString("/servicename", "LoggerService");
 
@@ -33,20 +32,36 @@ namespace LogR.Task
             }
             else if (args.IsParamValueAvailable("migrate"))
             {
+                System.Console.Out.WriteLine($"Running the APP Database Migration");
                 migration.MigrateLocalDatastoreIfNeeded();
+                System.Console.Out.WriteLine($"Migration is completed.");
             }
-            else if (args.IsParamValueAvailable("seed"))
+            else if (args.IsParamValueAvailable("save-logs"))
             {
-                var count = args.GetParamValueAs("seed", 500000);
+                var count = args.GetParamValueAs("log-count", 500000);
+                System.Console.Out.WriteLine($"Sample Log Generation started... creating {count} log entries... please wait...");
                 seedCreator.GenerateLogs(count);
+                System.Console.Out.WriteLine($"Sample Log Generation is completed.");
             }
-            else if (args.IsParamValueAvailable("loadtest"))
+            else if (args.IsParamValueAvailable("send-logs"))
             {
+                System.Console.Out.WriteLine($"Sending Log Generation to remote Log server... sending 500000 log entries... please wait...");
+                var count = args.GetParamValueAs("log-count", 500000);
+                seedCreator.SendLogsToRemote(count,"http://localhost:9090");
+                System.Console.Out.WriteLine($"Sample Logs are sent.");
+            }
+            else if (args.IsParamValueAvailable("load-test"))
+            {
+                System.Console.Out.WriteLine($"Running Load test...");
                 loadTestGenerator.Run();
+                System.Console.Out.WriteLine($"Load Test is completed.");
             }
-            else if (args.IsParamValueAvailable("delete-all"))
+            else if (args.IsParamValueAvailable("delete-all-logs"))
             {
+                System.Console.Out.WriteLine($"Deleting all logs...");
+                var repo = DISetup.ServiceProvider.GetService<ILogWriteRepository>();
                 repo.DeleteAllLogs();
+                System.Console.Out.WriteLine($"All Logs are deleted.");
             }
             else
             {
@@ -56,11 +71,12 @@ namespace LogR.Task
 
         private static void ShowUsage()
         {
-            Console.WriteLine("/c for Starting in Console Mode");
-            Console.WriteLine("/migrate for Starting in Console Mode");
-            Console.WriteLine("/create_config for Creating a config file");
-            Console.WriteLine("/seed for creating dummy logs");
-            Console.WriteLine("/sendlogs for sending logs to rest api");
+            Console.WriteLine("/c\t\t\tfor Starting in Console Mode");
+            Console.WriteLine("/migrate\t\t\tfor Starting in Console Mode");
+            Console.WriteLine("/create-config\t\t\tfor Creating a config file");
+            Console.WriteLine("/save-logs\t\t\tfor creating dummy logs directly by calling repo functions");
+            Console.WriteLine("/send-logs\t\t\tfor sending logs to rest api");
+            Console.WriteLine("/delete-all-logs\t\t\tfor sending logs to rest api");
             Console.ReadKey();
         }
     }

@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogR.Task
+namespace LogR.Common.Constants
 {
-    class Program
+    public class HeaderContants
     {
-        static void Main(string[] args)
-        {
-        }
+        public const string AppId = "x-appid";
     }
 }

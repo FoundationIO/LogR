@@ -2,7 +2,7 @@
   "profiles": {
     "LogR.Task": {
       "commandName": "Project",
-      "commandLineArgs": "/seed 10000"
+      "commandLineArgs": "/send-logs /log-count 1"
     }
   }
 }

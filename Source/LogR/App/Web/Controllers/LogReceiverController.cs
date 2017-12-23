@@ -4,11 +4,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Framework.Infrastructure.Constants;
 using Framework.Web.Extensions;
+using LogR.Common.Constants;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LogR.Web.Controllers
 {
@@ -21,81 +23,66 @@ namespace LogR.Web.Controllers
             this.service = service;
         }
 
-        [Route("/queue/app-log")]
-        public async void QueueAppLog()
+
+        [Route(ControllerConstants.QueueAppLogUrl)]
+        public void QueueAppLog()
         {
-            await Task.Run(() =>
-            {
-                service.AddToQue(StoredLogType.AppLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
-            });
+            service.AddListToQue(StoredLogType.AppLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
-        [Route("/queue/performance-log")]
-        public async void QueuePerformanceLog()
+        [Route(ControllerConstants.QueueAppLogListUrl)]
+        public void QueueAppLogList()
         {
-            await Task.Run(() =>
-            {
-                service.AddToQue(StoredLogType.PerfLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
-            });
+            service.AddToQue(StoredLogType.AppLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
-        [Route("/queue/web-log")]
-        public async void QueueWebLog()
+        [Route(ControllerConstants.QueuePerformanceLogUrl)]
+        public void QueuePerformanceLog()
         {
-            await Task.Run(() =>
-            {
-                service.AddToQue(StoredLogType.WebLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
-            });
+            service.AddToQue(StoredLogType.PerfLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
-        [Route("/queue/event-log")]
-        public async void QueueEventLog()
+        [Route(ControllerConstants.QueueWebLogUrl)]
+        public void QueueWebLog()
         {
-            await Task.Run(() =>
-            {
-                service.AddToQue(StoredLogType.WebLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
-            });
+            service.AddToQue(StoredLogType.WebLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
-        [Route("/add/app-log")]
-        public async void AddAppLog()
+        [Route(ControllerConstants.QueueEventLogUrl)]
+        public void QueueEventLog()
         {
-            await Task.Run(() =>
-            {
-                service.AddToDb(StoredLogType.AppLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
-            });
+            service.AddToQue(StoredLogType.EventLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
-        [Route("/add/performance-log")]
-        public async void AddPerformanceLog()
+        [Route(ControllerConstants.AddAppLogUrl)]
+        public void AddAppLog()
         {
-            await Task.Run(() =>
-            {
-                service.AddToDb(StoredLogType.PerfLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
-            });
+            service.AddToDb(StoredLogType.AppLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
-        [Route("/add/web-log")]
-        public async void AddWebLog()
+        [Route(ControllerConstants.AddPerformanceLogUrl)]
+        public void AddPerformanceLog()
         {
-            await Task.Run(() =>
-            {
-                service.AddToDb(StoredLogType.WebLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
-            });
+            service.AddToDb(StoredLogType.PerfLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
-        [Route("/add/event-log")]
-        public async void AddEventLog()
+        [Route(ControllerConstants.AddWebLogUrl)]
+        public void AddWebLog()
         {
-            await Task.Run(() =>
-            {
-                service.AddToDb(StoredLogType.EventLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
-            });
+            service.AddToDb(StoredLogType.WebLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
         }
 
-        private int GetApplicationId()
+        [Route(ControllerConstants.AddEventLogUrl)]
+        public void AddEventLog()
         {
-            return 0;
+            service.AddToDb(StoredLogType.EventLog, Request.GetRawBodyStringAsync().Result, DateTime.UtcNow, GetApplicationId());
+        }
+
+        private string GetApplicationId()
+        {
+            if (this.HttpContext.Request.Headers.ContainsKey(HeaderContants.AppId) == false)
+                return null;
+            return this.HttpContext.Request.Headers[HeaderContants.AppId];
         }
     }
 }

@@ -21,6 +21,19 @@ namespace LogR.Service.Log
             this.logWriteRepository = logWriteRepository;
         }
 
+        public ReturnModel<bool> DeleteAllLogs(int logType)
+        {
+            try
+            {
+                return logWriteRepository.DeleteAllLogs((StoredLogType)logType);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting Deleting All Log logType - " + (StoredLogType)logType);
+                return new ReturnModel<bool>(ex);
+            }
+        }
+
         public ReturnModel<bool> DeleteAppLog(string id)
         {
             try

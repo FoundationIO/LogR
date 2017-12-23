@@ -27,13 +27,20 @@ namespace LogR.Repository
             this.config = config;
         }
 
-        protected T GetLogFromRawLog<T>(StoredLogType logType, int applicationId, string message)
+        protected T GetLogFromRawLog<T>(StoredLogType logType, string applicationId, string message)
             where T : AppLog
         {
-            var item = JsonUtils.Deserialize<T>(message);
-            if (item == null)
+            var outerData = JsonUtils.Deserialize<RawLogData>(message);
+            if (outerData == null)
             {
                 throw new Exception("Unable to deserialize the log message -  " + message);
+            }
+
+            var item = JsonUtils.Deserialize<T>(outerData.Data);
+
+            if (item == null)
+            {
+                throw new Exception("Unable to deserialize the log internal message -  " + outerData.Data);
             }
 
             item.LogId = Guid.NewGuid();
@@ -41,6 +48,7 @@ namespace LogR.Repository
             item.ApplicationId = applicationId;
             if (item.Longdate.IsInvalidDate())
                 item.Longdate = DateTime.UtcNow;
+            item.ReceivedDate = outerData.ReceiveDate;
             item.LongdateAsTicks = item.Longdate.Ticks;
             return item;
         }

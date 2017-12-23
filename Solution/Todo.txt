@@ -1,0 +1,7 @@
+Web > UI > Add Search.Js filter component
+Web > UI > Format the Log Rows to show all information
+Web > UI > Chop of the logs to fit to the view
+Web > UI > When user hovers the mouse over the log row, show all the log content in it.
+Web > UI > Add a button next to the log message to expand the log message.
+Web > UI > Add the ability to mark a line. Marking a line will store the data internally and subsequently send to the server.
+Web > UI > Add the ability to remove a marked line and remove it from the list that needs to be send back to the server

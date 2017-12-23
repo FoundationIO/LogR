@@ -39,7 +39,7 @@ namespace LogR.DI
                 .AddSingleton<IBaseConfiguration, AppConfiguration>()
                 .AddSingleton<IAppConfiguration, AppConfiguration>()
                 .AddSingleton<ILog, Log>()
-                .AddScoped<ILogCollectService, LogCollectService>()
+                .AddSingleton<ILogCollectService, LogCollectService>()
                 .AddScoped<ILogRetrivalService, LogRetrivalService>()
                 .AddSingleton<IDBInfo, DBInfo>()
                 .AddScoped<IDBManager, DBManager>()
@@ -54,7 +54,7 @@ namespace LogR.DI
                 .AddSingleton<ILoadTestService, LoadTestService>()
                 .AddSingleton<IAppConfigurationFile, AppConfigurationFile>()
                 .AddSingleton<ILogWriteRepository>(serviceProvider =>
-                {
+                 {
                     var config = serviceProvider.GetRequiredService<IAppConfiguration>();
                     var log = serviceProvider.GetRequiredService<ILog>();
 
@@ -88,6 +88,7 @@ namespace LogR.DI
                             throw new Exception("Index store is not configured");
                     }
                 })
+                .AddSingleton(x => new Lazy<ILogWriteRepository>(() => x.GetRequiredService<ILogWriteRepository>()))
                 .AddSingleton<ILogReadRepository>(serviceProvider =>
                 {
                     var config = serviceProvider.GetRequiredService<IAppConfiguration>();

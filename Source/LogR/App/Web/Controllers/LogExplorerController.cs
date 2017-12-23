@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Framework.Infrastructure.Models.Result;
+using Framework.Infrastructure.Models.Search;
 using LogR.Common.Interfaces.Service;
 using LogR.Common.Models.Search;
 using Microsoft.AspNetCore.Mvc;
@@ -52,5 +54,48 @@ namespace LogR.Web.Controllers
             data.ActiveTab = 4;
             return View(data);
         }
+
+        [Route("/list/apps")]
+        public ReturnListModel<string> AppNames(BaseSearchCriteria search)
+        {
+            return new ReturnListModel<string>(new List<string>());
+        }
+
+        [Route("/list/severities")]
+        public ReturnListModel<string> SeverityNames(BaseSearchCriteria search)
+        {
+            return new ReturnListModel<string>(new List<string>());
+        }
+
+        [Route("/list/machines")]
+        public ReturnListModel<string> MachineNames(BaseSearchCriteria search)
+        {
+            return new ReturnListModel<string>(new List<string>());
+        }
+
+        [Route("/list/users")]
+        public ReturnListModel<string> UserNames(BaseSearchCriteria search)
+        {
+            return new ReturnListModel<string>(new List<string>());
+        }
+
+        [Route("/list/ips")]
+        public ReturnListModel<string> Ips(BaseSearchCriteria search)
+        {
+            return new ReturnListModel<string>(new List<string>());
+        }
+
+        [Route("/list/perf-modules")]
+        public ReturnListModel<string> PerfModuleNames(BaseSearchCriteria search)
+        {
+            return new ReturnListModel<string>(new List<string>());
+        }
+
+        [Route("/list/perf-statuses")]
+        public ReturnListModel<string> PerfStatusNames(BaseSearchCriteria search)
+        {
+            return new ReturnListModel<string>(new List<string>());
+        }
+
     }
 }

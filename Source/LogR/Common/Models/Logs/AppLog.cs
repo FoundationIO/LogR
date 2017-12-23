@@ -12,7 +12,7 @@ namespace LogR.Common.Models.Logs
         //[JsonProperty("log-type")]
         public int LogType { get; set; }
 
-        public int ApplicationId { get; set; }
+        public string ApplicationId { get; set; }
 
         //[JsonProperty("corelation-id")]
         public virtual string CorelationId { get; set; }
@@ -23,6 +23,12 @@ namespace LogR.Common.Models.Logs
         //[JsonProperty("long-date")]
         //[JsonConverter(typeof(LogDateConverter))]
         public virtual DateTime Longdate { get; set; }
+
+        //[JsonProperty("long-date")]
+        //[JsonConverter(typeof(LogDateConverter))]
+        public virtual DateTime ReceivedDate { get; set; }
+
+        public virtual long ReceivedDateAsTicks { get; set; }
 
         //[JsonProperty("longdate-as-ticks")]
         public virtual long LongdateAsTicks { get; set; }
