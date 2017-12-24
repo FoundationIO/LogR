@@ -18,7 +18,7 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <WarningsAsErrors />
     <WarningLevel>0</WarningLevel>
-    <OutputPath>bin\Debug\net461\net461\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -29,7 +29,7 @@
     <WarningLevel>4</WarningLevel>
     <DefineConstants>TRACE;RELEASE</DefineConstants>
     <WarningsAsErrors />
-    <OutputPath>bin\Release\net461\net461\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
