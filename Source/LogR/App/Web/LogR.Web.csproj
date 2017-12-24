@@ -7,7 +7,7 @@
     <OutputType>Exe</OutputType>
     <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
     <StartupObject>LogR.Web.Program</StartupObject>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -18,36 +18,18 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <WarningsAsErrors />
     <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PlatformTarget>x64</PlatformTarget>
-    <NoWarn>1591</NoWarn>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <TreatSpecificWarningsAsErrors />
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <WarningsAsErrors />
-    <WarningLevel>0</WarningLevel>
+    <OutputPath>bin\Debug\net461\net461\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
     <WarningLevel>4</WarningLevel>
     <DefineConstants>TRACE;RELEASE</DefineConstants>
     <WarningsAsErrors />
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PlatformTarget>x64</PlatformTarget>
-    <NoWarn>1591</NoWarn>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <TreatSpecificWarningsAsErrors />
-    <WarningLevel>0</WarningLevel>
-    <DefineConstants>TRACE;RELEASE</DefineConstants>
-    <WarningsAsErrors />
+    <OutputPath>bin\Release\net461\net461\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

@@ -23,7 +23,6 @@ namespace LogR.Web.Controllers
             this.service = service;
         }
 
-
         [Route(ControllerConstants.QueueAppLogUrl)]
         public void QueueAppLog()
         {

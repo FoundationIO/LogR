@@ -165,13 +165,14 @@
             window.visualSearch = new VisualSearch({
                 el: $('#search_box_container'),
                 placeholder: "Customizable Placeholder!",
-                strict: true,	//Strict Parameters, strict values?
+                strict: false,	//Strict Parameters, strict values?
                 search: function (json) {
                     $("div#search_query").html(json);
                 },
                 parameters: [
                     {
                         key: "Date",
+                        category: "Date Range",
                         placeholder: "Log Date",
                         type: "date",
                         min: 1,
@@ -180,52 +181,92 @@
                     {
                         key: "LogLevel",
                         placeholder: "Log Level",
+                        operators: [
+							"is",
+							"is not"
+						],
                         values: ['INFO', 'ERROR', 'WARNING', 'DEBUG', 'TRACE', 'CRITICAL', 'SQL', 'SQL-BEGIN', 'SQL-ROLLBACK', 'SQL-COMMIT']
                     },
                     {
                         key: "Machine",
                         placeholder: "Machine",
+                        operators: [
+							"is",
+							"is not"
+						],
                         values: ['Machine-1', 'Machine-1']
                     },
                     {
                         key: "App",
+                        operators: [
+							"is",
+							"is not"
+						],
                         placeholder: "App",
                         values: ['App-1', 'App-2']
                     },
                     {
                         key: "Ip",
+                        operators: [
+							"is",
+							"is not"
+						],
                         placeholder: "IP Address",
-                        values: ['Machine-1', 'Machine-1']
+                        values: ['Machine-1', 'Machine-2']
                     },
                     {
                         key: "Username",
+                        operators: [
+							"is",
+							"is not"
+						],
                         placeholder: "User Name",
-                        values: ['Machine-1', 'Machine-1']
+                        values: ['User-1', 'User-2']
                     },
                     {
                         key: "ElapsedTime",
+                        operators: [
+							"is",
+							"is not"
+						],
                         placeholder: "Elapsed Time",
-                        values: ['Machine-1', 'Machine-1']
+                        values: ['Time-1', 'Time-2']
                     },
                     {
                         key: "ThreadId",
+                        operators: [
+							"is",
+							"is not"
+						],
                         placeholder: "Thread Id",
-                        values: ['Machine-1', 'Machine-1']
+                        values: ['Thread-1', 'Thread-2']
                     },
                     {
                         key: "ProcessId",
+                        operators: [
+							"is",
+							"is not"
+						],
                         placeholder: "Process Id",
-                        values: ['Machine-1', 'Machine-1']
+                        values: ['Process-1', 'Process-2']
                     },
                     {
                         key: "FileName",
+                        operators: [
+							"is",
+							"is not"
+						],
                         placeholder: "File Name",
-                        values: ['Machine-1', 'Machine-1']
+                        values: ['File-1', 'File-2']
                     },
                     {
                         key: "FunctionName",
+                        operators: [
+							"is",
+							"is not"
+						],
                         placeholder: "Function Name",
-                        values: ['Machine-1', 'Machine-1']
+                        values: ['Function-1', 'Function-2']
                     },
                 ],
                 defaultquery: [

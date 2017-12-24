@@ -9,6 +9,9 @@ namespace LogR.LogShipper
     public class FileParserInfo
     {
         public string FileName { get; set; }
+
         public long LastReadPosition { get; set; }
+
+        public DateTime LastUpdatedTime { get; internal set; }
     }
 }

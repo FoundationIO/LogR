@@ -46,15 +46,28 @@
     <Compile Include="..\..\..\Framework\Infrastructure\Utils\CmdLineUtils.cs">
       <Link>CmdLineUtils.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Framework\Infrastructure\Utils\JsonUtils.cs">
+      <Link>JsonUtils.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\Framework\Infrastructure\Utils\PositionableStreamReader.cs">
       <Link>PositionableStreamReader.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Models\Logs\AppLog.cs">
+      <Link>AppLog.cs</Link>
+    </Compile>
+    <Compile Include="AppSettings.cs" />
     <Compile Include="FileParserInfo.cs" />
+    <Compile Include="LogParseInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.3</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

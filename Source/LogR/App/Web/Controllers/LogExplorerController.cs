@@ -96,6 +96,5 @@ namespace LogR.Web.Controllers
         {
             return new ReturnListModel<string>(new List<string>());
         }
-
     }
 }
