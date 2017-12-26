@@ -36,13 +36,6 @@ namespace LogR.Task
                 migration.MigrateLocalDatastoreIfNeeded();
                 System.Console.Out.WriteLine($"Migration is completed.");
             }
-            else if (args.IsParamValueAvailable("save-logs"))
-            {
-                var count = args.GetParamValueAs("log-count", 500000);
-                System.Console.Out.WriteLine($"Sample Log Generation started... creating {count} log entries... please wait...");
-                seedCreator.GenerateLogs(count);
-                System.Console.Out.WriteLine($"Sample Log Generation is completed.");
-            }
             else if (args.IsParamValueAvailable("send-logs"))
             {
                 System.Console.Out.WriteLine($"Sending Log Generation to remote Log server... sending 500000 log entries... please wait...");
@@ -74,7 +67,6 @@ namespace LogR.Task
             Console.WriteLine("/c\t\t\tfor Starting in Console Mode");
             Console.WriteLine("/migrate\t\t\tfor Starting in Console Mode");
             Console.WriteLine("/create-config\t\t\tfor Creating a config file");
-            Console.WriteLine("/save-logs\t\t\tfor creating dummy logs directly by calling repo functions");
             Console.WriteLine("/send-logs\t\t\tfor sending logs to rest api");
             Console.WriteLine("/delete-all-logs\t\t\tfor sending logs to rest api");
             Console.ReadKey();

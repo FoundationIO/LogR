@@ -28,7 +28,6 @@ namespace LogR.Service.Task
     {
         private static Faker<AppLog> fakeAppLogs;
         private ILog log;
-        private Lazy<ILogWriteRepository> logWriteRepository;
 
         static SeedService()
         {
@@ -186,10 +185,9 @@ namespace LogR.Service.Task
                 .RuleFor(p => p.Response, f => f.Lorem.Sentence());
         }
 
-        public SeedService(ILog log, Lazy<ILogWriteRepository> logWriteRepository)
+        public SeedService(ILog log)
         {
             this.log = log;
-            this.logWriteRepository = logWriteRepository;
         }
 
         public List<AppLog> GetAppLogs(int numberOfLogs)
@@ -206,14 +204,6 @@ namespace LogR.Service.Task
                 var result = (serverUrl + ControllerConstants.QueueAppLogUrl.AddFirstChar('/'))
                     .WithHeader(HeaderContants.AppId, "APPID_1")
                     .PostJsonAsync(entry).Result;
-            });
-        }
-
-        public void GenerateLogs(int numberOfLogs)
-        {
-            GenerateLogsInternal(numberOfLogs, null, (entryList) =>
-            {
-                logWriteRepository.Value.SaveLog(entryList);
             });
         }
 
