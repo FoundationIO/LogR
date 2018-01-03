@@ -176,7 +176,7 @@ namespace LogR.LogShipper
 
             if (match.Success)
             {
-                if(SafeUtils.SafeDateTime(match.Groups["longdatetime"].Value) != null)
+                if(SafeUtils.DateTime(match.Groups["longdatetime"].Value) != null)
                     log.Longdate = Convert.ToDateTime(match.Groups["longdatetime"].Value); 
 
                 if (StringUtils.IsTrimmedStringNotNullOrEmpty(match.Groups["loglevel"].Value))
@@ -248,8 +248,8 @@ namespace LogR.LogShipper
                 if (StringUtils.IsTrimmedStringNotNullOrEmpty(match.Groups["perf-function-name"].Value))
                     log.PerfFunctionName = match.Groups["perf-function-name"].Value;
 
-                if (SafeUtils.SafeDateTime(match.Groups["start-time"].Value) != null)
-                    log.StartTime = SafeUtils.SafeDateTime(match.Groups["start-time"].Value);
+                if (SafeUtils.DateTime(match.Groups["start-time"].Value) != null)
+                    log.StartTime = SafeUtils.DateTime(match.Groups["start-time"].Value);
 
                 if (StringUtils.IsTrimmedStringNotNullOrEmpty(match.Groups["perf-status"].Value))
                     log.PerfStatus = match.Groups["perf-status"].Value;
