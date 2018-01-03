@@ -33,7 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Flurl">
+      <HintPath>..\..\Service\bin\Debug\net461\Flurl.dll</HintPath>
+    </Reference>
+    <Reference Include="Flurl.Http">
+      <HintPath>..\..\Service\bin\Debug\net461\Flurl.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -43,17 +50,53 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\Framework\Infrastructure\Constants\DBType.cs">
+      <Link>LinkedFiles\DBType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Framework\Infrastructure\Strings.cs">
+      <Link>LinkedFiles\Strings.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\Framework\Infrastructure\Utils\CmdLineUtils.cs">
-      <Link>CmdLineUtils.cs</Link>
+      <Link>LinkedFiles\CmdLineUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Framework\Infrastructure\Utils\DateUtils.cs">
+      <Link>DateUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Framework\Infrastructure\Utils\ExceptionUtils.cs">
+      <Link>LinkedFiles\ExceptionUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Framework\Infrastructure\Utils\FileUtils.cs">
+      <Link>LinkedFiles\FileUtils.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Framework\Infrastructure\Utils\JsonUtils.cs">
-      <Link>JsonUtils.cs</Link>
+      <Link>LinkedFiles\JsonUtils.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Framework\Infrastructure\Utils\PositionableStreamReader.cs">
-      <Link>PositionableStreamReader.cs</Link>
+      <Link>LinkedFiles\PositionableStreamReader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Framework\Infrastructure\Utils\ReflectionUtils.cs">
+      <Link>LinkedFiles\ReflectionUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Framework\Infrastructure\Utils\SafeUtils.cs">
+      <Link>LinkedFiles\SafeUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Framework\Infrastructure\Utils\StringUtils.cs">
+      <Link>LinkedFiles\StringUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Constants\ControllerConstants.cs">
+      <Link>LinkedFiles\ControllerConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Constants\HeaderContants.cs">
+      <Link>LinkedFiles\HeaderContants.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Enums\StoredLogType.cs">
+      <Link>LinkedFiles\StoredLogType.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Models\Logs\AppLog.cs">
-      <Link>AppLog.cs</Link>
+      <Link>LinkedFiles\AppLog.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Models\Logs\RawLogData.cs">
+      <Link>LinkedFiles\RawLogData.cs</Link>
     </Compile>
     <Compile Include="AppSettings.cs" />
     <Compile Include="FileParserInfo.cs" />

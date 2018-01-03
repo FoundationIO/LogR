@@ -57,6 +57,9 @@ namespace LogR.Common.Models.Logs
         //[JsonProperty("current-source-line-number")]
         public virtual int CurrentSourceLineNumber { get; set; }
 
+        //[JsonProperty("current-tag")]
+        public virtual string CurrentTag { get; set; }
+
         //[JsonProperty("user-identity")]
         public virtual string UserIdentity { get; set; }
 

@@ -48,7 +48,7 @@
 	-webkit-box-shadow: inset 0px 0px 3px #ccc;
 	-moz-box-shadow: inset 0px 0px 3px #ccc;
 	box-shadow: inset 0px 0px 3px #ccc;
-	min-height: 28px;
+	min-height: 35px;
 	height: auto;
 }
 .VS-search .VS-search-box.VS-focus {

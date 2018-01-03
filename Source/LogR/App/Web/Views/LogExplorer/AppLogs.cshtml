@@ -1,6 +1,5 @@
 ﻿@using Framework.Web.HtmlHelpers
 @model Framework.Infrastructure.Models.Result.ReturnListWithSearchModel<LogR.Common.Models.Logs.AppLog, LogR.Common.Models.Search.AppLogSearchCriteria>
-
 <!-- Full Width Column -->
 <div class="content-wrapper">
     <div class="container-fluid">
@@ -17,25 +16,27 @@
 
         <!----------Breadcrumb------------>
         <section class="bg row">
-            <div class="col-md-12">
-                <div class="row">
-                    @Html.Partial("_NewMessage", @Model)
-                    <div class="well clearfix">
-                        <form id="frmFilter" action="/app-logs" method="get" onkeypress="return submitForm(event)">
+            <div class="row filter-section" >
+
+                @Html.Partial("_NewMessage", @Model)
+                <form id="frmFilter" action="/app-logs" method="get" onkeypress="return submitForm(event)">
+                    <div class="col-md-9">
+                        <div class="well clearfix">
                             <div id="search_box_container"></div>
-                            <div class="col-md-2 pull-right form-group">
-                                <input id="sortby" name="sortby" value="@Model.Search.SortBy" class="form-control" type="hidden">
-                                <input id="sortascending" name="sortascending" value="@Model.Search.SortAscending" class="form-control" type="hidden">
-                                <input id="pageSize" name="pageSize" value="@Model.Search.PageSize" class="form-control" type="hidden">
-                                <div class="controls pull-right btn-margin-top">
-                                    <input value="Filter Results" class="btn btn-primary form-control" type="submit">
-                                    <input id="reset" value="Reset" class="btn btn-default form-control" type="reset">
-                                </div>
-                            </div>
-                            <div id="search_query">&nbsp;</div>
-                        </form>
+                        </div>
+
                     </div>
-                </div>
+                    <div class="col-md-3 pull-right form-group">
+                        <input id="sortby" name="sortby" value="@Model.Search.SortBy" class="form-control" type="hidden">
+                        <input id="sortascending" name="sortascending" value="@Model.Search.SortAscending" class="form-control" type="hidden">
+                        <input id="pageSize" name="pageSize" value="@Model.Search.PageSize" class="form-control" type="hidden">
+                        <div class="input-group pull-right">
+                            <input value="Filter Results" class="btn btn-primary " type="submit">&nbsp;
+                            <input id="reset" value="Reset" class="btn btn-default " type="reset">&nbsp;
+                            <input id="saveFilter" value="Save Filter" class="btn btn-success " type="button">
+                        </div>
+                    </div>
+                </form>
             </div>
         </section>
 
@@ -48,10 +49,10 @@
                     <div class="box">
                         <!-- /.box-header -->
                         <div class="box-body">
-                            
-                                        
 
-                                <table class="table table-striped table-hover">
+
+
+                            <table class="table table-striped table-hover">
                                 <thead>
                                     <tr>
                                         <th scope="col" style="width:20px" class="action-cell">
@@ -61,7 +62,7 @@
                                         <th style="width:90px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Longdate" }, { "DisplayName", "Date" } })</th>
                                         <th style="width:75px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Severity" }, { "DisplayName", "Severity" } })</thstyle="width:100px">
                                         <th style="width:50px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "MachineName" }, { "DisplayName", "MachineName" } })</thstyle="width:50px">
-                                        <th style="width:50px" >@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "App" }, { "DisplayName", "App" } })</thstyle="width:50px">
+                                        <th style="width:50px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "App" }, { "DisplayName", "App" } })</thstyle="width:50px">
                                         <th style="width:50px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "RemoteAddress" }, { "DisplayName", "Ip" } })</th>
                                         <th>Message</th>
                                     </tr>
@@ -69,15 +70,38 @@
                                 <tbody>
                                     @foreach (var Current in Model.Model)
                                     {
-                                    <tr>
-                                        <td class="action-cell"><input id="selectID" name="selectID" type="checkbox" value="@Current.LogId"  data-json='{"IngestJobId": "@Current.LogId"}' /></td>
+                                        <tr>
+                                            <td class="action-cell"><input id="selectID" name="selectID" type="checkbox" value="@Current.LogId" data-json='{"IngestJobId": "@Current.LogId"}' /></td>
                                             <td>@Current.Longdate.ToLocalTime()</td>
                                             <td><span class="label @Html.Partial("_logtypeclass",Current.Severity)">@Current.Severity</span></td>
                                             <td>@Current.MachineName</td>
                                             <td>@Current.App</td>
                                             <td>@Current.RemoteAddress <br><span class="label label-success"> @Current.UserIdentity </span></td>
-                                            <td>@Current.Message <br/> <p><small>Time : <span class="label label-info"> @Current.ElapsedTime </span> Process : <span class="label label-success"> @Current.ProcessId </span> Thread : <span class="label label-info"> @Current.ThreadId </span> Function : <span class="label label-success"> @Current.CurrentFunction </span></small></p></td>
-                                    </tr>
+                                            <td><div class=" comment">@Current.Message</div>
+                                            
+                                                <div class="row">
+                                                    <div class="col-xs-2">
+                                                        <small class="stats-label">Time</small><br />
+                                                        <span class="label label-info"> @Current.ElapsedTime </span>
+                                                    </div>
+
+                                                    <div class="col-xs-2">
+                                                        <small class="stats-label">Process</small><br />
+                                                        <span class="label label-success"> @Current.ProcessId </span>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        <small class="stats-label">Thread</small><br />
+                                                        <span class="label label-danger"> @Current.ThreadId </span>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        <small class="stats-label">Function</small><br />
+                                                        <span class="label label-warning"> @Current.CurrentFunction </span>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                    </div>
+                                        
+                                            </td>
+                                        </tr>
                                     }
                                 </tbody>
                             </table>
@@ -273,5 +297,13 @@
                 ]
 
             });
+        });
+</script>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+
+            $(".comment").shorten();
+
         });
 </script>
