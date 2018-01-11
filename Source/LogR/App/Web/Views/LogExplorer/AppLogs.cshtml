@@ -20,13 +20,13 @@
 
                 @Html.Partial("_NewMessage", @Model)
                 <form id="frmFilter" action="/app-logs" method="get" onkeypress="return submitForm(event)">
-                    <div class="col-md-9">
-                        <div class="well clearfix">
+                    <div class="col-md-7">
+                        
                             <div id="search_box_container"></div>
-                        </div>
+                       
 
                     </div>
-                    <div class="col-md-3 pull-right form-group">
+                    <div class="col-md-3  form-group">
                         <input id="sortby" name="sortby" value="@Model.Search.SortBy" class="form-control" type="hidden">
                         <input id="sortascending" name="sortascending" value="@Model.Search.SortAscending" class="form-control" type="hidden">
                         <input id="pageSize" name="pageSize" value="@Model.Search.PageSize" class="form-control" type="hidden">
@@ -35,6 +35,17 @@
                             <input id="reset" value="Reset" class="btn btn-default " type="reset">&nbsp;
                             <input id="saveFilter" value="Save Filter" class="btn btn-success " type="button">
                         </div>
+
+                    </div>
+                    <div class="col-md-2 form-group">
+                       
+                        <select class="form-control" id="sel1">
+                            <option>Show list from Save Search</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                        </select>
                     </div>
                 </form>
             </div>
@@ -51,20 +62,41 @@
                         <div class="box-body">
 
 
-
-                            <table class="table table-striped table-hover">
+                            
+                            <table class="table table-striped table-hover" id="appLogTable">
                                 <thead>
                                     <tr>
                                         <th scope="col" style="width:20px" class="action-cell">
                                             <input class="sr-only" type="checkbox" id="selectIDAll">
+                                            
                                         </th>
 
-                                        <th style="width:90px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Longdate" }, { "DisplayName", "Date" } })</th>
-                                        <th style="width:75px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Severity" }, { "DisplayName", "Severity" } })</thstyle="width:100px">
-                                        <th style="width:50px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "MachineName" }, { "DisplayName", "MachineName" } })</thstyle="width:50px">
-                                        <th style="width:50px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "App" }, { "DisplayName", "App" } })</thstyle="width:50px">
-                                        <th style="width:50px">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "RemoteAddress" }, { "DisplayName", "Ip" } })</th>
-                                        <th>Message</th>
+                                        <th style="width:90px" class="Longdate">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Longdate" }, { "DisplayName", "Date" } })</th>
+                                        <th style="width:75px"  class="Severity">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Severity" }, { "DisplayName", "Severity" } })</thstyle="width:100px">
+                                        <th style="width:50px"  class="MachineName">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "MachineName" }, { "DisplayName", "MachineName" } })</thstyle="width:50px">
+                                        <th style="width:50px"  class="App">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "App" }, { "DisplayName", "App" } })</thstyle="width:50px">
+                                        <th style="width:50px"  class="RemoteAddress">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "RemoteAddress" }, { "DisplayName", "Ip" } })</th>
+                                        <th class="Msg">
+                                            Message <div class="btn-group pull-right">
+                                                <button class="btn btn-primary btn-sm dropdown-toggle" href="#" data-toggle="dropdown">
+                                                    <span class='fa fa-tasks'></span>
+                                                </button>
+                                                <ul class="dropdown-menu stay-open" role="menu" style="padding:4px;" id="grpChkBox">
+
+                                                    <li><input type="checkbox" name="Severity" /> Severity</li>
+                                                    <li><input type="checkbox" name="MachineName" /> Machine Name</li>
+                                                    <li><input type="checkbox" name="App" /> App</li>
+                                                    <li><input type="checkbox" name="RemoteAddress" /> Ip</li>
+                                                    <li><input type="checkbox"  name="userCheckbox" value="UserIdentity" /> User Name</li>
+                                                    <li><input type="checkbox" name="timeCheckbox" value="time" /> Time</li>
+                                                    <li><input type="checkbox" name="timeCheckbox" value="process" /> Process</li>
+                                                    <li><input type="checkbox" name="timeCheckbox" value="thread" /> Thread</li>
+                                                    <li><input type="checkbox" name="timeCheckbox" value="function" /> Function</li>
+
+
+                                                </ul>
+                                            </div>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -76,24 +108,24 @@
                                             <td><span class="label @Html.Partial("_logtypeclass",Current.Severity)">@Current.Severity</span></td>
                                             <td>@Current.MachineName</td>
                                             <td>@Current.App</td>
-                                            <td>@Current.RemoteAddress <br><span class="label label-success"> @Current.UserIdentity </span></td>
-                                            <td><div class=" comment">@Current.Message</div>
+                                            <td>@Current.RemoteAddress <br><span class="label label-success UserIdentity "> @Current.UserIdentity </span></td>
+                                            <td><div class="comment">@Current.Message</div>
                                             
                                                 <div class="row">
-                                                    <div class="col-xs-2">
+                                                    <div class="col-xs-2 time">
                                                         <small class="stats-label">Time</small><br />
                                                         <span class="label label-info"> @Current.ElapsedTime </span>
                                                     </div>
 
-                                                    <div class="col-xs-2">
+                                                    <div class="col-xs-2 process">
                                                         <small class="stats-label">Process</small><br />
                                                         <span class="label label-success"> @Current.ProcessId </span>
                                                     </div>
-                                                    <div class="col-xs-2">
+                                                    <div class="col-xs-2 thread">
                                                         <small class="stats-label">Thread</small><br />
                                                         <span class="label label-danger"> @Current.ThreadId </span>
                                                     </div>
-                                                    <div class="col-xs-2">
+                                                    <div class="col-xs-2 function">
                                                         <small class="stats-label">Function</small><br />
                                                         <span class="label label-warning"> @Current.CurrentFunction </span>
                                                     </div>
@@ -185,116 +217,161 @@
 </script>
 
 <script type="text/javascript" charset="utf-8">
-        $(function () {
-            window.visualSearch = new VisualSearch({
-                el: $('#search_box_container'),
-                placeholder: "Customizable Placeholder!",
-                strict: false,	//Strict Parameters, strict values?
-                search: function (json) {
-                    $("div#search_query").html(json);
-                },
-                parameters: [
-                    {
-                        key: "Date",
-                        category: "Date Range",
-                        placeholder: "Log Date",
-                        type: "date",
-                        min: 1,
-                        max: 10
+
+    doSearch = function (url,key, searchterm, res) {
+                console.log('key get value', key);
+                $.getJSON(url, function (data) {
+                    if (data.isSuccess) {
+                        console.log('data', data);
+                        $data = data;
+                        res(data.model);
+                    } else {
+                        console.log('error - fail',data);
+                    }
+                });
+    };
+
+            $(function () {
+                window.visualSearch = new VisualSearch({
+                    el: $('#search_box_container'),
+                    placeholder: "Search",
+                    strict: false,	//Strict Parameters, strict values?
+                    search: function (json) {
+                        console.log('search params', json);
+                        $("div#search_query").html(json);
                     },
-                    {
-                        key: "LogLevel",
-                        placeholder: "Log Level",
-                        operators: [
-							"is",
-							"is not"
-						],
-                        values: ['INFO', 'ERROR', 'WARNING', 'DEBUG', 'TRACE', 'CRITICAL', 'SQL', 'SQL-BEGIN', 'SQL-ROLLBACK', 'SQL-COMMIT']
-                    },
-                    {
-                        key: "Machine",
-                        placeholder: "Machine",
-                        operators: [
-							"is",
-							"is not"
-						],
-                        values: ['Machine-1', 'Machine-1']
-                    },
-                    {
-                        key: "App",
-                        operators: [
-							"is",
-							"is not"
-						],
-                        placeholder: "App",
-                        values: ['App-1', 'App-2']
-                    },
-                    {
-                        key: "Ip",
-                        operators: [
-							"is",
-							"is not"
-						],
-                        placeholder: "IP Address",
-                        values: ['Machine-1', 'Machine-2']
-                    },
-                    {
-                        key: "Username",
-                        operators: [
-							"is",
-							"is not"
-						],
-                        placeholder: "User Name",
-                        values: ['User-1', 'User-2']
-                    },
-                    {
-                        key: "ElapsedTime",
-                        operators: [
-							"is",
-							"is not"
-						],
-                        placeholder: "Elapsed Time",
-                        values: ['Time-1', 'Time-2']
-                    },
-                    {
-                        key: "ThreadId",
-                        operators: [
-							"is",
-							"is not"
-						],
-                        placeholder: "Thread Id",
-                        values: ['Thread-1', 'Thread-2']
-                    },
-                    {
-                        key: "ProcessId",
-                        operators: [
-							"is",
-							"is not"
-						],
-                        placeholder: "Process Id",
-                        values: ['Process-1', 'Process-2']
-                    },
-                    {
-                        key: "FileName",
-                        operators: [
-							"is",
-							"is not"
-						],
-                        placeholder: "File Name",
-                        values: ['File-1', 'File-2']
-                    },
-                    {
-                        key: "FunctionName",
-                        operators: [
-							"is",
-							"is not"
-						],
-                        placeholder: "Function Name",
-                        values: ['Function-1', 'Function-2']
-                    },
-                ],
-                defaultquery: [
-                ]
+
+                    parameters: [
+                        {
+                            key: "Date",
+                            category: "Date Range",
+                            placeholder: "Log Date",
+                            type: "date",
+                            min: 1,
+                            max: 10
+                        },
+                        {
+                            key: "LogLevel",
+                            placeholder: "Log Level",
+                            operators: [
+							    "is",
+							    "is not"
+						    ],
+                            getValues: function (key, searchterm, res) {
+                                doSearch("@Url.Action("LogLevels", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
+                            }
+                        },
+                        {
+                            key: "Machine",
+                            placeholder: "Machine",
+                            operators: [
+							    "is",
+							    "is not"
+                            ],
+                            getValues: function (key, searchterm, res) {
+                                doSearch("@Url.Action("MachineNames", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
+                            },
+                        },
+                        {
+                            key: "App",
+                            getValues: function (key, searchterm, res) {
+                                doSearch("@Url.Action("AppNames", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
+                            },
+                            operators: [
+                                "is",
+                                "is not"
+                            ],
+                            placeholder: "App"
+                        },
+                        {
+                            key: "Ip",
+                            operators: [
+                                "is",
+                                "is not"
+                            ],
+                            placeholder: "IP Address",
+                            getValues: function (key, searchterm, res) {
+                                doSearch("@Url.Action("Ips", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
+                            },
+                        },
+                        {
+                            key: "Username",
+                            operators: [
+                                "is",
+                                "is not"
+                            ],
+                            placeholder: "User Name",
+                            getValues: function (key, searchterm, res) {
+                                doSearch("@Url.Action("UserNames", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
+                            },
+                        },
+                        {
+                            key: "ElapsedTime",
+                            operators: [
+                                "is",
+                                "is not"
+                            ],
+                            placeholder: "Elapsed Time",
+                            values: ['Time-1', 'Time-2']
+                        },
+                        {
+                            key: "ThreadId",
+                            operators: [
+                                "is",
+                                "is not"
+                            ],
+                            placeholder: "Thread Id",
+                            getValues: function (key, searchterm, res) {
+                                doSearch("@Url.Action("ThreadIds", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
+                            },
+                        },
+                        {
+                            key: "ProcessId",
+                            operators: [
+                                "is",
+                                "is not"
+                            ],
+                            placeholder: "Process Id",
+                            getValues: function (key, searchterm, res) {
+                                doSearch("@Url.Action("ProcessIds", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
+                            },
+                        },
+                        {
+                            key: "FileName",
+                            operators: [
+                                "is",
+                                "is not"
+                            ],
+                            placeholder: "File Name",
+                            getValues: function (key, searchterm, res) {
+                                doSearch("@Url.Action("FileNames", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
+                            }
+                        },
+                        {
+                            key: "FunctionName",
+                            operators: [
+                                "is",
+                                "is not"
+                            ],
+                            placeholder: "Function Name",
+                            getValues: function (key, searchterm, res) {
+                                doSearch("@Url.Action("Functions", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
+                            }
+                        },
+                        {
+                            key: "IpAddress",
+                            operators: [
+                                "is",
+                                "is not"
+                            ],
+                            placeholder: "Ip Address",
+                            getValues: function (key, searchterm, res) {
+                                doSearch("@Url.Action("Ips", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
+                            }
+                        },
+                    ],
+                    defaultquery: [
+                    ]
 
             });
         });
@@ -305,5 +382,28 @@
 
             $(".comment").shorten();
 
+        });
+</script>
+<script>
+        $(function () {
+            var $chk = $("#grpChkBox input:checkbox");
+            var $tbl = $("#appLogTable");
+            var $tblhead = $("#appLogTable th");
+
+            $chk.prop('checked', true);
+
+            $chk.click(function () {
+                var colToHide = $tblhead.filter("." + $(this).attr("name"));
+                var index = $(colToHide).index();
+                $tbl.find('tr :nth-child(' + (index + 1) + ')').toggle();
+            });
+        });
+</script>
+<script type="text/javascript">
+        $(document).ready(function () {
+            $('input[type="checkbox"]').click(function () {
+                var inputValue = $(this).attr("value");
+                $("." + inputValue).toggle();
+            });
         });
 </script>
