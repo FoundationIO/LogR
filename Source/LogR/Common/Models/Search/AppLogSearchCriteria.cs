@@ -1,10 +1,12 @@
-﻿using Framework.Infrastructure.Models.Search;
+﻿using System.Collections.Generic;
+using Framework.Infrastructure.Models.Search;
 
 namespace LogR.Common.Models.Search
 {
     public class AppLogSearchCriteria : BaseSearchCriteria
     {
-        public int ApplicationId { get; set; }
+        public List<SearchTerm> SearchTerms { get; set; }
+        /*public int ApplicationId { get; set; }
 
         public virtual string CorelationId { get; set; }
 
@@ -34,6 +36,6 @@ namespace LogR.Common.Models.Search
 
         public virtual string Result { get; set; }
 
-        public virtual int ResultCode { get; set; }
+        public virtual int ResultCode { get; set; }*/
     }
 }
