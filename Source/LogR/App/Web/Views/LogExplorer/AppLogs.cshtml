@@ -38,14 +38,10 @@
 
                     </div>
                     <div class="col-md-2 form-group">
-                       
-                        <select class="form-control" id="sel1">
-                            <option>Show list from Save Search</option>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
+                        <select id="js-example-data-array" name="select" class="js-example-data-array form-control">
+                            <option value="" selected disabled> Select Search</option>
                         </select>
+                      
                     </div>
                 </form>
             </div>
@@ -78,9 +74,9 @@
                                         <th style="width:50px"  class="RemoteAddress">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "RemoteAddress" }, { "DisplayName", "Ip" } })</th>
                                         <th class="Msg">
                                             Message <div class="btn-group pull-right">
-                                                <button class="btn btn-primary btn-sm dropdown-toggle" href="#" data-toggle="dropdown">
-                                                    <span class='fa fa-tasks'></span>
-                                                </button>
+                                             
+                                                   <a  href="#" data-toggle="dropdown"> <span class='fa fa-tasks dropdown-toggle ' ></span></a>
+                                             
                                                 <ul class="dropdown-menu stay-open" role="menu" style="padding:4px;" id="grpChkBox">
 
                                                     <li><input type="checkbox" name="Severity" /> Severity</li>
@@ -237,8 +233,39 @@
                     placeholder: "Search",
                     strict: false,	//Strict Parameters, strict values?
                     search: function (json) {
-                        console.log('search params', json);
-                        $("div#search_query").html(json);
+                        var searchJson = jQuery.parseJSON(json);
+                        $("div#search_query").empty();
+                        console.log('search params', searchJson);
+                        for (var item = 0; item < searchJson.length; item++) {
+
+                            var keyItem = $("< input type= 'hidden' />");
+                            keyItem.name = "SearchTerms[" + item + "].Key";
+                            keyItem.val(searchJson[item].key);
+                            $('<input>').attr({
+                                type: 'hidden',
+                                name: keyItem.name
+                            }).val(searchJson[item].key).appendTo($("div#search_query"));
+
+
+
+                            var valueItem = $("< input type= 'hidden' />");
+                            valueItem.name = "SearchTerms[" + item + "].Value";
+                            valueItem.val(searchJson[item].value);
+                            $('<input>').attr({
+                                type: 'hidden',
+                                name: valueItem.name
+                            }).val(searchJson[item].value).appendTo($("div#search_query"));
+
+                            var operatorItem = $("< input type= 'hidden' />");
+                            operatorItem.name = "SearchTerms[" + item + "].Operator";
+                            operatorItem.val(searchJson[item].operator);
+                            $('<input>').attr({
+                                type: 'hidden',
+                                name: operatorItem.name
+                            }).val(searchJson[item].operator).appendTo($("div#search_query"));
+
+                        }
+
                     },
 
                     parameters: [
@@ -406,4 +433,44 @@
                 $("." + inputValue).toggle();
             });
         });
+</script>
+
+<script>
+        // Code goes here
+
+        $('.js-data-example-ajax').select2({
+            ajax: {
+                url: 'https://api.github.com/search/repositories',
+                dataType: 'json'
+                // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+            }
+        });
+
+        var data = [
+            {
+                id: 0,
+                text: 'enhancement'
+            },
+            {
+                id: 1,
+                text: 'bug'
+            },
+            {
+                id: 2,
+                text: 'duplicate'
+            },
+            {
+                id: 3,
+                text: 'invalid'
+            },
+            {
+                id: 4,
+                text: 'wontfix'
+            }
+        ];
+        $(".js-example-data-array").select2({
+            data: data
+        })
+
+
 </script>
