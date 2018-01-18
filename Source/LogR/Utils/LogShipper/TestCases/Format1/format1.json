@@ -1,0 +1,11 @@
+﻿{
+  "LogServerUrl": "http://localhost:9090",
+  "LogFilePathAndPattern": [
+    {
+      "LogFilePath": "{ThisConfigFileFolder}",
+      "FilePattern": "*.log",
+      "LogExtractionPattern": "(?<app>[^\t]*)\t(?<intloglevel>[^\t]*)\t(?<loglevel>[^\t]*)\t(?<module>[^\t]*)\t(?<shorttime>[^\t]*)\t(?<message>[^\t]*)$",
+      "ExtractionPatternForFileName": "(?<year>[0-9]{4})(?<month>[0-9]{2})(?<day>[0-9]{2}).*"
+    }
+  ]
+}

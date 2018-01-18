@@ -11,6 +11,6 @@ namespace LogR.LogShipper
         public string LogFilePath { get; set; }
         public string FilePattern { get; set; }
         public string LogExtractionPattern { get; set; }
-        
+        public string ExtractionPatternForFileName { get; set; }
     }
 }

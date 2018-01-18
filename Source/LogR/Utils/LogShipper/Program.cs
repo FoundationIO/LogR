@@ -26,31 +26,59 @@ namespace LogR.LogShipper
         {
             fileParserInfoStateList = GetFileParserInfoStateData();
             var appSettings = GetAppSettings();
+            if (appSettings == null)
+            {
+                Console.WriteLine($"Unable to find the App Settings in {GetAppSettingsFile()}");
+                return;
+            }
+
+            RemoveDeletedFileListParserInfo(ref fileParserInfoStateList);
 
             var logFilePathAndPattern = new List<LogParseInfo>();
 
             if (args.IsParamAvailable("c"))
             {
-                var logFilePath = args.GetParamValueAsString("logpath");
-                var filePattern = args.GetParamValueAsString("logfilter", "*.log");
-                var logExtractionPattern = args.GetParamValueAsString("loglinepattern");
-                if (String.IsNullOrEmpty(logFilePath))
+                if (args.IsParamAvailable("configfile"))
                 {
-                    Console.WriteLine("/logpath is not specified (folder path)");
-                    return;
-                }
-                if (String.IsNullOrEmpty(filePattern))
-                {
-                    Console.WriteLine("/logfilter is not specified (file filter eg. *.log)");
-                    return;
-                }
+                    var configFile = args.GetParamValueAsString("configfile");
+                    var settings = GetAppSettings(configFile);
+                    if (settings == null)
+                    {
+                        Console.WriteLine($"Confile - {configFile} does not exists or does not have application details");
+                        return;
+                    }
 
-                if (String.IsNullOrEmpty(logExtractionPattern))
-                {
-                    Console.WriteLine("/loglinepattern is not specified, using the default pattern");
-                    logExtractionPattern = defaultLogExpression.ToString();
+                    if (settings.LogFilePathAndPattern == null || settings.LogFilePathAndPattern.Count == 0)
+                    {
+                        Console.WriteLine($"Confile - {configFile} does not have application details");
+                        return;
+                    }
+
+                    logFilePathAndPattern.AddRange(settings.LogFilePathAndPattern);
                 }
-                logFilePathAndPattern.Add(new LogParseInfo { FilePattern = filePattern, LogExtractionPattern = logExtractionPattern , LogFilePath = logFilePath });
+                else
+                {
+                    var logFilePath = args.GetParamValueAsString("logpath");
+                    var filePattern = args.GetParamValueAsString("logfilter", "*.log");
+                    var logExtractionPattern = args.GetParamValueAsString("loglinepattern");
+                    if (String.IsNullOrEmpty(logFilePath))
+                    {
+                        Console.WriteLine("/logpath is not specified (folder path)");
+                        return;
+                    }
+                    if (String.IsNullOrEmpty(filePattern))
+                    {
+                        Console.WriteLine("/logfilter is not specified (file filter eg. *.log)");
+                        return;
+                    }
+
+                    if (String.IsNullOrEmpty(logExtractionPattern))
+                    {
+                        Console.WriteLine("/loglinepattern is not specified, using the default pattern");
+                        logExtractionPattern = defaultLogExpression.ToString();
+                    }
+                    logFilePathAndPattern.Add(new LogParseInfo { FilePattern = filePattern, LogExtractionPattern = logExtractionPattern, LogFilePath = logFilePath });
+                }
 
                 ProcessLogs(true, logFilePathAndPattern);
             }
@@ -66,23 +94,51 @@ namespace LogR.LogShipper
 
         static long GetLastReadPositionForFile(string fileName)
         {
-            return 0;
+            var state = fileParserInfoStateList.FirstOrDefault(x => x.FileName.ToUpper().Equals(fileName));
+            if (state == null)
+                return 0;
+            return state.LastReadPosition;
         }
 
-        static AppSettings GetAppSettings()
+        static AppSettings GetAppSettings(string fileName)
         {
-            var filename = GetAppSettingsFile();
-            if (File.Exists(filename))
+            if (File.Exists(fileName))
             {
                 var result = new AppSettings();
-                var data = File.ReadAllText(GetAppSettingsFile());
+                var data = File.ReadAllText(fileName);
                 if (string.IsNullOrEmpty(data))
                     return result;
                 result = JsonUtils.Deserialize<AppSettings>(data);
+
+                var configDirectory = Path.GetDirectoryName(fileName);
+
+                if (result != null && result.LogFilePathAndPattern != null && result.LogFilePathAndPattern.Count > 0)
+                {
+                    foreach (var pattern in result.LogFilePathAndPattern)
+                    {
+                        if (String.IsNullOrEmpty(pattern.LogFilePath) || pattern.LogFilePath == ".")
+                            pattern.LogFilePath = Directory.GetCurrentDirectory();
+                        pattern.LogFilePath = pattern.LogFilePath.Replace("{ThisConfigFileFolder}", configDirectory);
+                    }
+                }
+
                 return result;
             }
             else
+            {
                 return null;
+            }
+        }
+
+
+        static AppSettings GetAppSettings()
+        {
+            return GetAppSettings(GetAppSettingsFile());
+        }
+
+        private static void RemoveDeletedFileListParserInfo(ref List<FileParserInfo> fileParserInfo)
+        {
+            fileParserInfo.RemoveAll(x => File.Exists(x.FileName) == false);
         }
 
         static List<FileParserInfo> GetFileParserInfoStateData()
@@ -96,10 +152,12 @@ namespace LogR.LogShipper
                     return result;
 
                 result = JsonUtils.Deserialize<List<FileParserInfo>>(data);
-
-                return result;
             }
-            return null;           
+
+            if (result == null)
+                result = new List<FileParserInfo>();
+
+            return result;           
         }
 
         static void ProcessLogs(bool isCommandline, List<LogParseInfo> logFilePathAndPatterns)
@@ -108,23 +166,32 @@ namespace LogR.LogShipper
             {
                 foreach (var pattern in logFilePathAndPatterns)
                 {
+                    //Add all the files and process them
+                    foreach (var file in Directory.EnumerateFiles(pattern.LogFilePath, "*.*",
+                        SearchOption.AllDirectories).Where(path => Regex.Match(Path.GetFileName(path), pattern.FilePattern).Success))
+                    {
+                        modifiedFileCollection.Add(file);
+                    }
+
                     var fileWatcher = new FileSystemWatcher
                     {
                         Path = pattern.LogFilePath,
                         NotifyFilter = NotifyFilters.LastWrite,
-                        Filter = pattern.FilePattern,
+                        Filter = "*.*",
                         EnableRaisingEvents = true,
                     };
 
                     fileWatcher.Changed += (object sender, FileSystemEventArgs e) =>
                     {
+                        if (Regex.Match(Path.GetFileName(e.FullPath), pattern.FilePattern).Success == false)
+                            return;
                         modifiedFileCollection.Add(e.FullPath);
                     };
                 }
                 do
                 {
                     var fileName = modifiedFileCollection.Take();
-                    DoParseAndSendLogs(fileName, GetLastReadPositionForFile(fileName), null);
+                    DoParseAndSendLogs(fileName, GetLastReadPositionForFile(fileName), null,null);
                     Thread.Sleep(100);
                 } while (true);
             }
@@ -137,14 +204,16 @@ namespace LogR.LogShipper
                 }
                 foreach(var file in Directory.GetFiles(item.LogFilePath,item.FilePattern))
                 {
-                    DoParseAndSendLogs(file, GetLastReadPositionForFile(file), item.LogExtractionPattern);
+                    DoParseAndSendLogs(Path.GetFullPath(file), GetLastReadPositionForFile(file), item.LogExtractionPattern, item.ExtractionPatternForFileName);
                 }                
             }
         }
 
 
-        static void DoParseAndSendLogs(string fileName, long lastLeftPosition, string extractionPattern)
+        static void DoParseAndSendLogs(string fileName, long lastLeftPosition, string extractionPattern, string extractionPatternForFileName)
         {
+            Console.WriteLine("Processing log - " + fileName + " from location - " + lastLeftPosition + " for pattern - " + extractionPattern);
+
             using (var reader = new PositionableStreamReader(fileName,Encoding.UTF8))
             {
                 reader.Position = lastLeftPosition;
@@ -152,7 +221,7 @@ namespace LogR.LogShipper
                 {
                     var line = reader.ReadLine();
 
-                    var appLog = GetAppLogFromLine(fileName, line, extractionPattern);
+                    var appLog = GetAppLogFromLine(fileName, line, extractionPattern, extractionPatternForFileName);
                     if (appLog != null)
                         SendAppLogToServer(appLog);
                 }
@@ -160,7 +229,7 @@ namespace LogR.LogShipper
             }
         }
 
-        static AppLog GetAppLogFromLine(string fileName, string line, string extractionPattern)
+        static AppLog GetAppLogFromLine(string fileName, string line, string extractionPattern, string extractionPatternForFileName)
         {
             AppLog log = new AppLog();
             Match match;
@@ -183,6 +252,31 @@ namespace LogR.LogShipper
                 else if (match.Groups["shorttime"].Value.IsTrimmedStringNotNullOrEmpty())
                 {
                     log.Longdate = SafeUtils.DateTime(match.Groups["shorttime"].Value);
+
+                    if (match.Groups["shortdate"].Value.IsTrimmedStringNotNullOrEmpty())
+                    {
+                        var shortDate = DateTime.UtcNow;
+                        shortDate = SafeUtils.DateTime(match.Groups["shortdate"].Value);
+                        log.Longdate =  log.Longdate.UpdateDatePart(shortDate.Date);
+                    }
+                    else
+                    {
+                        var shortFilename = Path.GetFileName(fileName);
+                        var expression = new Regex(extractionPatternForFileName);
+                        var fileNameMatch = expression.Match(shortFilename ?? "");
+
+                        if ((fileNameMatch.Groups["year"].Value.IsTrimmedStringNotNullOrEmpty()) &&
+                            (fileNameMatch.Groups["month"].Value.IsTrimmedStringNotNullOrEmpty()) &&
+                            (fileNameMatch.Groups["day"].Value.IsTrimmedStringNotNullOrEmpty()))
+                        {
+                            log.Longdate = log.Longdate.UpdateDatePart(SafeUtils.Int(fileNameMatch.Groups["year"].Value), SafeUtils.Int(fileNameMatch.Groups["month"].Value) , SafeUtils.Int(fileNameMatch.Groups["day"].Value));
+                        }
+                        else
+                        {
+                            Console.WriteLine("Unable to get the Log Date for Line - " + line);
+                        }
+                        
+                    }
                 }
                 else
                 {
@@ -191,9 +285,12 @@ namespace LogR.LogShipper
 
                 if (match.Groups["loglevel"].Value.IsTrimmedStringNotNullOrEmpty())
                     log.Severity = match.Groups["loglevel"].Value;
+                
 
                 if (match.Groups["machine"].Value.IsTrimmedStringNotNullOrEmpty())
                     log.MachineName = match.Groups["machine"].Value;
+                else
+                    log.MachineName = Environment.MachineName;
 
                 if (SafeUtils.Int(match.Groups["processid"].Value) != 0)
                     log.ProcessId = SafeUtils.Int(match.Groups["processid"].Value);
@@ -249,6 +346,9 @@ namespace LogR.LogShipper
                 if (match.Groups["app"].Value.IsTrimmedStringNotNullOrEmpty())
                     log.App = match.Groups["app"].Value;
 
+                if (match.Groups["module"].Value.IsTrimmedStringNotNullOrEmpty())
+                    log.Module = match.Groups["module"].Value;
+
                 if (match.Groups["perf-module"].Value.IsTrimmedStringNotNullOrEmpty())
                     log.PerfModule = match.Groups["perf-module"].Value;
 
@@ -300,22 +400,25 @@ namespace LogR.LogShipper
             }
             var fInfo = fileParserInfoStateList.FirstOrDefault(x => x.FileName.ToUpper() == fileName.ToUpper());
             if (fInfo == null)
-                fInfo = new FileParserInfo { FileName = fileName};
-            
+            {
+                fInfo = new FileParserInfo {FileName = fileName};
+                fileParserInfoStateList.Add(fInfo);
+            }
+
             fInfo.LastReadPosition = position;
             fInfo.LastUpdatedTime = DateTime.Now;
 
-            File.WriteAllText(GetFileParserInfoStateFile(), JsonUtils.Serialize(fInfo));
+            File.WriteAllText(GetFileParserInfoStateFile(), JsonUtils.Serialize(fileParserInfoStateList));
         }
 
         static string GetFileParserInfoStateFile()
         {
-            return Path.Combine(Directory.GetCurrentDirectory(),"CurrentFileParserState.json");
+            return Path.Combine(FileUtils.GetCurrentDirectory(),"CurrentFileParserState.json");
         }
 
         static string GetAppSettingsFile()
         {
-            return Path.Combine(Directory.GetCurrentDirectory(), "LogFileAndPatternSettings.json");
+            return Path.Combine(FileUtils.GetCurrentDirectory(), "LogFileAndPatternSettings.json");
         }
         
     }

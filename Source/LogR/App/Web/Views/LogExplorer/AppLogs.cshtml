@@ -71,6 +71,7 @@
                                         <th style="width:75px"  class="Severity">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Severity" }, { "DisplayName", "Severity" } })</thstyle="width:100px">
                                         <th style="width:50px"  class="MachineName">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "MachineName" }, { "DisplayName", "MachineName" } })</thstyle="width:50px">
                                         <th style="width:50px"  class="App">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "App" }, { "DisplayName", "App" } })</thstyle="width:50px">
+                                        <th style="width:50px"  class="Module">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "Module" }, { "DisplayName", "Module" } })</thstyle="width:50px">
                                         <th style="width:50px"  class="RemoteAddress">@Html.Partial("_SmartLink", Model.Search, new ViewDataDictionary(ViewData) { { "ColumnName", "RemoteAddress" }, { "DisplayName", "Ip" } })</th>
                                         <th class="Msg">
                                             Message <div class="btn-group pull-right">
@@ -82,13 +83,13 @@
                                                     <li><input type="checkbox" name="Severity" /> Severity</li>
                                                     <li><input type="checkbox" name="MachineName" /> Machine Name</li>
                                                     <li><input type="checkbox" name="App" /> App</li>
+                                                    <li><input type="checkbox" name="Module" /> Module</li>
                                                     <li><input type="checkbox" name="RemoteAddress" /> Ip</li>
                                                     <li><input type="checkbox"  name="userCheckbox" value="UserIdentity" /> User Name</li>
                                                     <li><input type="checkbox" name="timeCheckbox" value="time" /> Time</li>
                                                     <li><input type="checkbox" name="timeCheckbox" value="process" /> Process</li>
                                                     <li><input type="checkbox" name="timeCheckbox" value="thread" /> Thread</li>
                                                     <li><input type="checkbox" name="timeCheckbox" value="function" /> Function</li>
-
 
                                                 </ul>
                                             </div>
@@ -104,6 +105,7 @@
                                             <td><span class="label @Html.Partial("_logtypeclass",Current.Severity)">@Current.Severity</span></td>
                                             <td>@Current.MachineName</td>
                                             <td>@Current.App</td>
+                                            <td>@Current.Module</td>
                                             <td>@Current.RemoteAddress <br><span class="label label-success UserIdentity "> @Current.UserIdentity </span></td>
                                             <td><div class="comment">@Current.Message</div>
                                             

@@ -53,3 +53,4 @@ Data/**
 *.sqlite3
 ci/tools/
 *.coverage
+Source/LogR/Utils/LogShipper/CurrentFileParserState.json

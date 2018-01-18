@@ -1,0 +1,10 @@
+﻿{
+  "LogServerUrl": "http://localhost:9090",
+  "LogFilePathAndPattern": [
+    {
+      "LogFilePath": ".\\TestCases\\Format1\\",
+      "FilePattern": "*.log",
+      "LogExtractionPattern": "(?<app>[^\\t]*)\\t(?<intloglevel>[^\\t]*)\\t(?<loglevel>[^\\t]*)\\t(?<category>[^\\t]*)\\t(?<time>[^\\t]*)\\t(?<message>[^\\t]*)$"
+    }
+  ]
+}

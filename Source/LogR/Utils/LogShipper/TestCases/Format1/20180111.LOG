@@ -1,0 +1,6 @@
+GL	00	INFO	CAT1	10:17:41.37	Log File - .\20180111.LOG - opened on 01/11/2018.  Current file size is:0 KB or 0.00 MB
+GL	00	INFO	CAT1	10:17:41.37	Logger version - xyz
+EJ	00	INFO	CAT2	10:17:41.37	Line 1
+EJ	00	INFO	CMM2	10:17:41.70	Line 2
+EJ	00	INFO	CMM3	10:32:40.27	Line 3
+EJ	00	INFO	CMM1	10:32:40.27	Line 4

@@ -53,7 +53,7 @@
     <Compile Include="..\..\..\Framework\Infrastructure\Constants\DBType.cs">
       <Link>LinkedFiles\DBType.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\Framework\Infrastructure\Strings.cs">
+    <Compile Include="..\..\..\Framework\Infrastructure\Constants\Strings.cs">
       <Link>LinkedFiles\Strings.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Framework\Infrastructure\Utils\CmdLineUtils.cs">
@@ -106,11 +106,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="LogFileAndPatternSettings.json" />
+    <None Include="TestCases\Format1\20180111.LOG" />
+    <None Include="TestCases\Format1\format1.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
       <Version>10.0.3</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

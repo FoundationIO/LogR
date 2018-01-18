@@ -39,6 +39,9 @@ namespace LogR.Common.Models.Logs
         //[JsonProperty("app")]
         public virtual string App { get; set; }
 
+        //[JsonProperty("module")]
+        public virtual string Module { get; set; }
+
         //[JsonProperty("machine-name")]
         public virtual string MachineName { get; set; }
 
