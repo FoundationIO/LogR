@@ -14,9 +14,15 @@ namespace LogR.Common.Constants
             public const string IsNot = "is not";
             public const string Contains = "contains";
             public const string NotContains = "not contains";
+            public const string StartsWith = "starts with";
+            public const string EndsWith = "ends with";
+
             public const string GreaterThan = ">";
             public const string LessThan = "<";
+            public const string GreaterThanOrEqualTo = ">=";
+            public const string LessThanOrEqualTo = "<=";
             public const string EqualTo = "=";
+            public const string NotEqualTo = "!=";
         }
 
         public static class AppLogs

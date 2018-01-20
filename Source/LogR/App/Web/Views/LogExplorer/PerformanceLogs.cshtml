@@ -1,4 +1,5 @@
 ﻿@using Framework.Web.HtmlHelpers
+@using LogR.Common.Constants
 
 @model Framework.Infrastructure.Models.Result.ReturnListWithSearchModel<LogR.Common.Models.Logs.PerfLog, LogR.Common.Models.Search.PerformanceLogSearchCriteria>
 <!-- Full Width Column -->
@@ -208,41 +209,53 @@
 
                     parameters: [
                         {
-                            key: "Date",
+                            key: "@SearchFieldContants.AppLogs.Date",
                             category: "Date Range",
                             placeholder: "Log Date",
                             type: "date",
                             min: 1,
                             max: 10
                         },
-                        
+
                         {
-                            key: "Machine",
+                            key: "@SearchFieldContants.PerformanceLogs.Machine",
                             placeholder: "Machine",
                             operators: [
-							    "is",
-							    "is not"
+                                "@SearchFieldContants.Operators.Is",
+                                "@SearchFieldContants.Operators.IsNot",
+                                "@SearchFieldContants.Operators.Contains",
+                                "@SearchFieldContants.Operators.NotContains",
+                                "@SearchFieldContants.Operators.StartsWith",
+                                "@SearchFieldContants.Operators.EndsWith"
                             ],
                             getValues: function (key, searchterm, res) {
                                 doSearch("@Url.Action("MachineNames", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
                             },
                         },
                         {
-                            key: "App",
+                            key: "@SearchFieldContants.AppLogs.App",
                             getValues: function (key, searchterm, res) {
                                 doSearch("@Url.Action("AppNames", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
                             },
                             operators: [
-                                "is",
-                                "is not"
+                                "@SearchFieldContants.Operators.Is",
+                                "@SearchFieldContants.Operators.IsNot",
+                                "@SearchFieldContants.Operators.Contains",
+                                "@SearchFieldContants.Operators.NotContains",
+                                "@SearchFieldContants.Operators.StartsWith",
+                                "@SearchFieldContants.Operators.EndsWith"
                             ],
                             placeholder: "App"
                         },
                         {
-                            key: "Ip",
+                            key: "@SearchFieldContants.AppLogs.Ip",
                             operators: [
-                                "is",
-                                "is not"
+                                "@SearchFieldContants.Operators.Is",
+                                "@SearchFieldContants.Operators.IsNot",
+                                "@SearchFieldContants.Operators.Contains",
+                                "@SearchFieldContants.Operators.NotContains",
+                                "@SearchFieldContants.Operators.StartsWith",
+                                "@SearchFieldContants.Operators.EndsWith"
                             ],
                             placeholder: "IP Address",
                             getValues: function (key, searchterm, res) {
@@ -250,10 +263,14 @@
                             },
                         },
                         {
-                            key: "Username",
+                            key: "@SearchFieldContants.AppLogs.Username",
                             operators: [
-                                "is",
-                                "is not"
+                                "@SearchFieldContants.Operators.Is",
+                                "@SearchFieldContants.Operators.IsNot",
+                                "@SearchFieldContants.Operators.Contains",
+                                "@SearchFieldContants.Operators.NotContains",
+                                "@SearchFieldContants.Operators.StartsWith",
+                                "@SearchFieldContants.Operators.EndsWith"
                             ],
                             placeholder: "User Name",
                             getValues: function (key, searchterm, res) {
@@ -261,7 +278,7 @@
                             },
                         },
                         {
-                            key: "ElapsedTime",
+                            key: "@SearchFieldContants.AppLogs.ElapsedTime",
                             operators: [
                                 "is",
                                 "is not"
@@ -270,7 +287,7 @@
                             values: ['Time-1', 'Time-2']
                         },
                         {
-                            key: "ThreadId",
+                            key: "@SearchFieldContants.AppLogs.ThreadId",
                             operators: [
                                 "is",
                                 "is not"
@@ -281,7 +298,7 @@
                             },
                         },
                         {
-                            key: "ProcessId",
+                            key: "@SearchFieldContants.AppLogs.ProcessId",
                             operators: [
                                 "is",
                                 "is not"
@@ -292,10 +309,14 @@
                             },
                         },
                         {
-                            key: "FileName",
+                            key: "@SearchFieldContants.AppLogs.FileName",
                             operators: [
-                                "is",
-                                "is not"
+                                "@SearchFieldContants.Operators.Is",
+                                "@SearchFieldContants.Operators.IsNot",
+                                "@SearchFieldContants.Operators.Contains",
+                                "@SearchFieldContants.Operators.NotContains",
+                                "@SearchFieldContants.Operators.StartsWith",
+                                "@SearchFieldContants.Operators.EndsWith"
                             ],
                             placeholder: "File Name",
                             getValues: function (key, searchterm, res) {
@@ -303,27 +324,20 @@
                             }
                         },
                         {
-                            key: "FunctionName",
+                            key: "@SearchFieldContants.AppLogs.FunctionName",
                             operators: [
-                                "is",
-                                "is not"
+                                "@SearchFieldContants.Operators.Is",
+                                "@SearchFieldContants.Operators.IsNot",
+                                "@SearchFieldContants.Operators.Contains",
+                                "@SearchFieldContants.Operators.NotContains",
+                                "@SearchFieldContants.Operators.StartsWith",
+                                "@SearchFieldContants.Operators.EndsWith"
                             ],
                             placeholder: "Function Name",
                             getValues: function (key, searchterm, res) {
                                 doSearch("@Url.Action("Functions", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
                             }
-                        },
-                        {
-                            key: "IpAddress",
-                            operators: [
-                                "is",
-                                "is not"
-                            ],
-                            placeholder: "Ip Address",
-                            getValues: function (key, searchterm, res) {
-                                doSearch("@Url.Action("Ips", "LogExplorer")?keyword=" + searchterm,key, searchterm, res);
-                            }
-                        },
+                        }
                     ],
                     defaultquery: [
                     ]
