@@ -21,15 +21,15 @@ namespace LogR.Common.Constants
             public const string LessThan = "<";
             public const string GreaterThanOrEqualTo = ">=";
             public const string LessThanOrEqualTo = "<=";
-            public const string EqualTo = "=";
+            public const string EqualTo = "==";
             public const string NotEqualTo = "!=";
         }
 
         public static class AppLogs
         {
-            public const string Date = "Date";
+            public const string Date = "LongDate";
             public const string LogLevel = "LogLevel";
-            public const string Machine = "Machine";
+            public const string Machine = "MachineName";
             public const string App = "App";
             public const string Ip = "Ip";
             public const string Username = "Username";

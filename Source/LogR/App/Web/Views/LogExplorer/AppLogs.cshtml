@@ -23,9 +23,9 @@
                 @Html.Partial("_NewMessage", @Model)
                 <form id="frmFilter" action="/app-logs" method="get" onkeypress="return submitForm(event)">
                     <div class="col-md-7">
-                        
-                            <div id="search_box_container"></div>
-                       
+
+                        <div id="search_box_container"></div>
+                        <div id="search_query"></div>
 
                     </div>
                     <div class="col-md-3  form-group">
@@ -276,7 +276,7 @@
                         {
                             key: "@SearchFieldContants.AppLogs.Date",
                             category: "Date Range",
-                            placeholder: "Log Date",
+                            placeholder: "Date",
                             type: "date",
                             min: 1,
                             max: 10

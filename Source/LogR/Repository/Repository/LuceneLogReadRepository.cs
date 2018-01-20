@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
 //using Lucene.Net.Store;
 using Framework.Infrastructure.Models.Search;
 using Framework.Infrastructure.Utils;
+using LogR.Common.Constants;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Repository.Log;
@@ -34,6 +36,153 @@ namespace LogR.Repository
             appLogDirectory = FSDirectory.Open(config.LuceneIndexStoreSettings.AppLogIndexFolder);
         }
 
+        public IQueryable<T> WhereEquals<T>(IQueryable<T> source, string member, object value)
+        {
+            var item = Expression.Parameter(typeof(T), "item");
+            var memberValue = member.Split('.').Aggregate((Expression)item, Expression.PropertyOrField);
+            var memberType = memberValue.Type;
+            if (value != null && value.GetType() != memberType)
+                value = Convert.ChangeType(value, memberType);
+            var condition = Expression.Equal(memberValue, Expression.Constant(value, memberType));
+            var predicate = Expression.Lambda<Func<T, bool>>(condition, item);
+            return source.Where(predicate);
+        }
+
+        public IQueryable<T> AddFilters<T>(IQueryable<T> source, List<SearchTerm> searchTerms)
+        {
+            if (searchTerms == null || searchTerms.Count == 0)
+                return source;
+
+            foreach (var term in searchTerms)
+            {
+                string member = term.Key;
+                object value = term.Value;
+
+                var item = Expression.Parameter(typeof(T), "item");
+                var memberValue = member.Split('.').Aggregate((Expression)item, Expression.PropertyOrField);
+                var memberType = memberValue.Type;
+                try
+                {
+                    if (value != null && value.GetType() != memberType)
+                        value = Convert.ChangeType((object)value, memberType);
+                }
+                catch
+                {
+                    log.Warn($"Key : {term.Key}, Value : {term.Value}, Operator : {term.Operator} conversion error - skipping item");
+                }
+
+                Expression condition;
+                switch (term.Operator)
+                {
+                    case SearchFieldContants.Operators.Is:
+                    case SearchFieldContants.Operators.EqualTo:
+                    case SearchFieldContants.Operators.NotEqualTo:
+                        {
+                            condition = Expression.Equal(memberValue, Expression.Constant(value, memberType));
+
+                            if (term.Operator == SearchFieldContants.Operators.NotEqualTo)
+                                condition = Expression.Not(condition);
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.GreaterThan:
+                        {
+                            if (memberType == typeof(DateTime))
+                            {
+                                var dt = Convert.ToDateTime(value);
+                                value = dt.Date.StartOfDay();
+                            }
+
+                            condition = Expression.GreaterThan(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.GreaterThanOrEqualTo:
+                        {
+                            if (memberType == typeof(DateTime))
+                            {
+                                var dt = Convert.ToDateTime(value);
+                                value = dt.Date.StartOfDay();
+                            }
+
+                            condition = Expression.GreaterThanOrEqual(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.LessThan:
+                        {
+                            if (memberType == typeof(DateTime))
+                            {
+                                var dt = Convert.ToDateTime(value);
+                                value = dt.Date.EndOfDay();
+                            }
+
+                            condition = Expression.LessThan(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.LessThanOrEqualTo:
+                        {
+                            if (memberType == typeof(DateTime))
+                            {
+                                var dt = Convert.ToDateTime(value);
+                                value = dt.Date.EndOfDay();
+                            }
+
+                            condition = Expression.LessThanOrEqual(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.Contains:
+                    case SearchFieldContants.Operators.NotContains:
+                        {
+                            var propertyExp = Expression.Property(item, term.Key);
+                            MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                            var someValue = Expression.Constant(term.Value, typeof(string));
+                            condition = Expression.Call(propertyExp, method, someValue);
+
+                            if (term.Operator == SearchFieldContants.Operators.NotContains)
+                                condition = Expression.Not(condition);
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.StartsWith:
+                        {
+                            condition = Expression.LessThanOrEqual(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.EndsWith:
+                        {
+                            condition = Expression.LessThanOrEqual(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    default:
+                        continue;
+                }
+
+                /*case SearchFieldContants.Operators.
+                        public const string IsNot = "is not";
+                        public const string Contains = "contains";
+                        public const string NotContains = "not contains";
+                        public const string StartsWith = "starts with";
+                        public const string EndsWith = "ends with";
+
+                        public const string GreaterThan = ">";
+                        public const string LessThan = "<";
+                        public const string GreaterThanOrEqualTo = ">=";
+                        public const string LessThanOrEqualTo = "<=";
+                        public const string EqualTo = "=";
+                        public const string NotEqualTo = "!=";
+                        */
+                var predicate = Expression.Lambda<Func<T, bool>>(condition, item);
+                source = source.Where(predicate);
+            }
+
+            return source;
+        }
+
         //API for getting logs
         public ReturnListWithSearchModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search)
         {
@@ -43,26 +192,10 @@ namespace LogR.Repository
                 {
                     var searcher = new IndexSearcher(reader);
                     var lst = searcher.AsQueryable<AppLog>();
-                    if (search.FromDate.IsValidDate() && search.ToDate.IsValidDate())
-                    {
-                        if (search.FromDate.Value <= search.ToDate.Value)
-                        {
-                            lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay() && x.Longdate <= search.ToDate.Value.EndOfDay());
-                        }
-                    }
-                    else if (search.FromDate.IsValidDate())
-                    {
-                        lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay());
-                    }
-                    else if (search.ToDate.IsValidDate())
-                    {
-                        lst = lst.Where(x => x.Longdate <= search.ToDate.Value.EndOfDay());
-                    }
 
-                    /*if (search.Severity != null)
-                    {
-                        lst = lst.Where(x => x.Severity == search.Severity);
-                    }*/
+                    lst = AddFilters(lst, search.SearchTerms);
+
+                    lst = lst.Where(x => x.App == "DataGenerator");
 
                     if (search.SortBy == "AppLogId")
                     {
