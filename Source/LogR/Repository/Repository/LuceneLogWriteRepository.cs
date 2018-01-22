@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
 //using Lucene.Net.Store;
 using Framework.Infrastructure.Models.Search;
 using Framework.Infrastructure.Utils;
+using LogR.Common.Constants;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Repository.Log;
@@ -18,33 +20,32 @@ using LogR.Common.Models.Search;
 using LogR.Common.Models.Stats;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
+using Lucene.Net.Linq;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
 
 namespace LogR.Repository
 {
-    public class LuceneLogWriteRepository : BaseLogRepository, ILogWriteRepository
+    public class LuceneLogWriteRepository : BaseLogRepository, ILogWriteRepository, ILogReadRepository , ILogRepository
     {
-        private static bool isAppIndexExists = false;
+        //private static bool isAppIndexExists = false;
 
         private Directory appLogDirectory;
 
-        private IndexWriter appLogWriter;
+        private LuceneDataProvider appLogProvider;
 
         public LuceneLogWriteRepository(ILog log, IAppConfiguration config)
             : base(log, config)
         {
             appLogDirectory = FSDirectory.Open(config.LuceneIndexStoreSettings.AppLogIndexFolder);
+            appLogProvider = new LuceneDataProvider(appLogDirectory, Lucene.Net.Util.Version.LUCENE_30);
 
-            appLogWriter = new IndexWriter(appLogDirectory, new IndexWriterConfig(LuceneVersion.LUCENE_48, new StandardAnalyzer(LuceneVersion.LUCENE_48)));
-
-            if (isAppIndexExists == false)
-            {
-                appLogWriter.Commit();
-
-                isAppIndexExists = true;
-            }
+            //if (isAppIndexExists == false)
+            //{
+            //    appLogProvider.IndexWriter.Commit();
+            //    isAppIndexExists = true;
+            //}
         }
 
         //Save Log
@@ -65,8 +66,10 @@ namespace LogR.Repository
                     lst.Add(item);
                 }
 
-                appLogWriter.Add<AppLog>(lst);
-                appLogWriter.Commit();
+                using (var session = appLogProvider.OpenSession<AppLog>())
+                {
+                    session.Add(lst.ToArray());
+                }
             }
             catch (Exception ex)
             {
@@ -113,7 +116,13 @@ namespace LogR.Repository
         {
             try
             {
-                appLogWriter.Delete<AppLog>(x => x.LogType == (int)logType);
+                using (var session = appLogProvider.OpenSession<AppLog>())
+                {
+                    //fixme: delete by 100 items at a time
+                    var items = session.Query().Where(x => x.LogType == (int)logType).ToArray();
+                    session.Delete(items);
+                }
+
                 return new ReturnModel<bool>(true);
             }
             catch (Exception ex)
@@ -127,7 +136,13 @@ namespace LogR.Repository
         {
             try
             {
-                appLogWriter.Delete<AppLog>(x => x.LogId == SafeUtils.Guid(id) && x.LogType == (int)logType);
+                using (var session = appLogProvider.OpenSession<AppLog>())
+                {
+                    //fixme: delete by 100 items at a time
+                    var items = session.Query().Where(x => x.LogId == SafeUtils.Guid(id) && x.LogType == (int)logType).ToArray();
+                    session.Delete(items);
+                }
+
                 return new ReturnModel<bool>(true);
             }
             catch (Exception ex)
@@ -142,8 +157,12 @@ namespace LogR.Repository
             try
             {
                 log.Info("Deleting App Log  for days less than " + pastDate);
-                appLogWriter.Delete<AppLog>(x => x.Longdate < pastDate && x.LogType == (int)logType);
-                appLogWriter.Commit();
+                using (var session = appLogProvider.OpenSession<AppLog>())
+                {
+                    //fixme: delete by 100 items at a time
+                    var items = session.Query().Where(x => x.Longdate < pastDate && x.LogType == (int)logType).ToArray();
+                    session.Delete(items);
+                }
             }
             catch (Exception ex)
             {
@@ -151,6 +170,513 @@ namespace LogR.Repository
             }
 
             return null;
+        }
+
+        public IQueryable<T> WhereEquals<T>(IQueryable<T> source, string member, object value)
+        {
+            var item = Expression.Parameter(typeof(T), "item");
+            var memberValue = member.Split('.').Aggregate((Expression)item, Expression.PropertyOrField);
+            var memberType = memberValue.Type;
+            if (value != null && value.GetType() != memberType)
+                value = Convert.ChangeType(value, memberType);
+            var condition = Expression.Equal(memberValue, Expression.Constant(value, memberType));
+            var predicate = Expression.Lambda<Func<T, bool>>(condition, item);
+            return source.Where(predicate);
+        }
+
+        public IQueryable<TSource> ApplySort<TSource>(IQueryable<TSource> query, string propertyName, bool isAsc, string defaultSortByField)
+        {
+            if (propertyName == null)
+                return query;
+
+            var entityType = typeof(TSource);
+
+            //Create x=>x.PropName
+            var propertyInfo = entityType.GetProperty(propertyName);
+            ParameterExpression arg = Expression.Parameter(entityType, "x");
+            MemberExpression property = Expression.Property(arg, propertyName);
+            var selector = Expression.Lambda(property, new ParameterExpression[] { arg });
+
+            var orderByFunction = "OrderBy";
+            if (isAsc)
+                orderByFunction = "OrderByDescending";
+
+            var enumarableType = typeof(System.Linq.Queryable);
+            MethodInfo method = enumarableType.GetMethods()
+                 .Where(m => m.Name == orderByFunction && m.IsGenericMethodDefinition)
+                 .Where(m =>
+                 {
+                     var parameters = m.GetParameters().ToList();
+                    //Put more restriction here to ensure selecting the right overload
+                     return parameters.Count == 2;//overload that has 2 parameters
+                }).Single();
+                //The linq's OrderBy<TSource, TKey> has two generic types, which provided here
+            MethodInfo genericMethod = method
+                 .MakeGenericMethod(entityType, propertyInfo.PropertyType);
+
+            var newQuery = (IOrderedQueryable<TSource>)genericMethod
+                    .Invoke(genericMethod, new object[] { query, selector });
+
+            return newQuery;
+        }
+
+        public IQueryable<T> AddFilters<T>(IQueryable<T> source, List<SearchTerm> searchTerms)
+        {
+            if (searchTerms == null || searchTerms.Count == 0)
+                return source;
+
+            foreach (var term in searchTerms)
+            {
+                string member = term.Key;
+                object value = term.Value;
+
+                var item = Expression.Parameter(typeof(T), "item");
+                var memberValue = member.Split('.').Aggregate((Expression)item, Expression.PropertyOrField);
+                var memberType = memberValue.Type;
+                try
+                {
+                    if (value != null && value.GetType() != memberType)
+                        value = Convert.ChangeType((object)value, memberType);
+                }
+                catch
+                {
+                    log.Warn($"Key : {term.Key}, Value : {term.Value}, Operator : {term.Operator} conversion error - skipping item");
+                }
+
+                Expression condition;
+                switch (term.Operator)
+                {
+                    case SearchFieldContants.Operators.Is:
+                    case SearchFieldContants.Operators.EqualTo:
+                    case SearchFieldContants.Operators.NotEqualTo:
+                        {
+                            condition = Expression.Equal(memberValue, Expression.Constant(value, memberType));
+
+                            if (term.Operator == SearchFieldContants.Operators.NotEqualTo)
+                                condition = Expression.Not(condition);
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.GreaterThan:
+                        {
+                            if (memberType == typeof(DateTime))
+                            {
+                                var dt = Convert.ToDateTime(value);
+                                value = dt.Date.StartOfDay();
+                            }
+
+                            condition = Expression.GreaterThan(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.GreaterThanOrEqualTo:
+                        {
+                            if (memberType == typeof(DateTime))
+                            {
+                                var dt = Convert.ToDateTime(value);
+                                value = dt.Date.StartOfDay();
+                            }
+
+                            condition = Expression.GreaterThanOrEqual(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.LessThan:
+                        {
+                            if (memberType == typeof(DateTime))
+                            {
+                                var dt = Convert.ToDateTime(value);
+                                value = dt.Date.EndOfDay();
+                            }
+
+                            condition = Expression.LessThan(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.LessThanOrEqualTo:
+                        {
+                            if (memberType == typeof(DateTime))
+                            {
+                                var dt = Convert.ToDateTime(value);
+                                value = dt.Date.EndOfDay();
+                            }
+
+                            condition = Expression.LessThanOrEqual(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.Contains:
+                    case SearchFieldContants.Operators.NotContains:
+                        {
+                            var propertyExp = Expression.Property(item, term.Key);
+                            MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                            var someValue = Expression.Constant(term.Value, typeof(string));
+                            condition = Expression.Call(propertyExp, method, someValue);
+
+                            if (term.Operator == SearchFieldContants.Operators.NotContains)
+                                condition = Expression.Not(condition);
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.StartsWith:
+                        {
+                            condition = Expression.LessThanOrEqual(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    case SearchFieldContants.Operators.EndsWith:
+                        {
+                            condition = Expression.LessThanOrEqual(memberValue, Expression.Constant(value, memberType));
+                            break;
+                        }
+
+                    default:
+                        continue;
+                }
+
+                /*case SearchFieldContants.Operators.
+                        public const string IsNot = "is not";
+                        public const string Contains = "contains";
+                        public const string NotContains = "not contains";
+                        public const string StartsWith = "starts with";
+                        public const string EndsWith = "ends with";
+
+                        public const string GreaterThan = ">";
+                        public const string LessThan = "<";
+                        public const string GreaterThanOrEqualTo = ">=";
+                        public const string LessThanOrEqualTo = "<=";
+                        public const string EqualTo = "=";
+                        public const string NotEqualTo = "!=";
+                        */
+                var predicate = Expression.Lambda<Func<T, bool>>(condition, item);
+                source = source.Where(predicate);
+            }
+
+            return source;
+        }
+
+        //API for getting logs
+        public ReturnListWithSearchModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search)
+        {
+            try
+            {
+                using (var reader = GetNewAppReader().OpenSession<AppLog>())
+                {
+                    LuceneQueryStatistics stats = null;
+
+                    var lst = reader.Query();
+
+                    lst = lst.CaptureStatistics(s => { stats = s; });
+
+                    lst = AddFilters(lst, search.SearchTerms);
+
+                    lst = ApplySort(lst, search.SearchTerms, search.SortBy, "LongdateAsTicks");
+
+                    //lst = lst.Where(x => x.App == "GL");
+
+                    if (search.SortBy == "AppLogId")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.LogId) : lst.OrderByDescending(x => x.LogId);
+                    }
+                    else if (search.SortBy == "LogType")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.LogType) : lst.OrderByDescending(x => x.LogType);
+                    }
+                    else if (search.SortBy == "CorelationId")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.CorelationId) : lst.OrderByDescending(x => x.CorelationId);
+                    }
+                    else if (search.SortBy == "FunctionId")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.FunctionId) : lst.OrderByDescending(x => x.FunctionId);
+                    }
+                    else if (search.SortBy == "Severity")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.Severity) : lst.OrderByDescending(x => x.Severity);
+                    }
+                    else if (search.SortBy == "App")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.App) : lst.OrderByDescending(x => x.App);
+                    }
+                    else if (search.SortBy == "MachineName")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.MachineName) : lst.OrderByDescending(x => x.MachineName);
+                    }
+                    else if (search.SortBy == "ProcessId")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.ProcessId) : lst.OrderByDescending(x => x.ProcessId);
+                    }
+                    else if (search.SortBy == "ThreadId")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.ThreadId) : lst.OrderByDescending(x => x.ThreadId);
+                    }
+                    else if (search.SortBy == "CurrentFunction")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.CurrentFunction) : lst.OrderByDescending(x => x.CurrentFunction);
+                    }
+                    else if (search.SortBy == "CurrentSourceFilename")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.CurrentSourceFilename) : lst.OrderByDescending(x => x.CurrentSourceFilename);
+                    }
+                    else if (search.SortBy == "CurrentSourceLineNumber")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.CurrentSourceLineNumber) : lst.OrderByDescending(x => x.CurrentSourceLineNumber);
+                    }
+                    else if (search.SortBy == "UserIdentity")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.UserIdentity) : lst.OrderByDescending(x => x.UserIdentity);
+                    }
+                    else if (search.SortBy == "RemoteAddress")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.RemoteAddress) : lst.OrderByDescending(x => x.RemoteAddress);
+                    }
+                    else if (search.SortBy == "UserAgent")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.UserAgent) : lst.OrderByDescending(x => x.UserAgent);
+                    }
+                    else if (search.SortBy == "Result")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.Result) : lst.OrderByDescending(x => x.Result);
+                    }
+                    else if (search.SortBy == "ResultCode")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.ResultCode) : lst.OrderByDescending(x => x.ResultCode);
+                    }
+                    else if (search.SortBy == "Message")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.Message) : lst.OrderByDescending(x => x.Message);
+                    }
+                    else if (search.SortBy == "PerfModule")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.PerfModule) : lst.OrderByDescending(x => x.PerfModule);
+                    }
+                    else if (search.SortBy == "PerfFunctionName")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.PerfFunctionName) : lst.OrderByDescending(x => x.PerfFunctionName);
+                    }
+                    else if (search.SortBy == "StartTime")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.StartTime) : lst.OrderByDescending(x => x.StartTime);
+                    }
+                    else if (search.SortBy == "ElapsedTime")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.ElapsedTime) : lst.OrderByDescending(x => x.ElapsedTime);
+                    }
+                    else if (search.SortBy == "PerfStatus")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.PerfStatus) : lst.OrderByDescending(x => x.PerfStatus);
+                    }
+                    else if (search.SortBy == "Request")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.Request) : lst.OrderByDescending(x => x.Request);
+                    }
+                    else if (search.SortBy == "Response")
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.Response) : lst.OrderByDescending(x => x.Response);
+                    }
+                    else
+                    {
+                        lst = search.SortAscending ? lst.OrderBy(x => x.LongdateAsTicks) : lst.OrderByDescending(x => x.LongdateAsTicks);
+                    }
+
+                    var totalRows = lst.AsQueryable().Count();
+
+                    search.TotalRowCount = totalRows;
+                    var resultList = lst.ApplyPaging(search.Page, search.PageSize).ToList();
+                    search.CurrentRows = resultList.Count;
+                    return new ReturnListWithSearchModel<AppLog, AppLogSearchCriteria>(search, resultList, totalRows);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting App Log  List ");
+                search.TotalRowCount = 0;
+                search.CurrentRows = 0;
+                return new ReturnListWithSearchModel<AppLog, AppLogSearchCriteria>(search, ex);
+            }
+        }
+
+        public ReturnListWithSearchModel<PerfLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
+        {
+            try
+            {
+                using (var reader = GetNewAppReader().OpenSession<AppLog>())
+                {
+                    var lst = reader.Query();
+
+                    if (search.FromDate.IsValidDate() && search.ToDate.IsValidDate())
+                    {
+                        if (search.FromDate.Value <= search.ToDate.Value)
+                        {
+                            lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay() && x.Longdate <= search.ToDate.Value.EndOfDay());
+                        }
+                    }
+                    else if (search.FromDate.IsValidDate())
+                    {
+                        lst = lst.Where(x => x.Longdate >= search.FromDate.Value.StartOfDay());
+                    }
+                    else if (search.ToDate.IsValidDate())
+                    {
+                        lst = lst.Where(x => x.Longdate <= search.ToDate.Value.EndOfDay());
+                    }
+
+                    lst = lst.OrderByDescending(x => x.Longdate);
+
+                    var totalRows = lst.AsQueryable().Count();
+                    search.TotalRowCount = totalRows;
+                    var resultList = lst.ApplyPaging(search.Page, search.PageSize).ToList();
+                    search.CurrentRows = resultList.Count;
+                    return new ReturnListWithSearchModel<PerfLog, PerformanceLogSearchCriteria>(search, resultList.ToPerfLogs(), totalRows);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting Performance Log list ");
+                search.TotalRowCount = 0;
+                search.CurrentRows = 0;
+                return new ReturnListWithSearchModel<PerfLog, PerformanceLogSearchCriteria>(search, "Error when getting Performance Log list ", ex);
+            }
+        }
+
+        public ReturnListWithSearchModel<WebLog, WebLogSearchCriteria> GetWebLogs(WebLogSearchCriteria search)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ReturnListWithSearchModel<EventLog, EventLogSearchCriteria> GetEventLogs(EventLogSearchCriteria search)
+        {
+            throw new NotImplementedException();
+        }
+
+        // Parameters
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetAppNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            return GetDistinctColumns(logType, search, x => x.App, "Application");
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetMachineNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            return GetDistinctColumns(logType, search, x => x.MachineName, "Machine");
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetUserNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            return GetDistinctColumns(logType, search, x => x.UserIdentity, "User");
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetSeverityNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            return GetDistinctColumns(logType, search, x => x.Severity, "Severity");
+        }
+
+        //Stats API
+        public Dictionary<DateTime, long> GetAppLogsStatsByDay()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ReturnModel<DashboardSummary> GetDashboardSummary()
+        {
+            try
+            {
+                var result = new DashboardSummary();
+
+                using (var reader = GetNewAppReader().OpenSession<AppLog>())
+                {
+                    var appLog = reader.Query().Where(x => x.LogType == (int)StoredLogType.AppLog);
+                    result.ErrorAppLogCount = appLog.AsQueryable<AppLog>().Where(x => x.Severity == "ERROR").Count();
+                    result.ErrorSqlAppLogCount = appLog.AsQueryable<AppLog>().Where(x => x.Severity == "SqlError").Count();
+                    result.WarningAppLogCount = appLog.AsQueryable<AppLog>().Where(x => x.Severity == "WARN").Count();
+                    result.TotalAppLogCount = appLog.AsQueryable<AppLog>().Count();
+                    result.LastestAppLogs = appLog.AsQueryable<AppLog>().OrderByDescending(x => x.Longdate).Take(20).ToList();
+                    result.LastestErrorAppLogs = appLog.AsQueryable<AppLog>().Where(x => x.Severity == "ERROR").OrderByDescending(x => x.Longdate).Take(20).ToList();
+
+                    var perfLog = reader.Query().Where(x => x.LogType == (int)StoredLogType.PerfLog);
+
+                    var errorLst = perfLog.AsQueryable<AppLog>().Where(x => x.PerfStatus == "ERROR");
+                    var allLst = perfLog.AsQueryable<AppLog>();
+
+                    result.ErrorPerformanceLogCount = errorLst.AsQueryable().Count();
+                    result.TotalPerformanceLogCount = allLst.AsQueryable().Count();
+
+                    result.LastestPerformanceLogs = allLst.AsQueryable().OrderByDescending(x => x.Longdate).Take(20).ToList();
+                    result.LastestErrorPerformanceLogs = errorLst.AsQueryable().OrderByDescending(x => x.Longdate).Take(20).ToList();
+                }
+
+                return new ReturnModel<DashboardSummary>(result);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting Dashboard Summary");
+                return new ReturnModel<DashboardSummary>(ex);
+            }
+        }
+
+        public void GetPerformanceLogsStatsByDay()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ReturnModel<SystemStats> GetStats()
+        {
+            var stat = new SystemStats
+            {
+                AppDataFolderSize = GetAppDataFolderSize(),
+                PerformanceDataFolderSize = GetPerformanceDataFolderSize(),
+                LogFolderSize = GetLogFolderSize(),
+                LogFileCount = GetLogFileCount()
+            };
+            return new ReturnModel<SystemStats>(stat);
+        }
+
+        protected ReturnListWithSearchModel<string, BaseSearchCriteria> GetDistinctColumns(StoredLogType logType, BaseSearchCriteria search, Expression<Func<AppLog, string>> selector, string columnType)
+        {
+            try
+            {
+                using (var reader = GetNewAppReader().OpenSession<AppLog>())
+                {
+                    LuceneQueryStatistics stats = null;
+                    var lst = reader.Query().Select(selector).Distinct().CaptureStatistics(x => stats = x);
+                    var totalRows = lst.AsQueryable().Count();
+                    search.TotalRowCount = totalRows;
+                    var resultList = lst.ApplyPaging(search.Page, search.PageSize).Distinct().ToList();
+                    search.CurrentRows = resultList.Count;
+                    return new ReturnListWithSearchModel<string, BaseSearchCriteria>(search, resultList, totalRows);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, $"Error when getting {columnType} list ");
+                search.TotalRowCount = 0;
+                search.CurrentRows = 0;
+                return new ReturnListWithSearchModel<string, BaseSearchCriteria>(search, $"Error when getting {columnType} list ", ex);
+            }
+        }
+
+        private ulong GetAppDataFolderSize()
+        {
+            return FileUtils.GetDirectorySize(config.LuceneIndexStoreSettings.AppLogIndexFolder);
+        }
+
+        private ulong GetPerformanceDataFolderSize()
+        {
+            return FileUtils.GetDirectorySize(config.LuceneIndexStoreSettings.PerformanceLogIndexFolder);
+        }
+
+        private ulong GetLogFolderSize()
+        {
+            return FileUtils.GetDirectorySize(config.LogSettings.LogLocation);
+        }
+
+        private long GetLogFileCount()
+        {
+            var filenameList = System.IO.Directory.GetFiles(config.LogSettings.LogLocation, "*.*");
+            return filenameList.LongCount();
+        }
+
+        private LuceneDataProvider GetNewAppReader()
+        {
+            return appLogProvider;
         }
     }
 }

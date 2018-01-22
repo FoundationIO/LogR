@@ -463,18 +463,16 @@
 					source: function(req, res){
 						var key 	= self.model.get('key'),
 							i = parameters.key.indexOf(key);
-						console.log('parameters',parameters);
-						console.log('parameter values[i]',parameters.values[i]);
-						console.log('parameter values',parameters.values);
-						console.log('res',res);
-						console.log('req',req);
-						console.log('i',i);
-						console.log('key',key);
+						//console.log('parameters',parameters);
+						//console.log('parameter values[i]',parameters.values[i]);
+						//console.log('parameter values',parameters.values);
+						//console.log('res',res);
+						//console.log('req',req);
+						//console.log('i',i);
+						//console.log('key',key);
                         if (parameters.getValues != null && parameters.getValues[i] != null) {
                             console.log('search js get value', key);
-                            parameters.getValues[i](key, req.term, res);	
-
-						  
+                            parameters.getValues[i](key, req.term, res);							  
 					    }else{
 							res(parameters.values[i]);
 						}

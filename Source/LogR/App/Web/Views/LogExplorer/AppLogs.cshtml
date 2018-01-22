@@ -224,7 +224,15 @@
                     if (data.isSuccess) {
                         console.log('data', data);
                         $data = data;
-                        res(data.model);
+                        if (data != null && data != undefined && data.model != null && data.model != undefined) {
+                            if (searchterm != null && searchterm != undefined && searchterm != "")
+                                data.model.unshift(searchterm);
+                            res(data.model);
+                        }
+                        else {
+                            res([key]);
+                        }
+                        
                     } else {
                         console.log('error - fail',data);
                     }

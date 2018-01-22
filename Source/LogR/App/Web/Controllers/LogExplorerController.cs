@@ -68,58 +68,31 @@ namespace LogR.Web.Controllers
         }
 
         [Route("/list/apps")]
-        public ReturnListModel<string> AppNames(BaseSearchCriteria search)
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> AppNames(BaseSearchCriteria search)
         {
-            var appLst = new List<string>();
-            appLst.Add("App Item 1");
-            appLst.Add("App Item 2");
-            appLst.Add("App Item 3");
-            appLst.Add("App Item 4");
-            appLst.Add("App Item 5");
-            return new ReturnListModel<string>(appLst);
+            var appLst = logRetrivalService.GetAppNames( Common.Enums.StoredLogType.AppLog, search);
+            return appLst;
         }
 
         [Route("/list/loglevels")]
-        public ReturnListModel<string> LogLevels(BaseSearchCriteria search)
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> LogLevels(BaseSearchCriteria search)
         {
-            var loglevels= new List<string>()
-            {
-                "INFO",
-                "ERROR", "WARNING",
-                "DEBUG",
-                "TRACE",
-                "CRITICAL",
-                "SQ",
-                "SQL-BEGIN",
-                "SQL-ROLLBACK",
-                "SQL-COMMIT"
-            };
-            return new ReturnListModel<string>(loglevels);
+            var appLst = logRetrivalService.GetSeverityNames(Common.Enums.StoredLogType.AppLog, search);
+            return appLst;
         }
 
         [Route("/list/machines")]
-        public ReturnListModel<string> MachineNames(BaseSearchCriteria search)
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> MachineNames(BaseSearchCriteria search)
         {
-            var machineLst = new List<string>();
-            machineLst.Add("MachineNames Item 1");
-            machineLst.Add("MachineNames Item 2");
-            machineLst.Add("MachineNames Item 3");
-            machineLst.Add("MachineNames Item 4");
-            machineLst.Add("MachineNames Item 5");
-            return new ReturnListModel<string>(machineLst);
-        
+            var appLst = logRetrivalService.GetMachineNames(Common.Enums.StoredLogType.AppLog, search);
+            return appLst;
         }
 
         [Route("/list/users")]
-        public ReturnListModel<string> UserNames(BaseSearchCriteria search)
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> UserNames(BaseSearchCriteria search)
         {
-            var userLst = new List<string>();
-            userLst.Add("UserNames 1");
-            userLst.Add("UserNames  2");
-            userLst.Add("UserNames  3");
-            userLst.Add("UserNames 4");
-            userLst.Add("UserNames 5");
-            return new ReturnListModel<string>(userLst);
+            var appLst = logRetrivalService.GetUserNames(Common.Enums.StoredLogType.AppLog, search);
+            return appLst;
         }
 
         [Route("/list/functions")]

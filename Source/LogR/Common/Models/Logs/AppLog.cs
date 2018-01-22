@@ -103,6 +103,6 @@ namespace LogR.Common.Models.Logs
         public virtual string Response { get; set; }
 
         //[JsonProperty("additional-properties")]
-        public List<KeyValuePair<string, string>> AdditionalProperties { get; set; }
+        //public IEnumerable<KeyValuePair<string, string>> AdditionalProperties { get; set; }
     }
 }

@@ -13,9 +13,9 @@ namespace LogR.Service.Log
     public class LogUpdateService : ILogUpdateService
     {
         private ILog log;
-        private ILogWriteRepository logWriteRepository;
+        private ILogRepository logWriteRepository;
 
-        public LogUpdateService(ILog log, ILogWriteRepository logWriteRepository)
+        public LogUpdateService(ILog log, ILogRepository logWriteRepository)
         {
             this.log = log;
             this.logWriteRepository = logWriteRepository;

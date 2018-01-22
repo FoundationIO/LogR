@@ -51,35 +51,41 @@
 
   <ItemGroup>
     <Compile Remove="Code\**" />
-    <Compile Remove="Vendor\Lucene.Net.ObjectMapping\Properties\**" />
     <Content Remove="Code\**" />
     <EmbeddedResource Remove="Code\**" />
-    <EmbeddedResource Remove="Vendor\Lucene.Net.ObjectMapping\Properties\**" />
     <None Remove="Code\**" />
-    <None Remove="Vendor\Lucene.Net.ObjectMapping\Properties\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Repository\ElasticSearchLogReadRepository.cs" />
     <Compile Remove="Repository\ElasticSearchLogRepository.cs" />
+    <Compile Remove="Repository\ElasticSearchLogWriteRepository.cs" />
     <Compile Remove="Repository\EmbbededElasticSearchLogRepository.cs" />
+    <Compile Remove="Repository\MongoDBLogReadRepository.cs" />
     <Compile Remove="Repository\MongoDBLogRepository.cs" />
+    <Compile Remove="Repository\MongoDBLogWriteRepository.cs" />
     <Compile Remove="Repository\MysqlLogRepository.cs" />
     <Compile Remove="Repository\PostgresqlLogRepository.cs" />
+    <Compile Remove="Repository\RaptorDBLogReadRepository.cs" />
     <Compile Remove="Repository\RaptorDBLogRepository.cs" />
+    <Compile Remove="Repository\RaptorDBLogWriteRepository.cs" />
+    <Compile Remove="Repository\SqlBasedLogReadRepository.cs" />
     <Compile Remove="Repository\SqlBasedLogRepository.cs" />
+    <Compile Remove="Repository\SqlBasedLogWriteRepository.cs" />
     <Compile Remove="Repository\SqlServerLogRepository.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentNest" Version="5.0.227" />
-    <PackageReference Include="linq2db" Version="1.9.0" />
-    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00004" />
-    <PackageReference Include="Lucene.Net.Queries" Version="4.8.0-beta00004" />
-    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00004" />
+    <PackageReference Include="linq2db" Version="1.10.1" />
+    <PackageReference Include="LiteDB" Version="4.1.1" />
+    <PackageReference Include="Lucene.Net.Linq" Version="3.6.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
     <PackageReference Include="RaptorDB_doc" Version="3.3.17" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NEST" Version="6.0.0-alpha1" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.106" />
   </ItemGroup>
   
   <PropertyGroup>
@@ -89,9 +95,6 @@
   
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Vendor\Lucene.Net.ObjectMapping\Lucene.Net.ObjectMapping.csproj" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Data\Framework.Data.csproj" />

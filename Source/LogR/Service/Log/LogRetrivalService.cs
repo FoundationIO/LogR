@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
+using Framework.Infrastructure.Models.Search;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Repository.Log;
@@ -14,9 +16,9 @@ namespace LogR.Service.Log
     public class LogRetrivalService : ILogRetrivalService
     {
         private ILog log;
-        private ILogReadRepository logReadRepository;
+        private ILogRepository logReadRepository;
 
-        public LogRetrivalService(ILog log, ILogReadRepository logReadRepository)
+        public LogRetrivalService(ILog log, ILogRepository logReadRepository)
         {
             this.log = log;
             this.logReadRepository = logReadRepository;
@@ -68,6 +70,58 @@ namespace LogR.Service.Log
             {
                 log.Error(ex, "Error when getting stats");
                 return new ReturnModel<SystemStats>("Error when getting stats", ex);
+            }
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetAppNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            try
+            {
+                return logReadRepository.GetAppNames(logType, search);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting App Names");
+                return new ReturnListModel<string>("Error when getting App Names", ex);
+            }
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetMachineNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            try
+            {
+                return logReadRepository.GetMachineNames(logType, search);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting Machine Names");
+                return new ReturnListModel<string>("Error when getting Machine Names", ex);
+            }
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetUserNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            try
+            {
+                return logReadRepository.GetUserNames(logType, search);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting User Names");
+                return new ReturnListModel<string>("Error when getting User Names", ex);
+            }
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetSeverityNames(StoredLogType logType, BaseSearchCriteria search)
+        {
+            try
+            {
+                return logReadRepository.GetSeverityNames(logType, search);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting Log levels");
+                return new ReturnListModel<string>("Error when getting Log levels", ex);
             }
         }
     }

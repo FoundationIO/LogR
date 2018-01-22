@@ -20,6 +20,7 @@ using LogR.Common.Models.Search;
 using LogR.Common.Models.Stats;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
+using Lucene.Net.Linq;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
@@ -30,10 +31,13 @@ namespace LogR.Repository
     {
         private Directory appLogDirectory;
 
+        private LuceneDataProvider appLogProvider;
+
         public LuceneLogReadRepository(ILog log, IAppConfiguration config)
             : base(log, config)
         {
             appLogDirectory = FSDirectory.Open(config.LuceneIndexStoreSettings.AppLogIndexFolder);
+            appLogProvider = new LuceneDataProvider(appLogDirectory, Lucene.Net.Util.Version.LUCENE_30);
         }
 
         public IQueryable<T> WhereEquals<T>(IQueryable<T> source, string member, object value)
@@ -190,8 +194,7 @@ namespace LogR.Repository
             {
                 using (var reader = GetNewAppReader())
                 {
-                    var searcher = new IndexSearcher(reader);
-                    var lst = searcher.AsQueryable<AppLog>();
+                    var lst = reader.AsQueryable<AppLog>();
 
                     lst = AddFilters(lst, search.SearchTerms);
 
@@ -325,8 +328,7 @@ namespace LogR.Repository
             {
                 using (var reader = GetNewAppReader())
                 {
-                    var searcher = new IndexSearcher(reader);
-                    var lst = searcher.AsQueryable<AppLog>();
+                    var lst = reader.AsQueryable<AppLog>();
 
                     if (search.FromDate.IsValidDate() && search.ToDate.IsValidDate())
                     {
@@ -407,8 +409,7 @@ namespace LogR.Repository
 
                 using (var reader = GetNewAppReader())
                 {
-                    var searcher = new IndexSearcher(reader);
-                    var appLog = searcher.AsQueryable<AppLog>().Where(x => x.LogType == (int)StoredLogType.AppLog);
+                    var appLog = reader.AsQueryable<AppLog>().Where(x => x.LogType == (int)StoredLogType.AppLog);
                     result.ErrorAppLogCount = appLog.AsQueryable<AppLog>().Where(x => x.Severity == "ERROR").Count();
                     result.ErrorSqlAppLogCount = appLog.AsQueryable<AppLog>().Where(x => x.Severity == "SqlError").Count();
                     result.WarningAppLogCount = appLog.AsQueryable<AppLog>().Where(x => x.Severity == "WARN").Count();
@@ -416,7 +417,7 @@ namespace LogR.Repository
                     result.LastestAppLogs = appLog.AsQueryable<AppLog>().OrderByDescending(x => x.Longdate).Take(20).ToList();
                     result.LastestErrorAppLogs = appLog.AsQueryable<AppLog>().Where(x => x.Severity == "ERROR").OrderByDescending(x => x.Longdate).Take(20).ToList();
 
-                    var perfLog = searcher.AsQueryable<AppLog>().Where(x => x.LogType == (int)StoredLogType.PerfLog);
+                    var perfLog = reader.AsQueryable<AppLog>().Where(x => x.LogType == (int)StoredLogType.PerfLog);
 
                     var errorLst = perfLog.AsQueryable<AppLog>().Where(x => x.PerfStatus == "ERROR");
                     var allLst = perfLog.AsQueryable<AppLog>();
@@ -460,8 +461,7 @@ namespace LogR.Repository
             {
                 using (var reader = GetNewAppReader())
                 {
-                    var searcher = new IndexSearcher(reader);
-                    var lst = searcher.AsQueryable<AppLog>().Select(selector).Distinct();
+                    var lst = reader.AsQueryable<AppLog>().Select(selector).Distinct();
                     var totalRows = lst.AsQueryable().Count();
                     search.TotalRowCount = totalRows;
                     var resultList = lst.ApplyPaging(search.Page, search.PageSize).ToList();
@@ -499,9 +499,9 @@ namespace LogR.Repository
             return filenameList.LongCount();
         }
 
-        private IndexReader GetNewAppReader()
+        private LuceneDataProvider GetNewAppReader()
         {
-            return DirectoryReader.Open(appLogDirectory);
+            return appLogProvider;
         }
     }
 }
