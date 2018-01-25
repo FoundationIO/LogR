@@ -38,7 +38,7 @@ namespace LogR.Common.Constants
 
         public class SqlIndexStore
         {
-            public const string MigrationNamespace = "LogR.Repository.Migration.Application";
+            public const string MigrationNamespace = "LogR.Repository.Migration.SqlBasedndexStore";
             public const string MigrationProfile = "LogIndexStore";
         }
     }

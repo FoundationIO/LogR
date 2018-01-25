@@ -349,20 +349,17 @@ namespace LogR.LogShipper
                 if (match.Groups["module"].Value.IsTrimmedStringNotNullOrEmpty())
                     log.Module = match.Groups["module"].Value;
 
-                if (match.Groups["perf-module"].Value.IsTrimmedStringNotNullOrEmpty())
-                    log.PerfModule = match.Groups["perf-module"].Value;
-
                 if (match.Groups["result-code"].Value.IsTrimmedStringNotNullOrEmpty())
                     log.ResultCode = SafeUtils.Int(match.Groups["result-code"].Value);
 
-                if (match.Groups["perf-function-name"].Value.IsTrimmedStringNotNullOrEmpty())
-                    log.PerfFunctionName = match.Groups["perf-function-name"].Value;
+                if (match.Groups["function-name"].Value.IsTrimmedStringNotNullOrEmpty())
+                    log.FunctionName = match.Groups["function-name"].Value;
 
                 if (match.Groups["start-time"].Value.IsTrimmedStringNotNullOrEmpty())
                     log.StartTime = SafeUtils.DateTime(match.Groups["start-time"].Value);
 
-                if (match.Groups["perf-status"].Value.IsTrimmedStringNotNullOrEmpty())
-                    log.PerfStatus = match.Groups["perf-status"].Value;
+                if (match.Groups["result"].Value.IsTrimmedStringNotNullOrEmpty())
+                    log.Result = match.Groups["result"].Value;
 
                 if (match.Groups["request"].Value.IsTrimmedStringNotNullOrEmpty())
                     log.Request = match.Groups["request"].Value;      

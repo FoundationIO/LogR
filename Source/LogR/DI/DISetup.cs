@@ -11,6 +11,7 @@ using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Interfaces.Service.Task;
 using LogR.Repository;
 using LogR.Repository.DbAccess;
+using LogR.Repository.Log;
 using LogR.Repository.Migration;
 using LogR.Service;
 using LogR.Service.Config;
@@ -54,41 +55,41 @@ namespace LogR.DI
                 .AddSingleton<ILoadTestService, LoadTestService>()
                 .AddSingleton<IAppConfigurationFile, AppConfigurationFile>()
                 .AddSingleton<ILogRepository>(serviceProvider =>
-                 {
+                {
                     var config = serviceProvider.GetRequiredService<IAppConfiguration>();
                     var log = serviceProvider.GetRequiredService<ILog>();
+                    var dbManager = serviceProvider.GetRequiredService<ISqlIndexStoreDBManager>();
 
                     var storeType = config.IndexStoreType;
 
                     switch (storeType)
                     {
                         case IndexStoreType.Lucene:
-                            return new LuceneLogWriteRepository(log, config);
-                    /*
-                        case IndexStoreType.MySql:
+                            return new LuceneLogRepository(log, config);
+
                         case IndexStoreType.Sqlite3:
-                        case IndexStoreType.Postgresql:
-                        case IndexStoreType.SqlServer:
-                            var dbManager = serviceProvider.GetRequiredService<ISqlIndexStoreDBManager>();
                             return new SqlBasedLogRepository(log, config, dbManager);
 
-                        //case IndexStoreType.MongoDB:
-                        //    return new MongoDBLogRepository(log, config);
-
-                        //case IndexStoreType.RaptorDB:
-                        //    return new RaptorDBLogRepository(log, config);
-
-                        case IndexStoreType.ElasticSearch:
-                            return new ElasticSearchLogRepository(log, config);
-
-                        //case IndexStoreType.EmbbededElasticSearch:
-                        //    return new EmbbededElasticSearchLogRepository(log, config);
-                     */
+                        /*
+                            case IndexStoreType.MySql:
+                            case IndexStoreType.Sqlite3:
+                            case IndexStoreType.Postgresql:
+                            case IndexStoreType.SqlServer:
+                                var dbManager = serviceProvider.GetRequiredService<ISqlIndexStoreDBManager>();
+                                return new SqlBasedLogRepository(log, config, dbManager);
+                            //case IndexStoreType.MongoDB:
+                            //    return new MongoDBLogRepository(log, config);
+                            //case IndexStoreType.RaptorDB:
+                            //    return new RaptorDBLogRepository(log, config);
+                            case IndexStoreType.ElasticSearch:
+                                return new ElasticSearchLogRepository(log, config);
+                            //case IndexStoreType.EmbbededElasticSearch:
+                            //    return new EmbbededElasticSearchLogRepository(log, config);
+                         */
                         default:
                             throw new Exception("Index store is not configured");
                     }
-                })
-                .AddSingleton(x => new Lazy<ILogWriteRepository>(() => x.GetRequiredService<ILogWriteRepository>()));
+                });
             return serviceCollection;
         }
     }

@@ -57,22 +57,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Repository\ElasticSearchLogReadRepository.cs" />
-    <Compile Remove="Repository\ElasticSearchLogRepository.cs" />
-    <Compile Remove="Repository\ElasticSearchLogWriteRepository.cs" />
-    <Compile Remove="Repository\EmbbededElasticSearchLogRepository.cs" />
-    <Compile Remove="Repository\MongoDBLogReadRepository.cs" />
-    <Compile Remove="Repository\MongoDBLogRepository.cs" />
-    <Compile Remove="Repository\MongoDBLogWriteRepository.cs" />
-    <Compile Remove="Repository\MysqlLogRepository.cs" />
-    <Compile Remove="Repository\PostgresqlLogRepository.cs" />
-    <Compile Remove="Repository\RaptorDBLogReadRepository.cs" />
-    <Compile Remove="Repository\RaptorDBLogRepository.cs" />
-    <Compile Remove="Repository\RaptorDBLogWriteRepository.cs" />
-    <Compile Remove="Repository\SqlBasedLogReadRepository.cs" />
-    <Compile Remove="Repository\SqlBasedLogRepository.cs" />
-    <Compile Remove="Repository\SqlBasedLogWriteRepository.cs" />
-    <Compile Remove="Repository\SqlServerLogRepository.cs" />
+    <Compile Remove="Log\ElasticSearchLogReadRepository.cs" />
+    <Compile Remove="Log\ElasticSearchLogRepository.cs" />
+    <Compile Remove="Log\ElasticSearchLogWriteRepository.cs" />
+    <Compile Remove="Log\EmbbededElasticSearchLogRepository.cs" />
+    <Compile Remove="Log\LuceneLogReadRepository.cs" />
+    <Compile Remove="Log\LuceneLogWriteRepository.cs" />
+    <Compile Remove="Log\MongoDBLogReadRepository.cs" />
+    <Compile Remove="Log\MongoDBLogRepository.cs" />
+    <Compile Remove="Log\MongoDBLogWriteRepository.cs" />
+    <Compile Remove="Log\MysqlLogRepository.cs" />
+    <Compile Remove="Log\PostgresqlLogRepository.cs" />
+    <Compile Remove="Log\RaptorDBLogReadRepository.cs" />
+    <Compile Remove="Log\RaptorDBLogRepository.cs" />
+    <Compile Remove="Log\RaptorDBLogWriteRepository.cs" />
+    <Compile Remove="Log\SqlBasedLogReadRepository.cs" />
+    <Compile Remove="Log\SqlBasedLogWriteRepository.cs" />
+    <Compile Remove="Log\SqlServerLogRepository.cs" />
   </ItemGroup>
 
   <ItemGroup>

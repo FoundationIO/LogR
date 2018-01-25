@@ -60,7 +60,7 @@
     <PackageReference Include="Flurl.Http" Version="2.1.1" />
     <PackageReference Include="NetMQ" Version="4.0.0.4-beta" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
-    <PackageReference Include="Bogus" Version="18.0.2" />
+    <PackageReference Include="Bogus" Version="22.0.2" />
   </ItemGroup>
 
   <PropertyGroup>

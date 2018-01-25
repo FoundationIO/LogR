@@ -45,6 +45,8 @@ namespace LogR.Common.Models.Logs
         //[JsonProperty("machine-name")]
         public virtual string MachineName { get; set; }
 
+        public virtual string FunctionName { get; set; }
+
         //[JsonProperty("process-id")]
         public virtual int ProcessId { get; set; }
 
@@ -81,20 +83,11 @@ namespace LogR.Common.Models.Logs
         //[JsonProperty("message")]
         public virtual string Message { get; set; }
 
-        //[JsonProperty("perf-module")]
-        public virtual string PerfModule { get; set; }
-
-        //[JsonProperty("perf-function-name")]
-        public virtual string PerfFunctionName { get; set; }
-
         //[JsonProperty("start-time")]
         public virtual DateTime StartTime { get; set; }
 
         //[JsonProperty("elapsed-time")]
         public virtual double ElapsedTime { get; set; }
-
-        //[JsonProperty("perf-status")]
-        public virtual string PerfStatus { get; set; }
 
         //[JsonProperty("request")]
         public virtual string Request { get; set; }
@@ -103,6 +96,6 @@ namespace LogR.Common.Models.Logs
         public virtual string Response { get; set; }
 
         //[JsonProperty("additional-properties")]
-        //public IEnumerable<KeyValuePair<string, string>> AdditionalProperties { get; set; }
+        //public List<> AdditionalProperties { get; set; }
     }
 }

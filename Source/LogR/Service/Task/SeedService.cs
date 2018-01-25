@@ -142,7 +142,7 @@ namespace LogR.Service.Task
                         404
                     }))
                 .RuleFor(p => p.Message, f => f.Lorem.Sentence(300))
-                .RuleFor(p => p.PerfModule, f => f.PickRandom(new[]
+                .RuleFor(p => p.Module, f => f.PickRandom(new[]
                     {
                         "Log",
                         "Indexer",
@@ -155,7 +155,7 @@ namespace LogR.Service.Task
                         "WebUI",
                         "APILayer",
                     }))
-                .RuleFor(p => p.PerfFunctionName, f => f.PickRandom(new[]
+                .RuleFor(p => p.FunctionName, f => f.PickRandom(new[]
                     {
                         "Trace",
                         "Debug",
@@ -175,7 +175,7 @@ namespace LogR.Service.Task
                     }))
                 .RuleFor(p => p.StartTime, f => f.Date.Past())
                 .RuleFor(p => p.ElapsedTime, (f,p) => (p.StartTime.AddMilliseconds(f.Random.Number(1,100000)) - p.StartTime).TotalMilliseconds) //).Value()
-                .RuleFor(p => p.PerfStatus, f => f.PickRandom(new[]
+                .RuleFor(p => p.Result, f => f.PickRandom(new[]
                         {
                             "",
                             "ERROR",

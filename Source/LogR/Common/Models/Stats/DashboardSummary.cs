@@ -5,24 +5,10 @@ namespace LogR.Common.Models.Stats
 {
     public class DashboardSummary
     {
-        public long ErrorAppLogCount { get; set; }
+        public List<KeyValuePair<int,long>> TotalLogCount { get; set; } = new List<KeyValuePair<int, long>>();
 
-        public long WarningAppLogCount { get; set; }
+        public List<KeyValuePair<int, List<AppLog>>> LastestLogs { get; set; } = new List<KeyValuePair<int, List<AppLog>>>();
 
-        public long TotalAppLogCount { get; set; }
-
-        public List<AppLog> LastestAppLogs { get; set; } = new List<AppLog>();
-
-        public List<AppLog> LastestErrorAppLogs { get; set; } = new List<AppLog>();
-
-        public long ErrorPerformanceLogCount { get; set; }
-
-        public long TotalPerformanceLogCount { get; set; }
-
-        public List<AppLog> LastestPerformanceLogs { get; set; } = new List<AppLog>();
-
-        public List<AppLog> LastestErrorPerformanceLogs { get; set; } = new List<AppLog>();
-
-        public long ErrorSqlAppLogCount { get; set; }
+        public List<KeyValuePair<int, List<AppLog>>> LastestErrorLogs { get; set; } = new List<KeyValuePair<int, List<AppLog>>>();
     }
 }

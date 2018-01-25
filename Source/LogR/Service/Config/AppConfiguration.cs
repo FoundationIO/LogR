@@ -145,6 +145,12 @@ namespace LogR.Service.Config
                     }
                     return str;
                 });
+
+                if (DbSettings.DatabaseType == DBType.SQLITE3)
+                {
+                    if (Directory.Exists(FileUtils.GetFileDirectory(this.SqlIndexStoreSettings.DatabaseName)) == false)
+                        Directory.CreateDirectory(FileUtils.GetFileDirectory(this.SqlIndexStoreSettings.DatabaseName));
+                }
             }
             else if (IndexStoreType == IndexStoreType.ElasticSearch)
             {

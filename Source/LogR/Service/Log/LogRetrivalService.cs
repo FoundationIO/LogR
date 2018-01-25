@@ -45,21 +45,6 @@ namespace LogR.Service.Log
             }
         }
 
-        public ReturnListWithSearchModel<PerfLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search)
-        {
-            try
-            {
-                return logReadRepository.GetPerformanceLogs(search);
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Error when getting Performance Log  List ");
-                search.TotalRowCount = 0;
-                search.CurrentRows = 0;
-                return new ReturnListWithSearchModel<PerfLog, PerformanceLogSearchCriteria>(search, ex);
-            }
-        }
-
         public ReturnModel<SystemStats> GetStats()
         {
             try

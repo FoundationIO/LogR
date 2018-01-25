@@ -9,7 +9,39 @@ using LogR.Common.Models.Stats;
 
 namespace LogR.Common.Interfaces.Repository.Log
 {
-    public interface ILogRepository : ILogReadRepository, ILogWriteRepository
+    public interface ILogRepository
     {
+        //Save Log
+        void SaveLog(List<RawLogData> data);
+
+        void SaveLog(RawLogData data);
+
+        //Delete Log
+        ReturnModel<bool> DeleteAllLogs();
+
+        ReturnModel<bool> DeleteAllLogs(StoredLogType logType);
+
+        ReturnModel<bool> DeleteLog(StoredLogType logType, string id);
+
+        ReturnModel<bool> DeleteOldLogs(StoredLogType logType, DateTime pastDate);
+
+        //API for getting logs
+        ReturnListWithSearchModel<AppLog, AppLogSearchCriteria> GetAppLogs(AppLogSearchCriteria search);
+
+        // Parameters
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetAppNames(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetMachineNames(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetUserNames(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetSeverityNames(StoredLogType logType, BaseSearchCriteria search);
+
+        //Stats API
+        Dictionary<DateTime, long> GetAppLogsStatsByDay();
+
+        ReturnModel<DashboardSummary> GetDashboardSummary();
+
+        ReturnModel<SystemStats> GetStats();
     }
 }

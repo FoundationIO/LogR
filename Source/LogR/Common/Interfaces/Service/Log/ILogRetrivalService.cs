@@ -14,8 +14,6 @@ namespace LogR.Common.Interfaces.Service
 
         ReturnModel<DashboardSummary> GetDashboardSummary();
 
-        ReturnListWithSearchModel<PerfLog, PerformanceLogSearchCriteria> GetPerformanceLogs(PerformanceLogSearchCriteria search);
-
         ReturnModel<SystemStats> GetStats();
 
         ReturnListWithSearchModel<string, BaseSearchCriteria> GetAppNames(StoredLogType logType, BaseSearchCriteria search);

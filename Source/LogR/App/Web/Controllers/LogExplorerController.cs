@@ -39,14 +39,6 @@ namespace LogR.Web.Controllers
             return View(appData);
         }
 
-        [Route("/performance-logs")]
-        public IActionResult PerformanceLogs(PerformanceLogSearchCriteria search)
-        {
-            var perfData = logRetrivalService.GetPerformanceLogs(search);
-            perfData.ActiveTab = 3;
-            return View(perfData);
-        }
-
         [Route("/stats")]
         public IActionResult Stats()
         {

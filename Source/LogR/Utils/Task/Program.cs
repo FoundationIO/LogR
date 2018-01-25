@@ -52,7 +52,7 @@ namespace LogR.Task
             else if (args.IsParamValueAvailable("delete-all-logs"))
             {
                 System.Console.Out.WriteLine($"Deleting all logs...");
-                var repo = DISetup.ServiceProvider.GetService<ILogWriteRepository>();
+                var repo = DISetup.ServiceProvider.GetService<ILogRepository>();
                 repo.DeleteAllLogs();
                 System.Console.Out.WriteLine($"All Logs are deleted.");
             }

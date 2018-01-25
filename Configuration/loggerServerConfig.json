@@ -4,7 +4,7 @@
 
       "serverPort": 9090,
       "batchSizeToIndex": 10,
-      "indexStoreType": "Lucene",
+      "indexStoreType": "Sqlite3",
 
       "logSettings": {
         "logTrace": true,
@@ -44,7 +44,7 @@
         "databasePassword": "",
         "databaseCommandTimeout": 99,
         "maxPoolSize": 99,
-        "sqlBasedIndexStoreMigrationNamespace": "LogR.Repository.Migration.Application.SqlBasedIndexStore"
+        "migrationNamespace": "LogR.Repository.Migration.SqlBasedIndexStore"
       },
 
       "mongoDBIndexStoreSettings": {
