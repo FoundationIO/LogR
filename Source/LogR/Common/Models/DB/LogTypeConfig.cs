@@ -1,6 +1,6 @@
 ﻿namespace LogR.Common.Models.DB
 {
-    public class LogType
+    public class LogTypeConfig
     {
         public long LogTypeId { get; set; }
 

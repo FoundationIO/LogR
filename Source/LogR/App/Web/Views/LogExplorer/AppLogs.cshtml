@@ -45,6 +45,16 @@
                         </select>
                       
                     </div>
+                    @if (Model != null && Model.Search != null && Model.Search.SearchTerms != null && Model.Search.SearchTerms.Count > 0)
+                    {
+                        for (int i = 0 ; i < Model.Search.SearchTerms.Count; ++i)
+                        {
+                            <input type='hidden' name="SearchTerms[@i].Key" value="@Model.Search.SearchTerms[i].Key" />
+                            <input type='hidden' name="SearchTerms[@i].Value" value="@Model.Search.SearchTerms[i].Value" />
+                            <input type='hidden' name="SearchTerms[@i].Operator" value="@Model.Search.SearchTerms[i].Operator" />
+                        }
+                    }
+
                 </form>
             </div>
         </section>
@@ -435,6 +445,13 @@
                         }
                     ],
                     defaultquery: [
+                        @if (Model != null && Model.Search != null && Model.Search.SearchTerms != null && Model.Search.SearchTerms.Count > 0)
+                        {
+                            foreach (var searchTerm in Model.Search.SearchTerms)
+                            {
+                                @Html.Raw( "{ "+ $" key: \"{searchTerm.Key}\", operator: \"{searchTerm.Operator}\", value: \"{searchTerm.Value}\""+ " },")
+                            }
+                        }
                     ]
 
             });

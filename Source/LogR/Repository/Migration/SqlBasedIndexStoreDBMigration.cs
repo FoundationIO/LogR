@@ -1,6 +1,7 @@
 ﻿using Framework.Data.Migrations;
 using Framework.Infrastructure.Logging;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.DbAccess;
 using LogR.Common.Interfaces.Repository.Log;
 
 namespace LogR.Repository.Migration

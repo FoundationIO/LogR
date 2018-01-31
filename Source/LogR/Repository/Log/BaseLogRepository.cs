@@ -64,7 +64,33 @@ namespace LogR.Repository.Log
             return GetDistinctColumns(logType, search, x => x.Severity, "Severity");
         }
 
-        protected abstract ReturnListWithSearchModel<string, BaseSearchCriteria> GetDistinctColumns(StoredLogType logType, BaseSearchCriteria search, Expression<Func<AppLog, string>> selector, string columnType);
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetFunctions(StoredLogType logType, BaseSearchCriteria search)
+        {
+            return GetDistinctColumns(logType, search, x => x.FunctionName, "FunctionName");
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetFiles(StoredLogType logType, BaseSearchCriteria search)
+        {
+            return GetDistinctColumns(logType, search, x => x.CurrentSourceFilename, "CurrentSourceFilename");
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetIps(StoredLogType logType, BaseSearchCriteria search)
+        {
+            return GetDistinctColumns(logType, search, x => x.RemoteAddress, "RemoteAddress");
+        }
+
+        public ReturnListWithSearchModel<int, BaseSearchCriteria> GetProcessIds(StoredLogType logType, BaseSearchCriteria search)
+        {
+            return GetDistinctColumns(logType, search, x => x.ProcessId, "ProcessId");
+        }
+
+        public ReturnListWithSearchModel<int, BaseSearchCriteria> GetThreadIds(StoredLogType logType, BaseSearchCriteria search)
+        {
+            return GetDistinctColumns<int>(logType, search, x => x.ThreadId, "ThreadId");
+        }
+
+        //protected abstract ReturnListWithSearchModel<string, BaseSearchCriteria> GetDistinctColumns(StoredLogType logType, BaseSearchCriteria search, Expression<Func<AppLog, string>> selector, string columnType);
+        protected abstract ReturnListWithSearchModel<T, BaseSearchCriteria> GetDistinctColumns<T>(StoredLogType logType, BaseSearchCriteria search, Expression<Func<AppLog, T>> selector, string columnType);
 
         protected IQueryable<T> WhereEquals<T>(IQueryable<T> source, string member, object value)
         {
@@ -140,10 +166,11 @@ namespace LogR.Repository.Log
                     case SearchFieldContants.Operators.Is:
                     case SearchFieldContants.Operators.EqualTo:
                     case SearchFieldContants.Operators.NotEqualTo:
+                    case SearchFieldContants.Operators.IsNot:
                         {
                             condition = Expression.Equal(memberValue, Expression.Constant(value, memberType));
 
-                            if (term.Operator == SearchFieldContants.Operators.NotEqualTo)
+                            if (term.Operator == SearchFieldContants.Operators.NotEqualTo || term.Operator == SearchFieldContants.Operators.IsNot)
                                 condition = Expression.Not(condition);
                             break;
                         }
@@ -225,20 +252,6 @@ namespace LogR.Repository.Log
                         continue;
                 }
 
-                /*case SearchFieldContants.Operators.
-                        public const string IsNot = "is not";
-                        public const string Contains = "contains";
-                        public const string NotContains = "not contains";
-                        public const string StartsWith = "starts with";
-                        public const string EndsWith = "ends with";
-
-                        public const string GreaterThan = ">";
-                        public const string LessThan = "<";
-                        public const string GreaterThanOrEqualTo = ">=";
-                        public const string LessThanOrEqualTo = "<=";
-                        public const string EqualTo = "=";
-                        public const string NotEqualTo = "!=";
-                        */
                 var predicate = Expression.Lambda<Func<T, bool>>(condition, item);
                 source = source.Where(predicate);
             }

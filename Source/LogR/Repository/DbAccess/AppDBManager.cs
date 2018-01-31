@@ -1,14 +1,14 @@
 using Framework.Data.DbAccess;
+using Framework.Infrastructure.Config;
 using Framework.Infrastructure.Logging;
 using LogR.Common.Interfaces.Repository;
 using LogR.Common.Interfaces.Repository.DbAccess;
-using LogR.Repository.DbAccess;
 
 namespace Repository.DbAccess
 {
-    public class SqlIndexStoreDBManager : DBManager , ISqlIndexStoreDBManager
+    public class AppDBManager : DBManager , IAppDBManager
     {
-        public SqlIndexStoreDBManager(ISqlIndexStoreConfiguration config, ILog log, ISqlIndexStoreDBInfo dbInfo)
+        public AppDBManager(IBaseConfiguration config, ILog log, IDBInfo dbInfo)
             : base(config, log, dbInfo)
         {
         }

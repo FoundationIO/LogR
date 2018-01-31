@@ -37,6 +37,16 @@ namespace LogR.Common.Interfaces.Repository.Log
 
         ReturnListWithSearchModel<string, BaseSearchCriteria> GetSeverityNames(StoredLogType logType, BaseSearchCriteria search);
 
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetFunctions(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetFiles(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetIps(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<int, BaseSearchCriteria> GetProcessIds(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<int, BaseSearchCriteria> GetThreadIds(StoredLogType logType, BaseSearchCriteria search);
+
         //Stats API
         Dictionary<DateTime, long> GetAppLogsStatsByDay();
 

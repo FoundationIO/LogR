@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Framework.Infrastructure.Config;
 
-namespace LogR.Common.Interfaces.Repository
+namespace LogR.Common.Interfaces.Repository.DbAccess
 {
     public interface ISqlIndexStoreConfiguration : IBaseConfiguration
     {

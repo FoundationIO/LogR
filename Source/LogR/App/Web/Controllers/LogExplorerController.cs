@@ -47,7 +47,7 @@ namespace LogR.Web.Controllers
             return View(data);
         }
 
-        [Route("/list/searches")]
+        [Route("/api/list/searches")]
         public ReturnListModel<string> Searches(BaseSearchCriteria search)
         {
             var lst = new List<string>();
@@ -59,117 +59,67 @@ namespace LogR.Web.Controllers
             return new ReturnListModel<string>(lst);
         }
 
-        [Route("/list/apps")]
+        [Route("/api/list/apps")]
         public ReturnListWithSearchModel<string, BaseSearchCriteria> AppNames(BaseSearchCriteria search)
         {
             var appLst = logRetrivalService.GetAppNames( Common.Enums.StoredLogType.AppLog, search);
             return appLst;
         }
 
-        [Route("/list/loglevels")]
+        [Route("/api/list/loglevels")]
         public ReturnListWithSearchModel<string, BaseSearchCriteria> LogLevels(BaseSearchCriteria search)
         {
             var appLst = logRetrivalService.GetSeverityNames(Common.Enums.StoredLogType.AppLog, search);
             return appLst;
         }
 
-        [Route("/list/machines")]
+        [Route("/api/list/machines")]
         public ReturnListWithSearchModel<string, BaseSearchCriteria> MachineNames(BaseSearchCriteria search)
         {
             var appLst = logRetrivalService.GetMachineNames(Common.Enums.StoredLogType.AppLog, search);
             return appLst;
         }
 
-        [Route("/list/users")]
+        [Route("/api/list/users")]
         public ReturnListWithSearchModel<string, BaseSearchCriteria> UserNames(BaseSearchCriteria search)
         {
             var appLst = logRetrivalService.GetUserNames(Common.Enums.StoredLogType.AppLog, search);
             return appLst;
         }
 
-        [Route("/list/functions")]
-        public ReturnListModel<string> Functions(BaseSearchCriteria search)
+        [Route("/api/list/functions")]
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> Functions(BaseSearchCriteria search)
         {
-            var functions = new List<string>();
-            functions.Add("Function 1");
-            functions.Add("Function 2");
-            functions.Add("Function 3");
-            functions.Add("Function 4");
-            functions.Add("Function 5");
-            return new ReturnListModel<string>(functions);
+            var appLst = logRetrivalService.GetFunctions(Common.Enums.StoredLogType.AppLog, search);
+            return appLst;
         }
 
-        [Route("/list/files")]
-        public ReturnListModel<string> FileNames(BaseSearchCriteria search)
+        [Route("/api/list/files")]
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> FileNames(BaseSearchCriteria search)
         {
-            var fileNames = new List<string>();
-            fileNames.Add("File 1");
-            fileNames.Add("File 2");
-            fileNames.Add("File 3");
-            fileNames.Add("File 4");
-            fileNames.Add("File 5");
-            return new ReturnListModel<string>(fileNames);
+            var appLst = logRetrivalService.GetFiles(Common.Enums.StoredLogType.AppLog, search);
+            return appLst;
         }
 
-        [Route("/list/ips")]
-        public ReturnListModel<string> Ips(BaseSearchCriteria search)
+        [Route("/api/list/ips")]
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> Ips(BaseSearchCriteria search)
         {
-            var IpsLst = new List<string>();
-            IpsLst.Add("Ips 1");
-            IpsLst.Add("Ips  2");
-            IpsLst.Add("Ips  3");
-            IpsLst.Add("Ips 4");
-            IpsLst.Add("Ips 5");
-            return new ReturnListModel<string>(IpsLst);
+            var appLst = logRetrivalService.GetIps(Common.Enums.StoredLogType.AppLog, search);
+            return appLst;
         }
 
-        [Route("/list/perf-modules")]
-        public ReturnListModel<string> PerfModuleNames(BaseSearchCriteria search)
+        [Route("/api/list/processIds")]
+        public ReturnListWithSearchModel<int, BaseSearchCriteria> ProcessIds(BaseSearchCriteria search)
         {
-            var PerfModuleNamesLst = new List<string>();
-            PerfModuleNamesLst.Add("PerfModuleNames 1");
-            PerfModuleNamesLst.Add("PerfModuleNames  2");
-            PerfModuleNamesLst.Add("PerfModuleNames  3");
-            PerfModuleNamesLst.Add("PerfModuleNames 4");
-            PerfModuleNamesLst.Add("PerfModuleNames 5");
-            return new ReturnListModel<string>(PerfModuleNamesLst);
-          
+            var appLst = logRetrivalService.GetProcessIds(Common.Enums.StoredLogType.AppLog, search);
+            return appLst;
         }
 
-        [Route("/list/perf-statuses")]
-        public ReturnListModel<string> PerfStatusNames(BaseSearchCriteria search)
+        [Route("/api/list/threadIds")]
+        public ReturnListWithSearchModel<int, BaseSearchCriteria> ThreadIds(BaseSearchCriteria search)
         {
-            var PerfStatusNamesLst = new List<string>();
-            PerfStatusNamesLst.Add("PerfStatusNames 1");
-            PerfStatusNamesLst.Add("PerfStatusNames  2");
-            PerfStatusNamesLst.Add("PerfStatusNames  3");
-            PerfStatusNamesLst.Add("PerfStatusNames 4");
-            PerfStatusNamesLst.Add("PerfStatusNames 5");
-            return new ReturnListModel<string>(PerfStatusNamesLst);
-        }
-
-        [Route("/list/processIds")]
-        public ReturnListModel<string> ProcessIds(BaseSearchCriteria search)
-        {
-            var ProcessLst = new List<string>();
-            ProcessLst.Add("Process Id 1");
-            ProcessLst.Add("Process Id  2");
-            ProcessLst.Add("Process Id  3");
-            ProcessLst.Add("Process Id 4");
-            ProcessLst.Add("Process Id 5");
-            return new ReturnListModel<string>(ProcessLst);
-        }
-
-        [Route("/list/threadIds")]
-        public ReturnListModel<string> ThreadIds(BaseSearchCriteria search)
-        {
-            var ThreadLst = new List<string>();
-            ThreadLst.Add("Thread ID 1");
-            ThreadLst.Add("Thread ID  2");
-            ThreadLst.Add("Thread ID  3");
-            ThreadLst.Add("Thread ID 4");
-            ThreadLst.Add("Thread ID 5");
-            return new ReturnListModel<string>(ThreadLst);
+            var appLst = logRetrivalService.GetThreadIds(Common.Enums.StoredLogType.AppLog, search);
+            return appLst;
         }
     }
 }

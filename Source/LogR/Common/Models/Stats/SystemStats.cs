@@ -26,8 +26,6 @@ namespace LogR.Common.Models.Stats
 
         public ulong AppDataFolderSize { get; set; }
 
-        public ulong PerformanceDataFolderSize { get; set; }
-
         public ulong LogFolderSize { get; set; }
 
         public long LogFileCount { get; set; }

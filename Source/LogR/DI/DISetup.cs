@@ -5,6 +5,7 @@ using Framework.Infrastructure.Config;
 using Framework.Infrastructure.Logging;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.DbAccess;
 using LogR.Common.Interfaces.Repository.Log;
 using LogR.Common.Interfaces.Service;
 using LogR.Common.Interfaces.Service.Config;

@@ -8,7 +8,7 @@ namespace LogR.Web.Controllers
     {
         public IActionResult Index()
         {
-            return RedirectToAction("Dashboard","LogExplorer");
+            return RedirectToAction("AppLogs", "LogExplorer");
         }
     }
 }

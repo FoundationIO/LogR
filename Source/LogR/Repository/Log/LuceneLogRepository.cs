@@ -224,14 +224,13 @@ namespace LogR.Repository.Log
             var stat = new SystemStats
             {
                 AppDataFolderSize = GetAppDataFolderSize(),
-                PerformanceDataFolderSize = GetPerformanceDataFolderSize(),
                 LogFolderSize = GetLogFolderSize(),
                 LogFileCount = GetLogFileCount()
             };
             return new ReturnModel<SystemStats>(stat);
         }
 
-        protected override ReturnListWithSearchModel<string, BaseSearchCriteria> GetDistinctColumns(StoredLogType logType, BaseSearchCriteria search, Expression<Func<AppLog, string>> selector, string columnType)
+        protected override ReturnListWithSearchModel<T, BaseSearchCriteria> GetDistinctColumns<T>(StoredLogType logType, BaseSearchCriteria search, Expression<Func<AppLog, T>> selector, string columnType)
         {
             try
             {
@@ -243,7 +242,7 @@ namespace LogR.Repository.Log
                     search.TotalRowCount = totalRows;
                     var resultList = lst.ApplyPaging(search.Page, search.PageSize).Distinct().ToList();
                     search.CurrentRows = resultList.Count;
-                    return new ReturnListWithSearchModel<string, BaseSearchCriteria>(search, resultList, totalRows);
+                    return new ReturnListWithSearchModel<T, BaseSearchCriteria>(search, resultList, totalRows);
                 }
             }
             catch (Exception ex)
@@ -251,18 +250,13 @@ namespace LogR.Repository.Log
                 log.Error(ex, $"Error when getting {columnType} list ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListWithSearchModel<string, BaseSearchCriteria>(search, $"Error when getting {columnType} list ", ex);
+                return new ReturnListWithSearchModel<T, BaseSearchCriteria>(search, $"Error when getting {columnType} list ", ex);
             }
         }
 
         private ulong GetAppDataFolderSize()
         {
             return FileUtils.GetDirectorySize(config.LuceneIndexStoreSettings.AppLogIndexFolder);
-        }
-
-        private ulong GetPerformanceDataFolderSize()
-        {
-            return FileUtils.GetDirectorySize(config.LuceneIndexStoreSettings.PerformanceLogIndexFolder);
         }
 
         private ulong GetLogFolderSize()

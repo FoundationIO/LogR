@@ -2,7 +2,7 @@ using Framework.Data.DbAccess;
 
 namespace LogR.Common.Interfaces.Repository.DbAccess
 {
-    public interface ISqlIndexStoreDBManager : IDBManager
+    public interface IAppDBManager : IDBManager
     {
     }
 }

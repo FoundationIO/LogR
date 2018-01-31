@@ -36,7 +36,7 @@ namespace LogR.Repository.Migration.Application
                 .WithColumn("CreatedDate").AsDateTime().NotNullable()
                 .WithColumn("ModifiedDate").AsDateTime().NotNullable();
 
-            Create.Table("LogType")
+            Create.Table("LogTypeConfig")
                 .WithColumn("LogTypeId").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Name").AsBoolean().NotNullable()
                 .WithColumn("ErrorSeverityValue").AsString().NotNullable()
@@ -113,7 +113,7 @@ namespace LogR.Repository.Migration.Application
                     ModifiedDate = DateTime.UtcNow
                 });
 
-            Insert.IntoTable("LogType")
+            Insert.IntoTable("LogTypeConfig")
                 .Row(new
                     {
                         LogTypeId = 1,
@@ -181,7 +181,7 @@ namespace LogR.Repository.Migration.Application
                         ShowResponseInList = 1
                     });
 
-            Insert.IntoTable("LogType")
+            Insert.IntoTable("LogTypeConfig")
             .Row(new
             {
                 LogTypeId = 1,
@@ -249,7 +249,7 @@ namespace LogR.Repository.Migration.Application
                 ShowResponseInList = 1
             });
 
-            Insert.IntoTable("LogType")
+            Insert.IntoTable("LogTypeConfig")
             .Row(new
             {
                 LogTypeId = 3,
@@ -317,7 +317,7 @@ namespace LogR.Repository.Migration.Application
                 ShowResponseInList = 1
             });
 
-            Insert.IntoTable("LogType")
+            Insert.IntoTable("LogTypeConfig")
             .Row(new
             {
                 LogTypeId = 3,

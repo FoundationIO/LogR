@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Framework.Data.DbAccess;
 
-namespace LogR.Common.Interfaces.Repository
+namespace LogR.Common.Interfaces.Repository.DbAccess
 {
     public interface ISqlIndexStoreDBInfo : IDBInfo
     {

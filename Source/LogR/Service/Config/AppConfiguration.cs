@@ -127,11 +127,6 @@ namespace LogR.Service.Config
                 {
                     Directory.CreateDirectory(LuceneIndexStoreSettings.AppLogIndexFolder);
                 }
-
-                if (Directory.Exists(LuceneIndexStoreSettings.PerformanceLogIndexFolder) == false)
-                {
-                    Directory.CreateDirectory(LuceneIndexStoreSettings.PerformanceLogIndexFolder);
-                }
             }
             else if (IndexStoreType == IndexStoreType.Sqlite3 || IndexStoreType == IndexStoreType.SqlServer || IndexStoreType == IndexStoreType.Postgresql || IndexStoreType == IndexStoreType.MySql)
             {

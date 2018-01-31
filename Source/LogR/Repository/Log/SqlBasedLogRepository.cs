@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Logging;
 using Framework.Infrastructure.Models.Result;
@@ -8,12 +9,12 @@ using Framework.Infrastructure.Models.Search;
 using Framework.Infrastructure.Utils;
 using LogR.Common.Enums;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.DbAccess;
 using LogR.Common.Interfaces.Repository.Log;
 using LogR.Common.Interfaces.Service.Config;
 using LogR.Common.Models.Logs;
 using LogR.Common.Models.Search;
 using LogR.Common.Models.Stats;
-using System.Linq.Expressions;
 
 namespace LogR.Repository.Log
 {
@@ -98,7 +99,7 @@ namespace LogR.Repository.Log
             throw new NotImplementedException();
         }
 
-        protected override ReturnListWithSearchModel<string, BaseSearchCriteria> GetDistinctColumns(StoredLogType logType, BaseSearchCriteria search, Expression<Func<AppLog, string>> selector, string columnType)
+        protected override ReturnListWithSearchModel<T, BaseSearchCriteria> GetDistinctColumns<T>(StoredLogType logType, BaseSearchCriteria search, Expression<Func<AppLog, T>> selector, string columnType)
         {
             try
             {
@@ -108,7 +109,7 @@ namespace LogR.Repository.Log
                     search.TotalRowCount = totalRows;
                     var resultList = lst.ApplyPaging(search.Page, search.PageSize).Distinct().ToList();
                     search.CurrentRows = resultList.Count;
-                    return new ReturnListWithSearchModel<string, BaseSearchCriteria>(search, resultList, totalRows);
+                    return new ReturnListWithSearchModel<T, BaseSearchCriteria>(search, resultList, totalRows);
                 }
             }
             catch (Exception ex)
@@ -116,7 +117,7 @@ namespace LogR.Repository.Log
                 log.Error(ex, $"Error when getting {columnType} list ");
                 search.TotalRowCount = 0;
                 search.CurrentRows = 0;
-                return new ReturnListWithSearchModel<string, BaseSearchCriteria>(search, $"Error when getting {columnType} list ", ex);
+                return new ReturnListWithSearchModel<T, BaseSearchCriteria>(search, $"Error when getting {columnType} list ", ex);
             }
         }
     }

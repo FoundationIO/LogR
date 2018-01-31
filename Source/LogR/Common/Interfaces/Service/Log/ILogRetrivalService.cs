@@ -23,5 +23,15 @@ namespace LogR.Common.Interfaces.Service
         ReturnListWithSearchModel<string, BaseSearchCriteria> GetUserNames(StoredLogType logType, BaseSearchCriteria search);
 
         ReturnListWithSearchModel<string, BaseSearchCriteria> GetSeverityNames(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetFunctions(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetFiles(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<string, BaseSearchCriteria> GetIps(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<int, BaseSearchCriteria> GetProcessIds(StoredLogType logType, BaseSearchCriteria search);
+
+        ReturnListWithSearchModel<int, BaseSearchCriteria> GetThreadIds(StoredLogType logType, BaseSearchCriteria search);
     }
 }

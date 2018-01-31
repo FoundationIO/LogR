@@ -109,5 +109,70 @@ namespace LogR.Service.Log
                 return new ReturnListModel<string>("Error when getting Log levels", ex);
             }
         }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetFunctions(StoredLogType logType, BaseSearchCriteria search)
+        {
+            try
+            {
+                return logReadRepository.GetFunctions(logType, search);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting Log levels");
+                return new ReturnListModel<string>("Error when getting Log levels", ex);
+            }
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetFiles(StoredLogType logType, BaseSearchCriteria search)
+        {
+            try
+            {
+                return logReadRepository.GetFiles(logType, search);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting Log levels");
+                return new ReturnListModel<string>("Error when getting Log levels", ex);
+            }
+        }
+
+        public ReturnListWithSearchModel<string, BaseSearchCriteria> GetIps(StoredLogType logType, BaseSearchCriteria search)
+        {
+            try
+            {
+                return logReadRepository.GetIps(logType, search);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting Log levels");
+                return new ReturnListModel<string>("Error when getting Log levels", ex);
+            }
+        }
+
+        public ReturnListWithSearchModel<int, BaseSearchCriteria> GetProcessIds(StoredLogType logType, BaseSearchCriteria search)
+        {
+            try
+            {
+                return logReadRepository.GetProcessIds(logType, search);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting Log levels");
+                return new ReturnListModel<int>("Error when getting Log levels", ex);
+            }
+        }
+
+        public ReturnListWithSearchModel<int, BaseSearchCriteria> GetThreadIds(StoredLogType logType, BaseSearchCriteria search)
+        {
+            try
+            {
+                return logReadRepository.GetThreadIds(logType, search);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error when getting Log levels");
+                return new ReturnListModel<int>("Error when getting Log levels", ex);
+            }
+        }
     }
 }

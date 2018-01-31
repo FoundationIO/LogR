@@ -7,6 +7,7 @@ using Framework.Infrastructure.Constants;
 using Framework.Infrastructure.Models.Config;
 using LogR.Common.Constants;
 using LogR.Common.Interfaces.Repository;
+using LogR.Common.Interfaces.Repository.DbAccess;
 using LogR.Common.Interfaces.Service.Config;
 
 namespace LogR.Repository.DbAccess
